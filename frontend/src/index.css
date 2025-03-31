@@ -3,5 +3,5 @@
 /** navbar    **/
 .active hr{
 
-@apply block
+display: flex;
 }
