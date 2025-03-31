@@ -6,6 +6,7 @@ import About from './pages/About.jsx'
 import MyProfile from './pages/MyProfile.jsx'
 import MyAppointment from './pages/MyAppointment.jsx'
 import Login from './pages/Login.jsx'
+import Appointment from './pages/Appointment.jsx'
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
 <Route path='/myprofile' element={<MyProfile/>}/>
 <Route path='/myappointment' element={<MyAppointment/>}/>
 <Route path='/login' element={<Login/>}/>
+<Route path='/appointment/:docId' element={<Appointment/>}/>
 </Routes>
     </div>
   )
