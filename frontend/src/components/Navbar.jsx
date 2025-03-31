@@ -14,19 +14,19 @@ const [user,setUser]=useState(true)
       <ul className='hidden md:flex items-start gap-8 font-medium mt-3 '>
         <NavLink to='/'>
             <li className='py-1'>HOME</li>
-            <hr className='border-none outline-none h-0.5 bg-[#5f6FFF] w-3/5 m-auto hidden ' />
+            <hr className='border-none outline-none h-0.5 bg-[#5f6FFF]  m-auto hidden ' />
         </NavLink >
         <NavLink to='/doctors'>
-            <li className='py-1'>ALL DOCTORS</li>
-            <hr className=' border-none outline-none h-0.5 bg-[#5f6FFF] w-3/5 m-auto hidden'/>
+            <li className='py-1'>  DOCTORS</li>
+            <hr className=' border-none outline-none h-0.5 bg-[#5f6FFF]  m-auto hidden'/>
         </NavLink>
         <NavLink to='/about'>
             <li className='py-1'>ABOUT</li>
-            <hr className='border-none outline-none h-0.5 bg-[#5f6FFF] w-3/5 m-auto hidden'/>
+            <hr className='border-none outline-none h-0.5 bg-[#5f6FFF] m-auto hidden'/>
         </NavLink >
         <NavLink to='/contact'>
             <li className='py-1'>CONTACT</li>
-            <hr className='border-none outline-none h-0.5 bg-[#5f6FFF] w-3/5  m-auto hidden'/>
+            <hr className='border-none outline-none h-0.5 bg-[#5f6FFF]   m-auto hidden'/>
         </NavLink>
       </ul>
 

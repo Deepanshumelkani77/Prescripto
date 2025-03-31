@@ -12,7 +12,7 @@ import Navbar from './components/Navbar.jsx'
 const App = () => {
   return (
     //mx for margin in x axis ,sm stand for small size
-    <div className='mx-4 sm:mx[10%]'>  
+    <div className='mx-8 sm:mx[10%]'>  
     <Navbar/>
 <Routes>
 <Route path='/' element={<Home/>}/>
