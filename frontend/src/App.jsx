@@ -7,11 +7,13 @@ import MyProfile from './pages/MyProfile.jsx'
 import MyAppointment from './pages/MyAppointment.jsx'
 import Login from './pages/Login.jsx'
 import Appointment from './pages/Appointment.jsx'
+import Navbar from './components/Navbar.jsx'
 
 const App = () => {
   return (
     //mx for margin in x axis ,sm stand for small size
     <div className='mx-4 sm:mx[10%]'>  
+    <Navbar/>
 <Routes>
 <Route path='/' element={<Home/>}/>
 <Route path='/doctor' element={<Doctor/>}/>
