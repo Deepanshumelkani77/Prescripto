@@ -16,7 +16,7 @@ const [user,setUser]=useState(true)
             <li className='py-1'>HOME</li>
             <hr className='border-none outline-none h-0.5 bg-[#5f6FFF]  m-auto hidden ' />
         </NavLink >
-        <NavLink to='/doctors'>
+        <NavLink to='/doctor'>
             <li className='py-1'>ALL  DOCTORS</li>
             <hr className=' border-none outline-none h-0.5 bg-[#5f6FFF]  m-auto hidden'/>
         </NavLink>
