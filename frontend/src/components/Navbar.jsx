@@ -8,7 +8,7 @@ const Navbar = () => {
 const [user,setUser]=useState(true)
 
   return (
-    <div className='flex item-center justify-between text-sm py-4 mb-5 border-b border-b-gray-400'>
+    <div className='flex item-center justify-between text-sm py-4 mb-5 '>
       <img className='w-44 cursor-pointer' src={assets.logo} alt="" />
        {/* this ul hidden for small width but visible for medium and large */}
       <ul className='hidden md:flex items-start gap-8 font-medium mt-3 '>
