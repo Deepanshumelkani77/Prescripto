@@ -17,7 +17,7 @@ const [user,setUser]=useState(true)
             <hr className='border-none outline-none h-0.5 bg-[#5f6FFF]  m-auto hidden ' />
         </NavLink >
         <NavLink to='/doctors'>
-            <li className='py-1'>  DOCTORS</li>
+            <li className='py-1'>ALL  DOCTORS</li>
             <hr className=' border-none outline-none h-0.5 bg-[#5f6FFF]  m-auto hidden'/>
         </NavLink>
         <NavLink to='/about'>
