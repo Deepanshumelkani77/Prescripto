@@ -8,6 +8,7 @@ import MyAppointment from './pages/MyAppointment.jsx'
 import Login from './pages/Login.jsx'
 import Appointment from './pages/Appointment.jsx'
 import Navbar from './components/Navbar.jsx'
+import Footer from './components/Footer.jsx'
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
 <Route path='/login' element={<Login/>}/>
 <Route path='/appointment/:docId' element={<Appointment/>}/>
 </Routes>
+<Footer/>
     </div>
   )
 }
