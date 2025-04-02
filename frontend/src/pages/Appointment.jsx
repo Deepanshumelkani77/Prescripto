@@ -20,6 +20,14 @@ const Appointment = () => {
     fetchDocInfo();
   }, [doctors, docId]);
 
+
+//state variable for days
+ const [docSlots,setDocSlots]=useState([]);
+ const [slotIndex,setSlotIndex]=useState(0);
+ const [slotTime,setSlotTime]=useState('')
+
+
+
   return (
     <div>
 
@@ -49,6 +57,8 @@ const Appointment = () => {
           <p className='text-gray-500 font-medium mt-4'>Appointment fee: <span className='text-gray-600'>${docInfo.fees}</span></p>
         </div>
       </div>
+
+
     </div>
   );
 };
