@@ -30,7 +30,7 @@ const Appointment = () => {
  const [docSlots,setDocSlots]=useState([]);
  const [slotIndex,setSlotIndex]=useState(0);
  const [slotTime,setSlotTime]=useState('')
-
+const daysOfWeek=['SUN','MON','TUE','WED','THU','FRI','SAT']
 
  const getAvailableSlots=async()=>{
 setDocSlots([])
