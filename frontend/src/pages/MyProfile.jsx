@@ -83,7 +83,18 @@ const [isEdit,setIsEdit]=useState(false)
 
 }
 <p>Birthday:</p>
+{
+  isEdit?
+  <input type='date' onChange={(e)=>setUserData(prev=>({...prev,dob:e.target.value}))} value={userData.dob} />:
+  <p>{userData.dob}</p>
+}
   </div>
+</div>
+
+<div>
+  isEdit?
+  <button>Edit</button>:
+  <button></button>
 </div>
 
     </div>
