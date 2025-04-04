@@ -93,8 +93,8 @@ const [isEdit,setIsEdit]=useState(false)
 
 <div>
   isEdit?
-  <button>Edit</button>:
-  <button></button>
+  <button onClick={()=>setIsEdit(true)}>Edit</button>:
+  <button onClick={()=>setIsEdit(false)}>Save information</button>
 </div>
 
     </div>
