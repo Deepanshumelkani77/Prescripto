@@ -13,7 +13,9 @@ import Contact from './pages/Contact.jsx'
 import { useContext } from 'react'
 import { AppContext } from './context/AppContext.jsx'
 import Nav from './components/Nav.jsx'
-
+import Sidebar from './components/Sidebar.jsx'
+import DoctorAppointment from './pages/DoctorAppointment.jsx'
+import DoctorProfile from './pages/DoctorProfile.jsx'
 
 const App = () => {
 
@@ -41,8 +43,22 @@ state === 'User' ?
 </Routes>
 <Footer/>
     </div>  :
-    <div className='mx-8' >
+    <div className='bg-[#F2F3FF] mx-8 sm:mx[10%] h-[100vh]' >
      <Nav/>
+    
+    
+     <div className='flex items-start'>
+  <Sidebar/>
+  <Routes>
+  <Route path='/doctor-appintment' element={<DoctorAppointment/>}></Route>
+
+    <Route path='/' element={<DoctorProfile/>}></Route>
+   
+  </Routes>
+</div>
+
+
+
     </div>
 
 
