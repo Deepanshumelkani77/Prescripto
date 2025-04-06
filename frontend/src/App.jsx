@@ -12,6 +12,8 @@ import Footer from './components/Footer.jsx'
 import Contact from './pages/Contact.jsx'
 import { useContext } from 'react'
 import { AppContext } from './context/AppContext.jsx'
+import Nav from './components/Nav.jsx'
+
 
 const App = () => {
 
@@ -40,7 +42,7 @@ state === 'User' ?
 <Footer/>
     </div>  :
     <div className='mx-8' >
-     
+     <Nav/>
     </div>
 
 
