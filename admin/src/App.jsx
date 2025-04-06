@@ -1,11 +1,28 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Login from './pages/Login'
+import Navbar from './components/Navbar'
+import Sidebar from './components/Sidebar'
+
 
 const App = () => {
-  return (
-    <div >
+const [showLogin,setShowLogin]=useState(false)
 
-<Login/>
+
+
+  return (
+    <div className='bg-[#F8F9FD] mx-8 sm:mx[10%]' >
+{
+  showLogin===true?
+  <Login/>:<></>
+}
+
+<Navbar/>
+<div className='flex items-start'>
+  <Sidebar/>
+</div>
+
+
+
     </div>
   )
 }
