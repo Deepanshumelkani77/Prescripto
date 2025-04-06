@@ -4,17 +4,17 @@ import { assets } from '../assets/assets'
 
 const Sidebar = () => {
   return (
-    <div>
-  <ul>
-    <NavLink to='/'>
+    <div className=' min-h-screen bg-white  border-r border-gray-200'>
+  <ul className='text-[#515151] mt-5'>
+    <NavLink  className={({isActive})=> `flex itms-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 cursor pointer ${isActive? 'bg-[#F2F3FF] border-r-4 border-[#5f6FFF]':''} `} to='/'>
       <img src={assets.home_icon} alt="" />
       <p>Dashboard</p>
-    </NavLink>
-    <NavLink to='add-doctor'>
+    </NavLink >
+    <NavLink className={({isActive})=> `flex itms-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 cursor pointer ${isActive? 'bg-[#F2F3FF] border-r-4 border-[#5f6FFF]':''} `} to='add-doctor'>
       <img src={assets.add_icon} alt="" />
       <p>Add Doctor</p>
     </NavLink>
-    <NavLink to='all-doctors'>
+    <NavLink className={({isActive})=> `flex itms-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 cursor pointer ${isActive? 'bg-[#F2F3FF] border-r-4 border-[#5f6FFF]':''} `} to='all-doctors'>
       <img src={assets.people_icon} alt="" />
       <p>Doctors List</p>
     </NavLink>
