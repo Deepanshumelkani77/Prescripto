@@ -14,7 +14,7 @@ const [showLogin,setShowLogin]=useState(false)
 
 
   return (
-    <div className='bg-[#F2F3FF] mx-8 sm:mx[10%]' >
+    <div className='bg-[#F2F3FF] mx-8 sm:mx[10%] h-[100vh]'  >
 {
   showLogin===true?
   <Login/>:<></>
