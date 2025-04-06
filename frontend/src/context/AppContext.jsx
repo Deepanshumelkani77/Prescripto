@@ -1,16 +1,18 @@
-import { createContext } from "react"
+import { createContext, useState } from "react"
 import { doctors } from "../assets/assets"
 
 export const AppContext=createContext()
 
 const AppContextProvider=(props)=>{
 
-
+const [state,setState]=useState('User')
 
 
 const value={
 
-doctors
+doctors,
+state,
+setState
 }
 
 

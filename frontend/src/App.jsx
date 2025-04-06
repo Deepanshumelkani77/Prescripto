@@ -10,11 +10,21 @@ import Appointment from './pages/Appointment.jsx'
 import Navbar from './components/Navbar.jsx'
 import Footer from './components/Footer.jsx'
 import Contact from './pages/Contact.jsx'
+import { useContext } from 'react'
+import { AppContext } from './context/AppContext.jsx'
 
 const App = () => {
+
+  const {state}=useContext(AppContext)
+
+  
+
   return (
+
+   
+state === 'User' ?
     //mx for margin in x axis ,sm stand for small size
-    <div className='mx-8 sm:mx[10%]'>  
+    <div className='mx-8  '>  
     <Navbar/>
 <Routes>
 <Route path='/' element={<Home/>}/>
@@ -28,7 +38,14 @@ const App = () => {
 <Route path='contact' element={<Contact/>}/>
 </Routes>
 <Footer/>
+    </div>  :
+    <div className='mx-8' >
+     
     </div>
+
+
+
+
   )
 }
 
