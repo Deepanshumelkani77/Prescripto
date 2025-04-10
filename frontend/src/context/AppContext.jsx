@@ -5,7 +5,7 @@ export const AppContext=createContext()
 
 const AppContextProvider=(props)=>{
 
-const [state,setState]=useState('Doctor')
+const [state,setState]=useState('User')
 
 
 const value={
