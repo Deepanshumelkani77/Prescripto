@@ -1,7 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import { assets } from "../assets/assets";
+import {useNavigate} from 'react-router-dom'
 
 const AddDoctor = () => {
+
+  const navigate = useNavigate();
+const [formData,setFormData]=useState({name:'',image:'',email:'',speciality:'',degree:'',experience:'',about:'',fees:'',address:{line1:'',line2:''} })
+
+const handleChange = (e) => {
+  const { name, value } = e.target;
+  setFormData({ ...formData, [name]: value });
+};
+
+
+
+
+
   return (
     <form className='m-5 w-full'>
       <p className='mb-3 text-lg font-medium'>Edit Doctor</p>
@@ -11,7 +25,7 @@ const AddDoctor = () => {
           <label htmlFor="doc-img">
             <img className='w-16 bg-gray-100 rounded-full cursor-pointer' src={assets.upload_area} alt="" />
           </label>
-          <input type="file" id="doc-img" hidden />
+          <input name='image' type="file" id="doc-img" hidden />
           <p>
             Upload doctor <br />
             picture
@@ -22,18 +36,18 @@ const AddDoctor = () => {
           <div className='w-full lg:flex-1 flex flex-col gap-4'>
             <div className='flex-1 flex flex-col gap-1'>
               <p>Doctor name</p>
-              <input className='border border-gray-300 rounded px-3 py-2 ' type="text" placeholder="name" required />
+              <input name='name' className='border border-gray-300 rounded px-3 py-2 ' type="text" placeholder="name" required />
             </div>
 
            
             <div className='flex-1 flex flex-col gap-1'>
-              <p>Doctor Password</p>
-              <input className='border border-gray-300 rounded px-3 py-2' type="password" placeholder="password" required />
+              <p>Doctor Email</p>
+              <input name='email' className='border border-gray-300 rounded px-3 py-2' type="email" placeholder="email" required />
             </div>
 
             <div className='flex-1 flex flex-col gap-1'>
               <p>Experience</p>
-              <select className='border border-gray-300 rounded px-3 py-2' name="" id="">
+              <select name='experience' className='border border-gray-300 rounded px-3 py-2'  id="">
                 <option value="1 Year">1 Year</option>
                 <option value="2 Year">2 Year</option>
                 <option value="3 Year">3 Year</option>
@@ -49,14 +63,14 @@ const AddDoctor = () => {
 
             <div className='flex-1 flex flex-col gap-1'>
               <p>Fees</p>
-              <input className='border border-gray-300 rounded px-3 py-2' type="number" placeholder="fees" required />
+              <input name='fees' className='border border-gray-300 rounded px-3 py-2' type="number" placeholder="fees" required />
             </div>
           </div>
 
           <div className='w-full lg:flex-1 flex flex-col gap-4'>
             <div className='flex-1 flex flex-col gap-1'>
               <p>Speciality</p>
-              <select className='border border-gray-300 rounded px-3 py-2' name="" id="">
+              <select name='speciality' className='border border-gray-300 rounded px-3 py-2'  id="">
                 <option value="General Physician">General Physician</option>
                 <option value="Gynecologist">Gynecologist</option>
                 <option value="Dermatologist">Dermatologist</option>
@@ -68,20 +82,20 @@ const AddDoctor = () => {
 
             <div className='flex-1 flex flex-col gap-1'>
               <p>Education</p>
-              <input className='border border-gray-300 rounded px-3 py-2' type="text" placeholder="education" required />
+              <input name='education' className='border border-gray-300 rounded px-3 py-2' type="text" placeholder="education" required />
             </div>
             <p>Address</p>
             <div className='flex-1 flex flex-col gap-7'>
               
-              <input className='border border-gray-300 rounded px-3 py-2' type="text" placeholder="address1" required />
-              <input className='border border-gray-300 rounded px-3 py-2' type="text" placeholder="address12" required />
+              <input name='line1' className='border border-gray-300 rounded px-3 py-2' type="text" placeholder="address1" required />
+              <input name='line2' className='border border-gray-300 rounded px-3 py-2' type="text" placeholder="address12" required />
             </div>
           </div>
         </div>
 
         <div>
           <p className='mt-4 mb-2'>About Doctor</p>
-          <textarea className='w-full px-4 pt-2 border rounded border-gray-300'
+          <textarea name='about' className='w-full px-4 pt-2 border rounded border-gray-300'
             type="text"
             placeholder="write about doctor"
             rows={5}

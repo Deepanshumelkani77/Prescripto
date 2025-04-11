@@ -25,6 +25,7 @@ Doctor.insertMany( [
        
         name: 'Dr. Richard James',
         image: "",
+        email:"Richard@gmail.com",
         speciality: 'General physician',
         degree: 'MBBS',
         experience: '4 Years',
@@ -40,6 +41,7 @@ Doctor.insertMany( [
        
         name: 'Dr. Emily Larson',
         image: "",
+        email:"Emily@gmail.com",
         speciality: 'Gynecologist',
         degree: 'MBBS',
         experience: '3 Years',
@@ -55,6 +57,7 @@ Doctor.insertMany( [
     
         name: 'Dr. Sarah Patel',
         image: "",
+        email:"Sarah@gmail.com",
         speciality: 'Dermatologist',
         degree: 'MBBS',
         experience: '1 Years',
@@ -70,6 +73,7 @@ Doctor.insertMany( [
     
         name: 'Dr. Christopher Lee',
         image: "",
+        email:"Christopher@gmail.com",
         speciality: 'Pediatricians',
         degree: 'MBBS',
         experience: '2 Years',
@@ -85,6 +89,7 @@ Doctor.insertMany( [
 
         name: 'Dr. Jennifer Garcia',
         image: "",
+        email:"Jennifer@gmail.com",
         speciality: 'Neurologist',
         degree: 'MBBS',
         experience: '4 Years',
@@ -100,6 +105,7 @@ Doctor.insertMany( [
       
         name: 'Dr. Andrew Williams',
         image: "",
+        email:"Andrew@gmail.com",
         speciality: 'Neurologist',
         degree: 'MBBS',
         experience: '4 Years',
@@ -115,6 +121,7 @@ Doctor.insertMany( [
      
         name: 'Dr. Christopher Davis',
         image: "",
+        email:"Christopher@gmail.com",
         speciality: 'General physician',
         degree: 'MBBS',
         experience: '4 Years',
@@ -130,6 +137,7 @@ Doctor.insertMany( [
     
         name: 'Dr. Timothy White',
         image: "",
+        email:"Timothy@gmail.com",
         speciality: 'Gynecologist',
         degree: 'MBBS',
         experience: '3 Years',
@@ -145,6 +153,7 @@ Doctor.insertMany( [
 
         name: 'Dr. Ava Mitchell',
         image: "",
+        email:"Ava@gmail.com",
         speciality: 'Dermatologist',
         degree: 'MBBS',
         experience: '1 Years',
@@ -160,6 +169,7 @@ Doctor.insertMany( [
        
         name: 'Dr. Jeffrey King',
         image: "",
+        email:"Jeffrey@gmail.com",
         speciality: 'Pediatricians',
         degree: 'MBBS',
         experience: '2 Years',
@@ -175,6 +185,7 @@ Doctor.insertMany( [
        
         name: 'Dr. Zoe Kelly',
         image: "",
+        email:"Zoe@gmail.com",
         speciality: 'Neurologist',
         degree: 'MBBS',
         experience: '4 Years',
@@ -190,6 +201,7 @@ Doctor.insertMany( [
        
         name: 'Dr. Patrick Harris',
         image: "",
+        email:"Patrick@gmail.com",
         speciality: 'Neurologist',
         degree: 'MBBS',
         experience: '4 Years',
@@ -205,6 +217,7 @@ Doctor.insertMany( [
      
         name: 'Dr. Chloe Evans',
         image: "",
+        email:"Chloe@gmail.com",
         speciality: 'General physician',
         degree: 'MBBS',
         experience: '4 Years',
@@ -220,6 +233,7 @@ Doctor.insertMany( [
     
         name: 'Dr. Ryan Martinez',
         image: "",
+        email:"Ryan@gmail.com",
         speciality: 'Gynecologist',
         degree: 'MBBS',
         experience: '3 Years',
@@ -235,6 +249,7 @@ Doctor.insertMany( [
        
         name: 'Dr. Amelia Hill',
         image: "",
+        email:"Amelia@gmail.com",
         speciality: 'Dermatologist',
         degree: 'MBBS',
         experience: '1 Years',

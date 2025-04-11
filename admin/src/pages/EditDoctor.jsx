@@ -27,8 +27,8 @@ const EditDoctor = () => {
 
            
             <div className='flex-1 flex flex-col gap-1'>
-              <p>Doctor Password</p>
-              <input className='border border-gray-300 rounded px-3 py-2' type="password" placeholder="password" required />
+              <p>Doctor Email</p>
+              <input className='border border-gray-300 rounded px-3 py-2' type="email" placeholder="email" required />
             </div>
 
             <div className='flex-1 flex flex-col gap-1'>
