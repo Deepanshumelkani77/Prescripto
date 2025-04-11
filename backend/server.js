@@ -25,4 +25,3 @@ const mongoose = require("mongoose");
   };
 //db connectin model
 connectDB();
-//iK7SkRLSArqHWUHe
