@@ -25,11 +25,7 @@ const EditDoctor = () => {
               <input className='border border-gray-300 rounded px-3 py-2 ' type="text" placeholder="name" required />
             </div>
 
-            <div className='flex-1 flex flex-col gap-1'>
-              <p>Doctor Email</p>
-              <input className='border border-gray-300 rounded px-3 py-2 ' type="email" placeholder="email" required />
-            </div>
-
+           
             <div className='flex-1 flex flex-col gap-1'>
               <p>Doctor Password</p>
               <input className='border border-gray-300 rounded px-3 py-2' type="password" placeholder="password" required />
@@ -74,9 +70,9 @@ const EditDoctor = () => {
               <p>Education</p>
               <input className='border border-gray-300 rounded px-3 py-2' type="text" placeholder="education" required />
             </div>
-
-            <div className='flex-1 flex flex-col gap-1'>
-              <p>Address</p>
+            <p>Address</p>
+            <div className='flex-1 flex flex-col gap-7'>
+              
               <input className='border border-gray-300 rounded px-3 py-2' type="text" placeholder="address1" required />
               <input className='border border-gray-300 rounded px-3 py-2' type="text" placeholder="address12" required />
             </div>

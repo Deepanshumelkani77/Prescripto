@@ -25,3 +25,10 @@ const mongoose = require("mongoose");
   };
 //db connectin model
 connectDB();
+
+
+
+
+//router
+const doctor=require("./routes/Doctor.js");
+app.use("/doctor",doctor);
