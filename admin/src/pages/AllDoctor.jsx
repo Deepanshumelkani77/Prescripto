@@ -1,8 +1,28 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
+import axios from 'axios';
 
 const AllDoctor = () => {
 
 const [doctor,setDoctor]=useState([]);
+
+useEffect(() => {
+  // Fetch data from backend
+  axios.get('http://localhost:5000/doctor')
+       // Backend API endpoint
+    .then(response => {
+     
+      setDoctor(response.data); // Store the data in state
+    })
+    .catch(error => {
+      console.error("Error fetching food data:", error);
+    });
+   
+}, []);
+
+
+
+
+
 
   return (
     <div className='m-5 max-h-[91vh] overflow-y-scroll'>

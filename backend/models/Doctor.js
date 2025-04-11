@@ -10,6 +10,7 @@ degree:{type:String,required:true},
 experience: {type:String,required:true},
 about:  {type:String,required:true},
 fees: {type:Number,required:true} ,
+available:Boolean,
 address:{
     line1: {type:String,required:true} ,
     line2:   {type:String,required:true}
