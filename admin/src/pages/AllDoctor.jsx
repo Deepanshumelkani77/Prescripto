@@ -1,8 +1,10 @@
 import React, { useState,useEffect } from 'react'
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const AllDoctor = () => {
 
+  const navigate=useNavigate()
 const [doctor,setDoctor]=useState([]);
 
 useEffect(() => {
@@ -42,7 +44,7 @@ useEffect(() => {
   </div>
 </div>
 <div className="buttons flex justify-between pl-4 pr-4 pb-2">
-  <button className='bg-[#5f6FFF] pl-4 pr-4 rounded rounded-full text-white '>Edit</button>
+  <button onClick={()=>{navigate(`/edit-doctor/${item._id}`)}} className='bg-[#5f6FFF] pl-4 pr-4 rounded rounded-full text-white '>Edit</button>
   <button className='bg-[#5f6FFF] pl-4 pr-4 rounded rounded-full text-white'>Delete</button>
 </div>
             </div>
