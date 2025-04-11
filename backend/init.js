@@ -1,10 +1,28 @@
 
+//use like init file
+
+const mongoose = require("mongoose");
+const Doctor = require("./models/Doctor");
+
+//database connection
+
+ const connectDB = async () => {
+    try {
+      await mongoose.connect(
+"mongodb+srv://deepumelkani123:appointment@cluster0.ykmvxml.mongodb.net/prescripto?retryWrites=true&w=majority&appName=Cluster0"
+      );
+      console.log("database connected successfully");
+    } catch (error) {
+      console.error("Error connecting to database:", error);
+    }
+  };
+//db connectin model
+connectDB();
 
 
-
-export const doctors = [
+Doctor.insertMany( [
     {
-        _id: 'doc1',
+       
         name: 'Dr. Richard James',
         image: "",
         speciality: 'General physician',
@@ -18,7 +36,7 @@ export const doctors = [
         }
     },
     {
-        _id: 'doc2',
+       
         name: 'Dr. Emily Larson',
         image: "",
         speciality: 'Gynecologist',
@@ -32,7 +50,7 @@ export const doctors = [
         }
     },
     {
-        _id: 'doc3',
+    
         name: 'Dr. Sarah Patel',
         image: "",
         speciality: 'Dermatologist',
@@ -46,7 +64,7 @@ export const doctors = [
         }
     },
     {
-        _id: 'doc4',
+    
         name: 'Dr. Christopher Lee',
         image: "",
         speciality: 'Pediatricians',
@@ -60,7 +78,7 @@ export const doctors = [
         }
     },
     {
-        _id: 'doc5',
+
         name: 'Dr. Jennifer Garcia',
         image: "",
         speciality: 'Neurologist',
@@ -74,7 +92,7 @@ export const doctors = [
         }
     },
     {
-        _id: 'doc6',
+      
         name: 'Dr. Andrew Williams',
         image: "",
         speciality: 'Neurologist',
@@ -88,7 +106,7 @@ export const doctors = [
         }
     },
     {
-        _id: 'doc7',
+     
         name: 'Dr. Christopher Davis',
         image: "",
         speciality: 'General physician',
@@ -102,7 +120,7 @@ export const doctors = [
         }
     },
     {
-        _id: 'doc8',
+    
         name: 'Dr. Timothy White',
         image: "",
         speciality: 'Gynecologist',
@@ -116,7 +134,7 @@ export const doctors = [
         }
     },
     {
-        _id: 'doc9',
+
         name: 'Dr. Ava Mitchell',
         image: "",
         speciality: 'Dermatologist',
@@ -130,7 +148,7 @@ export const doctors = [
         }
     },
     {
-        _id: 'doc10',
+       
         name: 'Dr. Jeffrey King',
         image: "",
         speciality: 'Pediatricians',
@@ -144,7 +162,7 @@ export const doctors = [
         }
     },
     {
-        _id: 'doc11',
+       
         name: 'Dr. Zoe Kelly',
         image: "",
         speciality: 'Neurologist',
@@ -158,7 +176,7 @@ export const doctors = [
         }
     },
     {
-        _id: 'doc12',
+       
         name: 'Dr. Patrick Harris',
         image: "",
         speciality: 'Neurologist',
@@ -172,7 +190,7 @@ export const doctors = [
         }
     },
     {
-        _id: 'doc13',
+     
         name: 'Dr. Chloe Evans',
         image: "",
         speciality: 'General physician',
@@ -186,7 +204,7 @@ export const doctors = [
         }
     },
     {
-        _id: 'doc14',
+    
         name: 'Dr. Ryan Martinez',
         image: "",
         speciality: 'Gynecologist',
@@ -200,7 +218,7 @@ export const doctors = [
         }
     },
     {
-        _id: 'doc15',
+       
         name: 'Dr. Amelia Hill',
         image: "",
         speciality: 'Dermatologist',
@@ -214,4 +232,6 @@ export const doctors = [
         }
     },
 ]
-
+).then((res)=>{
+    console.log("data store");
+      })
