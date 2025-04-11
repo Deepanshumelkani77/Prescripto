@@ -4,6 +4,28 @@ const Doctor = require("../models/Doctor.js");
 const mongoose = require("mongoose");
 
 
+router.get("/:id",async (req, res) => {
+  try {
+    const { id } = req.params;  // Extract the id from params correctly
+    if (!mongoose.Types.ObjectId.isValid(id)) {  // Optional: check if id is a valid ObjectId
+      return res.status(400).json({ message: 'Invalid food ID' });
+    }
+
+    
+    const doctor = await Doctor.findById(id);
+    if (!doctor) {
+      return res.status(404).json({ message: 'Doctor not found' });
+    }
+
+    res.json(doctor);  // Return the food item as JSON
+  } catch (error) {
+    console.error('Error fetching doctor:', error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+})
+
+
+
 router.get("/",async (req, res) => {
     try {
       const doctor= await Doctor.find(); // Fetch all documents from the Food collection
@@ -32,6 +54,9 @@ res.status(201).send({ message: "Doctor added successfully" });
 
 }
 )
+
+
+
 
 
 

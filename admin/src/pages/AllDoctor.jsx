@@ -16,7 +16,7 @@ useEffect(() => {
       setDoctor(response.data); // Store the data in state
     })
     .catch(error => {
-      console.error("Error fetching food data:", error);
+      console.error("Error fetching doctor data:", error);
     });
    
 }, []);

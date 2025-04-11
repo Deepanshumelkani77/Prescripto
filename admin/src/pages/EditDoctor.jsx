@@ -1,7 +1,33 @@
 import React from "react";
 import { assets } from "../assets/assets";
+import { useParams } from "react-router-dom";
+import { useState,useEffect } from 'react'
+import axios from 'axios'
 
 const EditDoctor = () => {
+
+const [formData,setFormData]=useState({name:'',email:'',speciality:'',degree:'',experience:'',about:'',fees:'',address:{line1:'',line2:''} })
+
+
+const {id}=useParams();
+const [doctor,setDoctor]=useState({});
+useEffect(() => {
+  // Fetch data from backend
+  axios.get(`http://localhost:5000/doctor/${id}`)
+       // Backend API endpoint
+    .then(response => {
+     
+      setDoctor(response.data); // Store the data in state
+    })
+    .catch(error => {
+      console.error("Error fetching doctor data:", error);
+    });
+   
+}, []);
+
+
+
+
   return (
     <form className='m-5 w-full'>
       <p className='mb-3 text-lg font-medium'>Edit Doctor</p>
@@ -22,13 +48,13 @@ const EditDoctor = () => {
           <div className='w-full lg:flex-1 flex flex-col gap-4'>
             <div className='flex-1 flex flex-col gap-1'>
               <p>Doctor name</p>
-              <input className='border border-gray-300 rounded px-3 py-2 ' type="text" placeholder="name" required />
+              <input className='border border-gray-300 rounded px-3 py-2 ' type="text" value={doctor.name}  required />
             </div>
 
            
             <div className='flex-1 flex flex-col gap-1'>
               <p>Doctor Email</p>
-              <input className='border border-gray-300 rounded px-3 py-2' type="email" placeholder="email" required />
+              <input className='border border-gray-300 rounded px-3 py-2' type="email" placeholder={doctor.email} required />
             </div>
 
             <div className='flex-1 flex flex-col gap-1'>
@@ -49,14 +75,14 @@ const EditDoctor = () => {
 
             <div className='flex-1 flex flex-col gap-1'>
               <p>Fees</p>
-              <input className='border border-gray-300 rounded px-3 py-2' type="number" placeholder="fees" required />
+              <input className='border border-gray-300 rounded px-3 py-2' type="number" placeholder={doctor.fees} required />
             </div>
           </div>
 
           <div className='w-full lg:flex-1 flex flex-col gap-4'>
             <div className='flex-1 flex flex-col gap-1'>
               <p>Speciality</p>
-              <select className='border border-gray-300 rounded px-3 py-2' name="" id="">
+              <select className='border border-gray-300 rounded px-3 py-2' placeholder={doctor.speciality}  id="">
                 <option value="General Physician">General Physician</option>
                 <option value="Gynecologist">Gynecologist</option>
                 <option value="Dermatologist">Dermatologist</option>
@@ -68,13 +94,13 @@ const EditDoctor = () => {
 
             <div className='flex-1 flex flex-col gap-1'>
               <p>Education</p>
-              <input className='border border-gray-300 rounded px-3 py-2' type="text" placeholder="education" required />
+              <input className='border border-gray-300 rounded px-3 py-2' type="text" placeholder={doctor.degree} required />
             </div>
             <p>Address</p>
             <div className='flex-1 flex flex-col gap-7'>
               
-              <input className='border border-gray-300 rounded px-3 py-2' type="text" placeholder="address1" required />
-              <input className='border border-gray-300 rounded px-3 py-2' type="text" placeholder="address12" required />
+              <input className='border border-gray-300 rounded px-3 py-2' type="text" placeholder={doctor.address?.line1 || ''} required />
+              <input className='border border-gray-300 rounded px-3 py-2' type="text" placeholder={doctor.address?.line2 || ''} required />
             </div>
           </div>
         </div>
@@ -83,7 +109,7 @@ const EditDoctor = () => {
           <p className='mt-4 mb-2'>About Doctor</p>
           <textarea className='w-full px-4 pt-2 border rounded border-gray-300'
             type="text"
-            placeholder="write about doctor"
+            placeholder={doctor.about}
             rows={5}
             required
           />
