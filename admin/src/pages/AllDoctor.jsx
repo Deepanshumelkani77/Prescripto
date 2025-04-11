@@ -34,12 +34,16 @@ useEffect(() => {
             <div className='border border-indigo-200 rounded-xl max-w-56 overflow-hidden cursor-pointer group ' key={index}>
 <img className='bg-indigo-50 group-hover:bg-[#5f6FFF] transition-all duration-500' src={item.image} alt="" />
 <div className='p-4'>
-  <p className='text-neutral-800 text-lg font-medium'>{item.name}</p>
+  <p className='text-neutral-800 text-lg font-medium '>{item.name}</p>
   <p className='text-zinc-600 text-sm'>{item.speciality}</p>
   <div className='mt-2 flex items-center gap-1 text-sm'>
     <input type='checkbox' checked={item.available}/>
     <p>Available</p>
   </div>
+</div>
+<div className="buttons flex justify-between pl-4 pr-4 pb-2">
+  <button className='bg-[#5f6FFF] pl-4 pr-4 rounded rounded-full text-white '>Edit</button>
+  <button className='bg-[#5f6FFF] pl-4 pr-4 rounded rounded-full text-white'>Delete</button>
 </div>
             </div>
 

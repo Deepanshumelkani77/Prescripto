@@ -27,7 +27,7 @@ const [showLogin,setShowLogin]=useState(false)
   <Route path='/' element={<AllDoctor/>}></Route>
 
     <Route path='/add-doctor' element={<AddDcotor/>}></Route>
-    <Route path='/edit-doctor' element={<EditDoctor/>}></Route>
+    <Route path='/edit-doctor/:id' element={<EditDoctor/>}></Route>
    
   </Routes>
 </div>

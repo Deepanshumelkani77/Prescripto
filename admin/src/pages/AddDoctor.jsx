@@ -84,7 +84,7 @@ const handleSubmit = async (e) => {
 
   return (
     <form className='m-5 w-full'>
-      <p className='mb-3 text-lg font-medium'>Edit Doctor</p>
+      <p className='mb-3 text-lg font-medium'>Add Doctor</p>
 
       <div className='bg-white px-8 py-8 border border-gray-200 rounded w-full max-w-4xl max-h-[80vh] overflow-y-scroll shadow-lg'>
         <div className='flex flex-items-center gap-4 mb-8 text-gray-500'>
