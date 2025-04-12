@@ -18,6 +18,7 @@ useEffect(() => {
     .then(response => {
      
       setDoctor(response.data); // Store the data in state
+      setFormData({name:data.name,email:data.email,speciality:data.speciality,degree:data.degree,experience:data.experience,about:data.about,fees:data.fees,address:{line1:data.line1,line2:data.line2}})
     })
     .catch(error => {
       console.error("Error fetching doctor data:", error);
