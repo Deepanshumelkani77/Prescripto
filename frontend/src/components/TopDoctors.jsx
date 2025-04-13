@@ -1,11 +1,27 @@
-import React, { useContext } from 'react'
-
+import React, { useContext,useState,useEffect } from 'react'
+import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
-import {AppContext} from "../context/AppContext"
 const TopDoctors = () => {
 
 const navigate=useNavigate()
-const {doctors}=useContext(AppContext)
+
+
+const [doctor,setDoctor]=useState([]);
+
+useEffect(() => {
+  // Fetch data from backend
+  axios.get('http://localhost:5000/doctor')
+       // Backend API endpoint
+    .then(response => {
+     
+      setDoctor(response.data); // Store the data in state
+    })
+    .catch(error => {
+      console.error("Error fetching doctor data:", error);
+    });
+   
+}, []);
+
 
   return (
     <div className='flex flex-col items-center gap-4 my-16 text-gray-900 md:mx-10'>
@@ -13,7 +29,7 @@ const {doctors}=useContext(AppContext)
       <p className='sm:w-1/3 text-center text-sm'>Simply browse through our extensive list of trusted doctors.</p>
 <div className='w-full grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))]  gap-4 pt-5 gap-y-6 px-3 sm:px-0'>
     {
-        doctors.slice(0,12).map((item,index)=>(
+        doctor.slice(0,12).map((item,index)=>(
 <div onClick={()=>{navigate(`./appointment/${item._id}`);scrollTo(0,0)}} key={index} className='border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500'>
 <img className='bg-blue-50 ' src={item.image} alt="" />
 <div className='p-4'>

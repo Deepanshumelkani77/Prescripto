@@ -2,26 +2,44 @@ import React, { useEffect,useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useContext } from 'react'
 import { AppContext } from '../context/AppContext'
+import axios from 'axios'
 
 const Doctor = () => {
 
   const navigate=useNavigate()
   const {speciality}=useParams()
 
-const {doctors}=useContext(AppContext)
-
 const [filterDoc,setFilterDoc]=useState([])
 const [showFilter,setShowFilter]=useState(false)
 
+
+
+const [doctor,setDoctor]=useState([]);
+
 useEffect(() => {
-  if (doctors.length > 0) {
+  // Fetch data from backend
+  axios.get('http://localhost:5000/doctor')
+       // Backend API endpoint
+    .then(response => {
+     
+      setDoctor(response.data); // Store the data in state
+    })
+    .catch(error => {
+      console.error("Error fetching doctor data:", error);
+    });
+   
+}, []);
+
+
+useEffect(() => {
+  if (doctor.length > 0) {
     if (speciality) {
-      setFilterDoc(doctors.filter(doc => doc.speciality === speciality));
+      setFilterDoc(doctor.filter(doc => doc.speciality === speciality));
     } else {
-      setFilterDoc(doctors);
+      setFilterDoc(doctor);
     }
   }
-}, [doctors, speciality]);
+}, [doctor, speciality]);
 
   return (
     <div className=''>
