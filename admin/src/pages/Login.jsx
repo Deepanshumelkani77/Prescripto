@@ -36,7 +36,7 @@ const handleSubmit2 = async (e) => {
 
 
   return (
-    <form className='min-h-[100vh] w-[100%] flex items-center fixed z-[999] bg-black/40 '>
+    <form className='min-h-[100vh] w-[100%] flex items-center fixed z-[999] bg-black/60 '>
       
 <div className='bg-white flex flex-col gap-3 m-auto items-start p-8 min-w-[340px] sm:min-w-96   rounded-xl text-zinc-600 text-sm shadow-xl'>
  <div className='flex justify-between w-[100%]'>

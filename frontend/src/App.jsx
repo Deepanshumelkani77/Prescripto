@@ -19,7 +19,7 @@ import DoctorProfile from './pages/DoctorProfile.jsx'
 
 const App = () => {
 
-  const {state}=useContext(AppContext)
+  const {state,showLogin}=useContext(AppContext)
 
   
 
@@ -28,8 +28,14 @@ const App = () => {
    
 state === 'User' ?
     //mx for margin in x axis ,sm stand for small size
-    <div className='mx-8  '>  
-    <Navbar/>
+    <div>
+ {
+      showLogin?<Login/>:<></>
+    }
+
+<div className='mx-8  '>  
+   
+   <Navbar/>
 <Routes>
 <Route path='/' element={<Home/>}/>
 <Route path='/doctor' element={<Doctor/>}/>
@@ -37,12 +43,15 @@ state === 'User' ?
 <Route path='about' element={<About/>}/>
 <Route path='/myprofile' element={<MyProfile/>}/>
 <Route path='/myappointment' element={<MyAppointment/>}/>
-<Route path='/login' element={<Login/>}/>
 <Route path='/appointment/:docId' element={<Appointment/>}/>
 <Route path='contact' element={<Contact/>}/>
 </Routes>
 <Footer/>
-    </div>  :
+   </div> 
+
+
+    </div>
+    :
     <div className='bg-[#F2F3FF] mx-8 sm:mx[10%] h-[100vh]' >
      <Nav/>
     
