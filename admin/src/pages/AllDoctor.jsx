@@ -49,8 +49,8 @@ const handleDelete = async (id) => {
 
   return (
     <div className='m-5 max-h-[91vh] overflow-y-scroll'>
-      <h1 className='text-lg font-medium '>All Doctor</h1>
-      <div className='w-full flex flex-wrap gap-4 pt-5 gap-y-6'>
+      <h1 className='text-lg font-medium '>All Doctors</h1>
+      <div className='w-full flex flex-wrap gap-10 pt-5 gap-y-6 mb-20'>
         {
           doctor.map((item,index)=>(
 
@@ -65,8 +65,8 @@ const handleDelete = async (id) => {
   </div>
 </div>
 <div className="buttons flex justify-between pl-4 pr-4 pb-2">
-  <button onClick={()=>{navigate(`/edit-doctor/${item._id}`)}} className='bg-[#5f6FFF] pl-4 pr-4 rounded rounded-full text-white '>Edit</button>
-  <button onClick={()=>{handleDelete(item._id)}} className='bg-[#5f6FFF] pl-4 pr-4 rounded rounded-full text-white'>Delete</button>
+  <button onClick={()=>{navigate(`/edit-doctor/${item._id}`)}} className='bg-[#5f6FFF] pl-4 pr-4 rounded rounded-full text-white cursor-pointer '>Edit</button>
+  <button onClick={()=>{handleDelete(item._id)}} className='bg-[#5f6FFF] pl-4 pr-4 rounded rounded-full text-white cursor-pointer'>Delete</button>
 </div>
             </div>
 
