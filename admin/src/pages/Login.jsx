@@ -16,7 +16,7 @@ const {signup}=useContext(AppContext)
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
   const handleSubmit = (e) => {
     e.preventDefault();
-    signup(formData.name, formData.email, formData.password);
+    signup(formData.username, formData.email, formData.password);
   };
 
 //login

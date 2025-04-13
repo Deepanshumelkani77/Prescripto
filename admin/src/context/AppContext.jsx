@@ -37,7 +37,7 @@ console.log(user)
   
     const signup = async (name, email, password) => {
       try {
-        await axios.post("http://localhost:5000/admin/signup", { name, email, password });
+        await axios.post("http://localhost:5000/admin/signup", { username:name, email, password });
         alert("Signup successful! Please login.");
       } catch (error) {
         alert(error.response?.data?.message || "Signup failed");

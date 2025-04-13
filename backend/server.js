@@ -39,3 +39,5 @@ const { ObjectId } = require('mongodb');
 //router
 const doctor=require("./routes/Doctor.js");
 app.use("/doctor",doctor);
+const admin=require("./routes/Admin.js");
+app.use("/admin",admin);
