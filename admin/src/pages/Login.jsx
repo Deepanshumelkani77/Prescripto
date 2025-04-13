@@ -84,7 +84,7 @@ const handleSubmit2 = async (e) => {
 {
   state==='signup'?
   <p>Already have an account? <span onClick={()=>setState('login')} className='text-[#5f6FFF] underline cursor-pointer'>Login here</span> </p>:
-  <p>Create an new account? <span onClick={()=>setState('signup')} className='text-[#5f6FFF] underline cursor-pointer'>click here</span>
+  <p>Create an new account? <span onClick={()=>setState('login')} className='text-[#5f6FFF] underline cursor-pointer'>click here</span>
   </p>
 }
 
