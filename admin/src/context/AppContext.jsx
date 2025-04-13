@@ -1,15 +1,16 @@
-import { createContext } from "react"
+import { createContext, useState } from "react"
 
 
 export const AppContext=createContext()
 
 const AppContextProvider=(props)=>{
 
-
+const [showLogin,setShowLogin]=useState(true)
 
 
 const value={
-
+showLogin,
+setShowLogin
 
 }
 
