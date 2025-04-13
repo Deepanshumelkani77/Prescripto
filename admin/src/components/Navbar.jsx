@@ -1,8 +1,13 @@
 import React from 'react'
 import { assets } from '../assets/assets'
 import {useNavigate} from 'react-router-dom'
+import { useContext } from 'react'
+import { AppContext } from '../context/AppContext'
 
 const Navbar = () => {
+
+
+  const {setShowLogin}=useContext(AppContext)
 
     const navigate=useNavigate()
 
@@ -12,7 +17,7 @@ const Navbar = () => {
         <img onClick={()=>{navigate('/')}} className='w-36 sm:w-40 cursor-pointer' src={assets.admin_logo} alt="" />
         <p className='border px-2.5 py-0.5 rounded-full border-gray-500 text-gray-600'>Admin</p>
       </div>
-      <button className='bg-[#5f6FFF] text-white text-sm px-10 py-2 rounded-full'>Login</button>
+      <button onClick={()=>{setShowLogin(true)}} className='cursor-pointer bg-[#5f6FFF] text-white text-sm px-10 py-2 rounded-full'>Login</button>
     </div>
   )
 }

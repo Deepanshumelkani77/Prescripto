@@ -48,7 +48,7 @@ const handleDelete = async (id) => {
 
 
   return (
-    <div className='m-5 max-h-[91vh] overflow-y-scroll'>
+    <div className='m-5 max-h-[85vh] overflow-y-scroll'>
       <h1 className='text-lg font-medium '>All Doctors</h1>
       <div className='w-full flex flex-wrap gap-10 pt-5 gap-y-6 mb-20'>
         {

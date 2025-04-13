@@ -5,7 +5,7 @@ export const AppContext=createContext()
 
 const AppContextProvider=(props)=>{
 
-const [showLogin,setShowLogin]=useState(true)
+const [showLogin,setShowLogin]=useState(false)
 
 
 const value={
