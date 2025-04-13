@@ -38,6 +38,28 @@ router.post("/signup", async (req, res) => {
   })
 
 
+router.put('/edit/:id',async (req, res) => {
+  const { id } = req.params;
+  
+  const { name,phone ,address,gender,dob,image } = req.body;
+
+  // Perform update logic here
+  try {
+    // Assume updateFood is a function that updates the food item in the database
+    const updateduser = await User.findByIdAndUpdate(
+      id, 
+      {username:name,phone:phone,address:address,gender:gender,dob:dob,image:image},
+      { new: true } // Return the updated document
+    );
+    res.status(200).json({ message: 'Doctor updated successfully', updateduser });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+})
+
+
+
 
 
 module.exports=router;
