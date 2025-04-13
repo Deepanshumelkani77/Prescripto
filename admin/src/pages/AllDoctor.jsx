@@ -23,6 +23,27 @@ useEffect(() => {
 
 
 
+const handleDelete = async (id) => {
+  const confirmDelete = window.confirm('Are you sure you want to delete this doctor?');
+  if (!confirmDelete) return;
+
+  try {
+    const response = await fetch(`http://localhost:5000/doctor/delete/${id}`, {
+      method: 'DELETE',
+    });
+
+    if (response.ok) {
+      setDoctor(prev => prev.filter(doc => doc._id !== id)); // remove from UI
+      alert('Doctor deleted successfully!');
+    } else {
+      alert('Failed to delete the Doctor.');
+    }
+  } catch (error) {
+    console.error('Error deleting doctor:', error);
+    alert('An error occurred while deleting the doctor.');
+  }
+};
+
 
 
 
@@ -45,7 +66,7 @@ useEffect(() => {
 </div>
 <div className="buttons flex justify-between pl-4 pr-4 pb-2">
   <button onClick={()=>{navigate(`/edit-doctor/${item._id}`)}} className='bg-[#5f6FFF] pl-4 pr-4 rounded rounded-full text-white '>Edit</button>
-  <button className='bg-[#5f6FFF] pl-4 pr-4 rounded rounded-full text-white'>Delete</button>
+  <button onClick={()=>{handleDelete(item._id)}} className='bg-[#5f6FFF] pl-4 pr-4 rounded rounded-full text-white'>Delete</button>
 </div>
             </div>
 

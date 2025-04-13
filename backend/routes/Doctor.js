@@ -78,6 +78,22 @@ router.put('/edit/:id',async (req, res) => {
 
 
 
+router.delete("/delete/:id",async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deletedoctor = await Doctor.findByIdAndDelete(id);
+    if (!deletedoctor) {
+      return res.status(404).json({ message: 'Doctor not found' });
+    }
+    res.status(200).json({ message: 'Doctor deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting Doctor:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+})
+
+
 
 
 
