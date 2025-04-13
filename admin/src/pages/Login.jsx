@@ -5,11 +5,33 @@ import { AppContext } from '../context/AppContext'
 const Login = () => {
 
   const {setShowLogin}=useContext(AppContext)
+const [state,setState]=useState('login')
 
-  const [state,setState]=useState('login')
-  const [email,setEmail]=useState('')
-  const [password,setPassword]=useState('')
-  const [name,setName]=useState('')
+
+//signup
+const {signup}=useContext(AppContext)
+  const [formData, setFormData] = useState({ username: "", email: "", password: "" });
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    signup(formData.name, formData.email, formData.password);
+  };
+
+//login
+const { login } = useContext(AppContext);
+const [formData2, setFormData2] = useState({ email: "", password: "" });
+const navigate = useNavigate();
+const handleChange2 = (e) => setFormData2({ ...formData2, [e.target.name]: e.target.value });
+const handleSubmit2 = async (e) => {
+  e.preventDefault();
+  await login(formData2.email, formData2.password);
+  setShowLogin(false);
+  navigate("/"); // Redirect after login
+};
+
+
+
+
 
   return (
     <form className='min-h-[100vh] w-[100%] flex items-center fixed z-[999] bg-black/40 '>
@@ -26,7 +48,7 @@ const Login = () => {
   state==='signup'?
 <div className='w-full'>
     <p>Full Name</p>
-    <input className='border border-zinc-300 rounded w-full p-2 mt-1' type="text" onChange={(e)=>setName(e.target.name)} value={name} />
+    <input className='border border-zinc-300 rounded w-full p-2 mt-1' type="text"   />
   </div>:<></>
  }
  
@@ -34,12 +56,12 @@ const Login = () => {
 
   <div className='w-full'>
     <p>Email</p>
-    <input className='border border-zinc-300 rounded w-full p-2 mt-1' type="email" onChange={(e)=>setEmail(e.target.name)} value={email} />
+    <input className='border border-zinc-300 rounded w-full p-2 mt-1' type="email"  />
   </div>
 
   <div className='w-full'>
     <p>Password</p>
-    <input className='border border-zinc-300 rounded w-full p-2 mt-1' type="password" onChange={(e)=>setName(e.target.name)} value={password} />
+    <input className='border border-zinc-300 rounded w-full p-2 mt-1' type="password"  />
   </div>
 
   <button className='bg-[#5f6FFF] text-white w-full py-2 rounded-md text-base'>{state==='signup'?'Create Account ':"Login"}</button>
