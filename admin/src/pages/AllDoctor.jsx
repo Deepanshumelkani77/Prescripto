@@ -1,8 +1,11 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState,useEffect, useContext } from 'react'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { AppContext } from '../context/AppContext';
 
 const AllDoctor = () => {
+
+const {user,setShowLogin}=useContext(AppContext)
 
   const navigate=useNavigate()
 const [doctor,setDoctor]=useState([]);
@@ -65,8 +68,8 @@ const handleDelete = async (id) => {
   </div>
 </div>
 <div className="buttons flex justify-between pl-4 pr-4 pb-2">
-  <button onClick={()=>{navigate(`/edit-doctor/${item._id}`)}} className='bg-[#5f6FFF] pl-4 pr-4 rounded rounded-full text-white cursor-pointer '>Edit</button>
-  <button onClick={()=>{handleDelete(item._id)}} className='bg-[#5f6FFF] pl-4 pr-4 rounded rounded-full text-white cursor-pointer'>Delete</button>
+  <button onClick={user?()=>{navigate(`/edit-doctor/${item._id}`)}:()=>setShowLogin(true)} className='bg-[#5f6FFF] pl-4 pr-4 rounded rounded-full text-white cursor-pointer '>Edit</button>
+  <button onClick={user?()=>{handleDelete(item._id)}:()=>setShowLogin(true)} className='bg-[#5f6FFF] pl-4 pr-4 rounded rounded-full text-white cursor-pointer'>Delete</button>
 </div>
             </div>
 

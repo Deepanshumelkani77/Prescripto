@@ -77,7 +77,7 @@ const handleSubmit2 = async (e) => {
  }
 
 {
-  state==='signup'?<button onClick={handleSubmit} className='bg-[#5f6FFF] text-white w-full py-2 rounded-md text-base'>Create Account</button>:<button onClick={handleSubmit2} className='bg-[#5f6FFF] text-white w-full py-2 rounded-md text-base'>Login</button>
+  state==='signup'?<button onClick={handleSubmit} className='bg-[#5f6FFF] text-white w-full py-2 rounded-md text-base cursor-pointer'>Create Account</button>:<button onClick={handleSubmit2} className='bg-[#5f6FFF] text-white w-full py-2 rounded-md text-base cursor-pointer'>Login</button>
 }
   
 
