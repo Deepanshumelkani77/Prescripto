@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
 
-  const navigat=useNavigate();
+
   const {setShowLogin}=useContext(AppContext)
 const [state,setState]=useState('login')
 
@@ -28,7 +28,7 @@ const handleSubmit2 = async (e) => {
   e.preventDefault();
   await login(formData2.email, formData2.password);
   setShowLogin(false);
-  navigat("/"); // Redirect after login
+  navigate("/"); // Redirect after login
 };
 
 
@@ -51,32 +51,35 @@ const handleSubmit2 = async (e) => {
   <>
 <div className='w-full'>
     <p>Full Name</p>
-    <input className='border border-zinc-300 rounded w-full p-2 mt-1' type="text"   />
+    <input name='username' onChange={handleChange} placeholder='Your name' className='border border-zinc-300 rounded w-full p-2 mt-1 outline-[#5f6FFF]' type="text"   />
   </div>
  
   <div className='w-full'>
     <p>Email</p>
-    <input className='border border-zinc-300 rounded w-full p-2 mt-1' type="email"  />
+    <input name='email' onChange={handleChange} placeholder='Your email' className='border border-zinc-300 rounded w-full p-2 mt-1 outline-[#5f6FFF]' type="email"  />
   </div>
 
   <div className='w-full'>
     <p>Password</p>
-    <input className='border border-zinc-300 rounded w-full p-2 mt-1' type="password"  />
+    <input  name='password' onChange={handleChange} placeholder='password' className='border border-zinc-300 rounded w-full p-2 mt-1 outline-[#5f6FFF]' type="password"  />
   </div> </>
   
   :<> <div className='w-full'>
     <p>Email</p>
-    <input className='border border-zinc-300 rounded w-full p-2 mt-1' type="email"  />
+    <input name='email' onChange={handleChange2} placeholder='Your email' className='border border-zinc-300 rounded w-full p-2 mt-1 outline-[#5f6FFF]' type="email"  />
   </div>
 
   <div className='w-full'>
     <p>Password</p>
-    <input className='border border-zinc-300 rounded w-full p-2 mt-1' type="password"  />
+    <input name='password' onChange={handleChange2} placeholder='password' className='border border-zinc-300 rounded w-full p-2 mt-1 outline-[#5f6FFF]' type="password"  />
   </div> </>
 
  }
 
-  <button className='bg-[#5f6FFF] text-white w-full py-2 rounded-md text-base'>{state==='signup'?'Create Account ':"Login"}</button>
+{
+  state==='signup'?<button onClick={handleSubmit} className='bg-[#5f6FFF] text-white w-full py-2 rounded-md text-base'>Create Account</button>:<button onClick={handleSubmit2} className='bg-[#5f6FFF] text-white w-full py-2 rounded-md text-base'>Login</button>
+}
+  
 
 {
   state==='signup'?
