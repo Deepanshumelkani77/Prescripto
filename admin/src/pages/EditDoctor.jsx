@@ -193,7 +193,7 @@ const handleSubmit = async (e) => {
           />
         </div>
 
-        <button className='bg-[#5f6FFF] px-10 py-3 mt-4 text-white rounded-full'>Save information</button>
+        <button onClick={handleSubmit} className='bg-[#5f6FFF] px-10 py-3 mt-4 text-white rounded-full'>Save information</button>
       </div>
     </form>
   );
