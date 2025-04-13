@@ -56,6 +56,27 @@ res.status(201).send({ message: "Doctor added successfully" });
 )
 
 
+router.put('/edit/:id',async (req, res) => {
+  const { id } = req.params;
+  
+  const { name, email,speciality, degree,experience,about,fees,address:{line1,line2},image } = req.body;
+
+  // Perform update logic here
+  try {
+    // Assume updateFood is a function that updates the food item in the database
+    const updatedDoctor = await Doctor.findByIdAndUpdate(
+      id, 
+      {name:name,image:image,email:email,speciality:speciality,degree:degree,experience:experience,about:about,fees:fees,address:{line1:line1,line2:line2},image:image},
+      { new: true } // Return the updated document
+    );
+    res.status(200).json({ message: 'Doctor updated successfully', updatedDoctor });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+})
+
+
 
 
 

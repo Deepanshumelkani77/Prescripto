@@ -1,6 +1,6 @@
 import React from "react";
 import { assets } from "../assets/assets";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useState,useEffect } from 'react'
 import axios from 'axios'
 
@@ -8,6 +8,7 @@ const EditDoctor = () => {
 
 const [formData,setFormData]=useState({name:'',email:'',speciality:'',degree:'',experience:'',about:'',fees:'',address:{line1:'',line2:''} })
 const [file, setFile] = useState(null);
+const navigate=useNavigate();
 
 const {id}=useParams();
 const [doctor,setDoctor]=useState({});
@@ -80,7 +81,7 @@ const handleSubmit = async (e) => {
 
   try {
     const response = await fetch(`http://localhost:5000/doctor/edit/${id}`, {
-      method: 'POST',
+      method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updatedData),
     });
@@ -109,7 +110,7 @@ const handleSubmit = async (e) => {
           <label htmlFor="doc-img">
             <img className='w-16 bg-gray-100 rounded-full cursor-pointer' src={assets.upload_area} alt="" />
           </label>
-          <input type="file" value={doctor.image} onChange={handleFileChange} id="doc-img" hidden />
+          <input type="file"  onChange={handleFileChange} id="doc-img" hidden />
           <p>
             Upload doctor <br />
             picture
