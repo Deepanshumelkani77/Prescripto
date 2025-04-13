@@ -6,16 +6,10 @@ const Login = () => {
 
   const {setShowLogin}=useContext(AppContext)
 
-  const [state,setState]=useState('signup')
+  const [state,setState]=useState('login')
   const [email,setEmail]=useState('')
   const [password,setPassword]=useState('')
   const [name,setName]=useState('')
-
-  const onSubmitHaldler=async(event)=>{
-event.preventDefault();
-
-  }
-  
 
   return (
     <form className='min-h-[100vh] w-[100%] flex items-center fixed z-[999] bg-black/40 '>
@@ -52,7 +46,7 @@ event.preventDefault();
 
 {
   state==='signup'?
-  <p>Already have an account? <span onClick={()=>setState('Login')} className='text-[#5f6FFF] underline cursor-pointer'>Login here</span> </p>:
+  <p>Already have an account? <span onClick={()=>setState('login')} className='text-[#5f6FFF] underline cursor-pointer'>Login here</span> </p>:
   <p>Create an new account? <span onClick={()=>setState('signup')} className='text-[#5f6FFF] underline cursor-pointer'>click here</span>
   </p>
 }
