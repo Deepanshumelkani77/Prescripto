@@ -1,9 +1,11 @@
 import React, { useContext } from 'react'
 import { useState } from 'react'
 import { AppContext } from '../context/AppContext'
+import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
 
+  const navigat=useNavigate();
   const {setShowLogin}=useContext(AppContext)
 const [state,setState]=useState('login')
 
@@ -26,7 +28,7 @@ const handleSubmit2 = async (e) => {
   e.preventDefault();
   await login(formData2.email, formData2.password);
   setShowLogin(false);
-  navigate("/"); // Redirect after login
+  navigat("/"); // Redirect after login
 };
 
 
@@ -46,14 +48,12 @@ const handleSubmit2 = async (e) => {
  
  {
   state==='signup'?
+  <>
 <div className='w-full'>
     <p>Full Name</p>
     <input className='border border-zinc-300 rounded w-full p-2 mt-1' type="text"   />
-  </div>:<></>
- }
+  </div>
  
-  
-
   <div className='w-full'>
     <p>Email</p>
     <input className='border border-zinc-300 rounded w-full p-2 mt-1' type="email"  />
@@ -62,7 +62,19 @@ const handleSubmit2 = async (e) => {
   <div className='w-full'>
     <p>Password</p>
     <input className='border border-zinc-300 rounded w-full p-2 mt-1' type="password"  />
+  </div> </>
+  
+  :<> <div className='w-full'>
+    <p>Email</p>
+    <input className='border border-zinc-300 rounded w-full p-2 mt-1' type="email"  />
   </div>
+
+  <div className='w-full'>
+    <p>Password</p>
+    <input className='border border-zinc-300 rounded w-full p-2 mt-1' type="password"  />
+  </div> </>
+
+ }
 
   <button className='bg-[#5f6FFF] text-white w-full py-2 rounded-md text-base'>{state==='signup'?'Create Account ':"Login"}</button>
 
