@@ -8,8 +8,7 @@ const port=5000;
 app.listen(port,()=>{
     console.log("server is running",port);
 })
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+
 
 //database connection
 const mongoose = require("mongoose");
