@@ -1,17 +1,17 @@
 import React, { useContext } from 'react'
 import { useState } from 'react'
-import { AppContext } from '../context/AppContext2'
+import { StoreContext } from '../context/StoreContext'
 import { useNavigate } from 'react-router-dom'
 
-const Login = () => {
+const DoctorLogin = () => {
 
 
-  const {setShowLogin}=useContext(AppContext)
+  const {setShowLogin2}=useContext(StoreContext)
 const [state,setState]=useState('signup')
 
 
 //signup
-const {signup}=useContext(AppContext)
+const {signup}=useContext(StoreContext)
   const [formData, setFormData] = useState({ username: "", email: "", password: "" });
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
   const handleSubmit = (e) => {
@@ -20,7 +20,7 @@ const {signup}=useContext(AppContext)
   };
 
 //login
-const { login } = useContext(AppContext);
+const { login } = useContext(StoreContext);
 const [formData2, setFormData2] = useState({ email: "", password: "" });
 const navigate = useNavigate();
 const handleChange2 = (e) => setFormData2({ ...formData2, [e.target.name]: e.target.value });
@@ -41,7 +41,7 @@ const handleSubmit2 = async (e) => {
 <div className='bg-white flex flex-col gap-3 m-auto items-start p-8 min-w-[340px] sm:min-w-96   rounded-xl text-zinc-600 text-sm shadow-xl'>
  <div className='flex justify-between w-[100%]'>
  <p className='text-2xl font-semibold'>{state==='signup'?'Create Account ':"Login"}</p>
- <p onClick={()=>{setShowLogin(false)}} className='[font-size:20px] font-bold cursor-pointer'>X</p>
+ <p onClick={()=>{setShowLogin2(false)}} className='[font-size:20px] font-bold cursor-pointer'>X</p>
  </div>
 
   <p>Please {state==='sign-up'?'create Account ':"log in"} to book appointment</p>
@@ -94,4 +94,4 @@ const handleSubmit2 = async (e) => {
   )
 }
 
-export default Login
+export default DoctorLogin

@@ -4,12 +4,12 @@ import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 
 
-export const AppContext=createContext()
+export const StoreContext=createContext()
 
-const AppContextProvider=(props)=>{
+const StoreContextProvider=(props)=>{
 
 const [state,setState]=useState('Doctor')
-const [showLogin,setShowLogin]=useState(false)
+const [showLogin2,setShowLogin2]=useState(true)
 
 
 
@@ -63,9 +63,9 @@ const value={
 
 state,
 setState,
-showLogin,
-setShowLogin,
-user,
+showLogin2,
+setShowLogin2,
+doctor,
 login,
 signup,
 logout
@@ -73,12 +73,12 @@ logout
 
 
 return(
-    <AppContext.Provider value={value}>
+    <StoreContext.Provider value={value}>
         {props.children}
-    </AppContext.Provider>
+    </StoreContext.Provider>
 )
 
 
 }
 
-export default AppContextProvider
+export default StoreContextProvider

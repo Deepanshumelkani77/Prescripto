@@ -12,14 +12,17 @@ import Footer from './components/Footer.jsx'
 import Contact from './pages/Contact.jsx'
 import { useContext } from 'react'
 import { AppContext } from './context/AppContext.jsx'
+import { StoreContext} from './context/StoreContext.jsx'
 import Nav from './components/Nav.jsx'
 import Sidebar from './components/Sidebar.jsx'
 import DoctorAppointment from './pages/DoctorAppointment.jsx'
 import DoctorProfile from './pages/DoctorProfile.jsx'
+import DoctorLogin from './pages/DoctorLogin.jsx'
 
 const App = () => {
 
   const {state,showLogin}=useContext(AppContext)
+  const {showLogin2}=useContext(StoreContext)
 
   
 
@@ -52,8 +55,10 @@ state === 'User' ?
 
     </div>
     :
-    <>
-    <Login/>
+    <div>
+    {
+      showLogin2?<DoctorLogin/>:<></>
+    }
     <div className='bg-[#F2F3FF] mx-8 sm:mx[10%] h-[100vh]' >
 
 <Nav/>
@@ -73,7 +78,7 @@ state === 'User' ?
 
 
 
-    </>
+    </div>
     
 
 
