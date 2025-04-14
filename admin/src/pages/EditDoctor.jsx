@@ -3,9 +3,9 @@ import { assets } from "../assets/assets";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState,useEffect } from 'react'
 import axios from 'axios'
-const [file, setFile] = useState(null);
-const EditDoctor = () => {
 
+const EditDoctor = () => {
+  const [file, setFile] = useState(null);
 const [formData,setFormData]=useState({name:'',email:'',speciality:'',degree:'',experience:'',about:'',fees:'',address:{line1:'',line2:''} })
 
 const navigate=useNavigate();
