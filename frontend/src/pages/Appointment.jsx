@@ -15,6 +15,7 @@ const Appointment = () => {
     .then(response => {
      
       setDoctors(response.data); // Store the data in state
+     
       
     })
     .catch(error => {
@@ -23,25 +24,19 @@ const Appointment = () => {
    
 }, []);
 
-console.log("hi",doctors)
+
+
+
 
 
   const [docInfo, setDocInfo] = useState({});
 
-  const fetchDocInfo = async () => {
-    const docInfo = doctors.find((doc) => doc._id === docId);
-    setDocInfo(docInfo);
-    console.log("hello",docInfo);
-  };
-
   useEffect(() => {
-    fetchDocInfo();
+
+    const found = doctors.find((doc) => doc._id === docId);
+   
+    setDocInfo(found || {});
   }, [doctors, docId]);
-
-
-
- 
-
 
 
 //state variable for days

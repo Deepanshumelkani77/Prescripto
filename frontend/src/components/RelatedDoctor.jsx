@@ -2,11 +2,28 @@ import React, { useContext } from 'react'
 import { AppContext } from '../context/AppContext'
 import { useState,useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
 const RelatedDoctor = ({docId,speciality}) => {
 
     const navigate=useNavigate()
-const {doctors}=useContext(AppContext)
+    const [doctors,setDoctors]=useState([]);
+    useEffect(() => {
+     // Fetch data from backend
+     axios.get('http://localhost:5000/doctor')
+          // Backend API endpoint
+       .then(response => {
+        
+         setDoctors(response.data); // Store the data in state
+        
+         
+       })
+       .catch(error => {
+         console.error("Error fetching doctor data:", error);
+       });
+      
+   }, []);
+   
 const[relDoc,setRelDoc]=useState([])
 
 useEffect(() => { 
