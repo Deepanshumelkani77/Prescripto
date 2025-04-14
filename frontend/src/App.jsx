@@ -52,24 +52,29 @@ state === 'User' ?
 
     </div>
     :
+    <>
+    <Login/>
     <div className='bg-[#F2F3FF] mx-8 sm:mx[10%] h-[100vh]' >
-     <Nav/>
-    
-    
-     <div className='flex items-start'>
-  <Sidebar/>
-  <Routes>
-  <Route path='/doctor-appintment' element={<DoctorAppointment/>}></Route>
 
-    <Route path='/' element={<DoctorProfile/>}></Route>
-   
-  </Routes>
+<Nav/>
+<div className='flex items-start'>
+<Sidebar/>
+<Routes>
+<Route path='/doctor-appintment' element={<DoctorAppointment/>}></Route>
+
+<Route path='/' element={<DoctorProfile/>}></Route>
+
+</Routes>
 </div>
 
 
 
-    </div>
+</div>
 
+
+
+    </>
+    
 
 
 
