@@ -22,7 +22,7 @@ const MyProfile = () => {
           name: response.data.name || '',
           image: response.data.image || assets.profile_pic,
           email: response.data.email || '',
-          phone: response.data.phone || '',
+          phone: response.data.phone_no || '',
           address: response.data.address || '',
           gender: response.data.gender || '',
           dob: response.data.dob ? response.data.dob.slice(0, 10) : '',
@@ -124,7 +124,7 @@ const MyProfile = () => {
               onChange={handleChange}
             />
           ) : (
-            <p className='font-medium text-3xl text-neutral-800 mt-4'>{userInfo.name}</p>
+            <p className='font-medium text-3xl text-neutral-800 mt-4'>{userInfo.username}</p>
           )}
 
           <hr className='bg-zinc-400 h-[1px] border-none' />
@@ -145,7 +145,7 @@ const MyProfile = () => {
                   onChange={handleChange}
                 />
               ) : (
-                <p className='text-blue-400'>{userInfo.phone_no}</p>
+                <p className='text-blue-400'>{userInfo.phone_no || '0000000000'}</p>
               )}
               <p className='font-medium'>Address:</p>
               {isEdit ? (
@@ -157,7 +157,7 @@ const MyProfile = () => {
                   type='text'
                 />
               ) : (
-                <p className='text-gray-500'>{userInfo.address}</p>
+                <p className='text-gray-500'>{userInfo.address ||'Haldwani , Bhimtal Uttarakhand'}</p>
               )}
             </div>
           </div>
@@ -179,7 +179,7 @@ const MyProfile = () => {
                   <option value="Female">Female</option>
                 </select>
               ) : (
-                <p className='text-gray-400'>{userInfo.gender}</p>
+                <p className='text-gray-400'>{userInfo.gender || 'XXX'}</p>
               )}
               <p className='font-medium'>D.O.B:</p>
               {isEdit ? (
@@ -191,7 +191,7 @@ const MyProfile = () => {
                   value={userData.dob}
                 />
               ) : (
-                <p className='text-gray-400'>{userInfo.dob}</p>
+                <p className='text-gray-400'>{userInfo.dob || '0000-00-00'}</p>
               )}
             </div>
           </div>
