@@ -40,15 +40,17 @@ router.post("/signup", async (req, res) => {
 
 router.put('/edit/:id',async (req, res) => {
   const { id } = req.params;
-  
-  const { name,phone ,address,gender,dob,image } = req.body;
+  console.log(id);
+
+  const { name,email,phone ,address,gender,dob,image } = req.body;
+  console.log(req.body)
 
   // Perform update logic here
   try {
     // Assume updateFood is a function that updates the food item in the database
     const updateduser = await User.findByIdAndUpdate(
       id, 
-      {username:name,phone:phone,address:address,gender:gender,dob:dob,image:image},
+      {username:name,phone_no:phone,address:address,gender:gender,dob:dob,image:image},
       { new: true } // Return the updated document
     );
     res.status(200).json({ message: 'Doctor updated successfully', updateduser });
@@ -58,6 +60,28 @@ router.put('/edit/:id',async (req, res) => {
   }
 })
 
+
+
+
+router.get("/info/:id",async (req, res) => {
+  try {
+    const { id } = req.params;  // Extract the id from params correctly
+    if (!mongoose.Types.ObjectId.isValid(id)) {  // Optional: check if id is a valid ObjectId
+      return res.status(400).json({ message: 'Invalid food ID' });
+    }
+
+    
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json(user);  // Return the food item as JSON
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+})
 
 
 
