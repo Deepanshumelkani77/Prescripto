@@ -8,7 +8,7 @@ export const StoreContext=createContext()
 
 const StoreContextProvider=(props)=>{
 
-const [state,setState]=useState('Doctor')
+
 const [showLogin2,setShowLogin2]=useState(true)
 
 
@@ -61,8 +61,7 @@ console.log(doctor)
 const value={
 
 
-state,
-setState,
+
 showLogin2,
 setShowLogin2,
 doctor,
