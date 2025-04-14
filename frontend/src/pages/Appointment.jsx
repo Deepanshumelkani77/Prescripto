@@ -3,18 +3,35 @@ import { useParams } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import { assets } from "../assets/assets";
 import RelatedDoctor from "../components/RelatedDoctor";
+import axios from 'axios'
 
 const Appointment = () => {
   const { docId } = useParams();
+ const [doctors,setDoctors]=useState([]);
+ useEffect(() => {
+  // Fetch data from backend
+  axios.get('http://localhost:5000/doctor')
+       // Backend API endpoint
+    .then(response => {
+     
+      setDoctors(response.data); // Store the data in state
+      
+    })
+    .catch(error => {
+      console.error("Error fetching doctor data:", error);
+    });
+   
+}, []);
 
-  const { doctors } = useContext(AppContext);
+console.log("hi",doctors)
+
 
   const [docInfo, setDocInfo] = useState({});
 
-  const fetchDocInfo =  () => {
+  const fetchDocInfo = async () => {
     const docInfo = doctors.find((doc) => doc._id === docId);
     setDocInfo(docInfo);
-    console.log(docInfo);
+    console.log("hello",docInfo);
   };
 
   useEffect(() => {

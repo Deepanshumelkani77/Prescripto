@@ -1,6 +1,8 @@
 import { createContext, useState } from "react"
 import axios from "axios";
 import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
+import {doctors} from '../assets/assets'
 
 export const AppContext=createContext()
 
@@ -8,6 +10,7 @@ const AppContextProvider=(props)=>{
 
 const [state,setState]=useState('User')
 const [showLogin,setShowLogin]=useState(false)
+
 
 
 
@@ -43,10 +46,13 @@ console.log(user)
       }
     };
   
+    const navigate=useNavigate()
+
     const logout = () => {
       Cookies.remove("token");
       Cookies.remove("user");
       setUser(null);
+      navigate('/')
     };
   
 
@@ -62,7 +68,8 @@ setShowLogin,
 user,
 login,
 signup,
-logout
+logout,
+doctors
 }
 
 

@@ -111,7 +111,7 @@ const MyProfile = () => {
               </p>
             </div>
           ) : (
-            <img className='w-36 rounded' src={userInfo.image || assets.profile_pic} alt="" />
+            <img className='w-36 h-36 rounded' src={userInfo.image || assets.profile_pic} alt="" />
           )}
 
           {/* Name Section */}
@@ -191,7 +191,7 @@ const MyProfile = () => {
                   value={userData.dob}
                 />
               ) : (
-                <p className='text-gray-400'>{userInfo.dob || '0000-00-00'}</p>
+                <p className='text-gray-400'>{userInfo.dob.slice(0, 10) || '0000-00-00'}</p>
               )}
             </div>
           </div>
