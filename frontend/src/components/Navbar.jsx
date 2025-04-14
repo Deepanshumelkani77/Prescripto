@@ -52,7 +52,9 @@ const [showMenu,setShowMenu]=useState(false)
             </div> 
              
              
-  :    <button onClick={()=>{setShowLogin(true)}} className='bg-[#5f6FFF] text-white px-8 py-3 rounded-full font-light hidden md:block'>Create account</button>}
+  :    <>
+  <button onClick={()=>{setShowLogin(true)}} className='bg-[#5f6FFF] text-white px-8 py-3 rounded-full font-light hidden md:block'>Create account</button>
+  </>}
      
 
 <img onClick={()=>setShowMenu(true)} className='w-6 md:hidden' src={assets.menu_icon} alt="" />
