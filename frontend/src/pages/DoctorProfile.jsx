@@ -143,7 +143,7 @@ const handleChange = (e) => {
 
         </div>
           
-        <div className='flex flex-col w-[70%] h-[80vh]'>
+        <div className='flex flex-col  w-[70%] h-[80vh]'>
 
 <div className='flex flex-row w-[100%]'>
 
@@ -286,7 +286,7 @@ const handleChange = (e) => {
 
 
 
-<div className='mt-5 flex justify-between items-center w-[100%]'>
+<div className='mt-5 flex gap-5 items-center w-[100%]'>
                <p className='font-medium'>Available:</p>
               {isEdit ? (
                 <input
@@ -297,7 +297,7 @@ const handleChange = (e) => {
                  
                 />
               ) : (
-                <p className='text-blue-400 bg-gray-100 h-[5vh] flex items-center'>{}</p>
+                <input type='checkbox' checked={doctorInfo.available}/>
               )}
 </div>
 
