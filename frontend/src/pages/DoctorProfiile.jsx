@@ -8,7 +8,7 @@ import { StoreContext } from '../context/StoreContext';
 const MyProfile = () => {
   const { doctor } = useContext(StoreContext);
 
-  const [doctorData, setDoctorData] = useState({ name: '', image: '', email: '', phone: '', address: '', gender: '', dob: '' });
+  const [doctorData, setDoctorData] = useState({ name: '', image: '', email: '', speciality: '', degree: '', experience: '', about: '',fees:'',available:'',address:{line1:'',line2:''}});
   // Fetch user information
   const [doctorInfo, setDoctorInfo] = useState(null); // Initialize as null
 

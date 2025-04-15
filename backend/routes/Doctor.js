@@ -93,7 +93,23 @@ router.delete("/delete/:id",async (req, res) => {
   }
 })
 
+router.get("/info/:email", async (req, res) => {
+  try {
+    const { email } = req.params;
 
+    // Find doctor by email
+    const doctor = await Doctor.findOne({ email });
+
+    if (!doctor) {
+      return res.status(404).json({ message: 'Doctor not found' });
+    }
+
+    res.json(doctor);  // Send doctor data
+  } catch (error) {
+    console.error('Error fetching doctor by email:', error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
 
 
 
