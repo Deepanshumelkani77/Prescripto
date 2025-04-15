@@ -16,12 +16,13 @@ const DoctorProfile = () => {
     axios.get(`http://localhost:5000/doctor/info/${doctor.email}`)
       .then(response => {
         setDoctorInfo(response.data);
-
+        setDoctorData(response.data); // Add this line
       })
       .catch(error => {
         console.error("Error fetching doctor data:", error);
       });
   }, []);
+  
 
 
 
@@ -86,10 +87,11 @@ const handleChange = (e) => {
       });
 
       if (response.ok) {
-        alert('User updated successfully!');
-        navigate('/myprofile');
+        alert('Doctor updated successfully!');
+        setDoctorInfo(updatedData); // <-- update local info with new data
+        setIsEdit(false);
       } else {
-        console.error('Failed to update user');
+        console.error('Failed to update doctor');
       }
     } catch (error) {
       console.error('Error updating user:', error);
@@ -121,7 +123,7 @@ const handleChange = (e) => {
               </p>
             </div>
           ) : (
-            <img className='w-[100%] h-[40vh] rounded' src={ assets.profile_pic} alt="" />
+            <img className='w-[100%] h-[40vh] rounded' src={doctorInfo.image || assets.profile_pic} alt="" />
           )}
 
           {/* Name Section */}
@@ -331,7 +333,7 @@ const handleChange = (e) => {
                 className='border border-[#5f6FFF] px-8 py-2 rounded-full hover:bg-[#5f6FFF] hover:text-white transition-all'
                 onClick={(e) => {
                   handleSubmit(e);
-                  setIsEdit(false);console.log("dev")
+                  
                 }}
               >
                 Save information

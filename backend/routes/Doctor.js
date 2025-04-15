@@ -94,6 +94,7 @@ router.delete("/delete/:id",async (req, res) => {
 })
 
 router.get("/info/:email", async (req, res) => {
+  console.log("hello dev")
   try {
     const { email } = req.params;
 
