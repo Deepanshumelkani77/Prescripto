@@ -88,10 +88,10 @@ const DoctorProfile = () => {
         <>
 
         {/**first box */}
-        <div className='w-[30%] flex flex-col'>
+        <div className='w-[30%] flex flex-col m-5 gap-4'>
 
         {isEdit ? (
-            <div className='flex flex-items-center  gap-4 text-gray-500'>
+            <div className='flex justify-evenly pt-5 pb-5 gap-4 text-gray-500 bg-green-200'>
               <label htmlFor="doc-img">
                 <img
                   className='w-25 h-26 bg-gray-100 rounded-full cursor-pointer'
@@ -100,7 +100,7 @@ const DoctorProfile = () => {
                 />
               </label>
               <input type="file" onChange={handleFileChange} name='image' id="doc-img" hidden />
-              <p className='m-8 font-bold text-xl'>
+              <p className='m-6 font-bold text-xl'>
                 Upload <br />
                 picture
               </p>
@@ -110,13 +110,13 @@ const DoctorProfile = () => {
           )}
 
           {/* Name Section */}
-          <p className='font-medium'>Name:</p>
+          
           {isEdit ? (
             <input
-              className='bg-gray-50 text-3xl font-medium max-w-60 mt-4'
+              className='pl-5  font-medium h-[6vh] w-[100%] border border-[2px] border-gray-400 rounded outline-[#5f6FFF] mt-4'
               name='name'
               type='text'
-              
+              placeholder='Enter your name'
               onChange={handleChange}
             />
           ) : (
