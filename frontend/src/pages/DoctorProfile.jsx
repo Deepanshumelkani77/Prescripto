@@ -82,12 +82,12 @@ const DoctorProfile = () => {
   };
 
   return (
-    <div className='max-w-lg flex flex-col gap-2 text-sm'>
+    <div className='w-[70%] h-[80vh] m-auto bg-green-600 flex flex-col gap-2 text-sm'>
       {/* Conditional rendering: only show the profile picture if userInfo is available */}
       {doctorInfo ? (
         <>
           {isEdit ? (
-            <div className='flex flex-items-center gap-4 text-gray-500'>
+            <div className='flex flex-items-center  gap-4 text-gray-500'>
               <label htmlFor="doc-img">
                 <img
                   className='w-25 h-26 bg-gray-100 rounded-full cursor-pointer'
