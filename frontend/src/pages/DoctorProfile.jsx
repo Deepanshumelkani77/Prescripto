@@ -88,7 +88,7 @@ const DoctorProfile = () => {
         <>
 
         {/**first box */}
-        <div className='w-[30%]'>
+        <div className='w-[30%] flex flex-col'>
 
         {isEdit ? (
             <div className='flex flex-items-center  gap-4 text-gray-500'>
@@ -110,6 +110,7 @@ const DoctorProfile = () => {
           )}
 
           {/* Name Section */}
+          <p className='font-medium'>Name:</p>
           {isEdit ? (
             <input
               className='bg-gray-50 text-3xl font-medium max-w-60 mt-4'
@@ -125,12 +126,12 @@ const DoctorProfile = () => {
 
         </div>
           
-        
+        <div className='flex flex-col'>
 
-         {/**second box */}
-        
-         
-            <div className='grid grid-cols-[1fr_3fr] gap-y-2.5 mt-3 text-neutral-700'>
+<div className='flex flex-row'>
+
+ {/**second box */}
+ <div className='grid grid-cols-[1fr_3fr] gap-y-2.5 mt-3 text-neutral-700'>
               <p className='font-medium'>Email id:</p>
               {isEdit ? (
                 <input
@@ -179,8 +180,6 @@ const DoctorProfile = () => {
         
 
            {/**third box */}
-        
-            
             <div className='grid grid-cols-[1fr_3fr] gap-y-2.5 mt-3 text-neutral-700'>
               <p className='font-medium'>Experience:</p>
               {isEdit ? (
@@ -217,7 +216,7 @@ const DoctorProfile = () => {
               ) : (
                 <p className='text-gray-400'>{}</p>
               )}
-               <p className='font-medium'>Fees:</p>
+               <p className='font-medium'>Available:</p>
               {isEdit ? (
                 <input
                   name='available'
@@ -230,9 +229,28 @@ const DoctorProfile = () => {
                 <p className='text-gray-400'>{}</p>
               )}
             </div>
+  
+    </div>
 
-            
-       
+<div>
+
+<p className='font-medium'>About:</p>
+              {isEdit ? (
+                <textarea
+                  name='about'
+                  className='max-w-28 bg-gray-100'
+                  row='5'
+                  onChange={handleChange}
+                 
+                />
+              ) : (
+                <p className='text-gray-400'>{}</p>
+              )}
+
+</div>
+
+
+       {/**buttons */}
             <div className='mt-10'>
             {isEdit ? (
               <button
@@ -252,6 +270,9 @@ const DoctorProfile = () => {
                 Edit
               </button>
             )}
+          </div>
+
+
           </div>
           
         </>
