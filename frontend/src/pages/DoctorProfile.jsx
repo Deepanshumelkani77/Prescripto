@@ -8,7 +8,7 @@ import { StoreContext } from '../context/StoreContext';
 const DoctorProfile = () => {
   const { doctor } = useContext(StoreContext);
 
-  const [doctorData, setDoctorData] = useState({ name: '', image: '', email: '', speciality: '', degree: '', experience: '', about: '',fees:'',available:'',address:{line1:'',line2:''}});
+  const [doctorData, setDoctorData] = useState({ name: '' , email: '', speciality: '', degree: '', experience: '', about: '',fees:'',available:'',address:{line1:'',line2:''}});
   // Fetch user information
   const [doctorInfo, setDoctorInfo] = useState({}); // Initialize as null
 
@@ -24,14 +24,29 @@ const DoctorProfile = () => {
   }, []);
 
 
+
+
   const navigate = useNavigate();
 
   const [isEdit, setIsEdit] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setDoctorData(prev => ({ ...prev, [name]: value }));
-  };
+ 
+const handleChange = (e) => {
+  const { name, value } = e.target;
+
+  // Handle nested address object
+  if (name === 'line1' || name === 'line2') {
+    setDoctorData(prev => ({
+      ...prev,
+      address: {
+        ...prev.address,
+        [name]: value
+      }
+    }));
+  } else {
+    setDoctorData({ ...doctorData, [name]: value });
+  }
+};
 
   const [file, setFile] = useState(null);
   const handleFileChange = (e) => {
@@ -44,7 +59,7 @@ const DoctorProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let imageUrl = user.image || userData.image;
+    let imageUrl = assets.profile_pic;
 
     if (file) {
       const uploadData = new FormData();
@@ -61,11 +76,11 @@ const DoctorProfile = () => {
       }
     }
 
-    const updatedData = { ...userData, image: imageUrl };
+    const updatedData = { ...doctorData, image: imageUrl };
 
     try {
-      const response = await fetch(`http://localhost:5000/user/edit/${user.id}`, {
-        method: 'PUT',
+      const response = await fetch(`http://localhost:5000/doctor`, {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedData),
       });
@@ -193,7 +208,7 @@ const DoctorProfile = () => {
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   onChange={handleChange}
                  
-                  type='text'
+                  type='number'
                 />
               ) : (
                 <p className='text-blue-400 bg-gray-100 h-[5vh] flex items-center'>{doctorInfo.fees || 'XXX'}</p>
@@ -242,7 +257,7 @@ const DoctorProfile = () => {
                 <input
                   name='line1'
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
-                  type='number'
+                  type='text'
                   onChange={handleChange}
                  
                 />
@@ -256,7 +271,7 @@ const DoctorProfile = () => {
               <p className='font-medium'>Address 2:</p>
               {isEdit ? (
                 <input
-                  name='line1'
+                  name='line2'
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   onChange={handleChange}
                  
@@ -316,7 +331,7 @@ const DoctorProfile = () => {
                 className='border border-[#5f6FFF] px-8 py-2 rounded-full hover:bg-[#5f6FFF] hover:text-white transition-all'
                 onClick={(e) => {
                   handleSubmit(e);
-                  setIsEdit(false);
+                  setIsEdit(false);console.log("dev")
                 }}
               >
                 Save information
