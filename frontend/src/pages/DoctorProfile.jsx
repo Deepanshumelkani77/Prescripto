@@ -174,6 +174,7 @@ const DoctorProfile = () => {
               ) : (
                 <p className='text-gray-500'>{}</p>
               )}
+
             </div>
         
 
@@ -229,9 +230,10 @@ const DoctorProfile = () => {
                 <p className='text-gray-400'>{}</p>
               )}
             </div>
-       {/* heelo */}
 
-          <div className='mt-10'>
+            
+       
+            <div className='mt-10'>
             {isEdit ? (
               <button
                 className='border border-[#5f6FFF] px-8 py-2 rounded-full hover:bg-[#5f6FFF] hover:text-white transition-all'
@@ -251,6 +253,7 @@ const DoctorProfile = () => {
               </button>
             )}
           </div>
+          
         </>
       ) : (
         <div>Loading...</div> // Show loading indicator while fetching userInfo
