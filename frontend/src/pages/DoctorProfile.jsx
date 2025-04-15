@@ -82,11 +82,15 @@ const DoctorProfile = () => {
   };
 
   return (
-    <div className='w-[70%] h-[80vh] m-auto bg-green-600 flex flex-col gap-2 text-sm'>
+    <div className='w-[70%] h-[80vh] m-auto bg-green-600 flex flex-row gap-2 text-sm'>
       {/* Conditional rendering: only show the profile picture if userInfo is available */}
       {doctorInfo ? (
         <>
-          {isEdit ? (
+
+        {/**first box */}
+        <div className='w-[30%]'>
+
+        {isEdit ? (
             <div className='flex flex-items-center  gap-4 text-gray-500'>
               <label htmlFor="doc-img">
                 <img
@@ -118,9 +122,12 @@ const DoctorProfile = () => {
             <p className='font-medium text-3xl text-neutral-800 mt-4'>{}</p>
           )}
 
-          <hr className='bg-zinc-400 h-[1px] border-none' />
 
-          {/* Contact Information Section */}
+        </div>
+          
+        
+
+         {/**second box */}
           <div>
             <p className='text-neutral-500 underline mt-3'>CONTACT INFORMATION</p>
             <div className='grid grid-cols-[1fr_3fr] gap-y-2.5 mt-3 text-neutral-700'>
@@ -153,7 +160,7 @@ const DoctorProfile = () => {
             </div>
           </div>
 
-          {/* Basic Information Section */}
+           {/**third box */}
           <div>
             <p className='text-neutral-500 underline mt-3'>BASIC INFORMATION</p>
             <div className='grid grid-cols-[1fr_3fr] gap-y-2.5 mt-3 text-neutral-700'>
