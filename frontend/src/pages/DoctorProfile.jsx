@@ -82,7 +82,7 @@ const DoctorProfile = () => {
   };
 
   return (
-    <div className='w-[70%] h-[80vh] m-auto bg-green-600 flex flex-row gap-2 text-sm'>
+    <div className='w-[70%] h-[80vh] m-auto bg-white flex flex-row gap-2 text-sm'>
       {/* Conditional rendering: only show the profile picture if userInfo is available */}
       {doctorInfo ? (
         <>
@@ -128,27 +128,44 @@ const DoctorProfile = () => {
         
 
          {/**second box */}
-          <div>
-            <p className='text-neutral-500 underline mt-3'>CONTACT INFORMATION</p>
+        
+         
             <div className='grid grid-cols-[1fr_3fr] gap-y-2.5 mt-3 text-neutral-700'>
               <p className='font-medium'>Email id:</p>
-              <p className='text-blue-500'>{}</p>
-              <p className='font-medium'>Phone:</p>
               {isEdit ? (
                 <input
                   className='bg-gray-100 max-w-52'
-                  name='phone'
-                  type='text'
+                  name='email'
+                  type='email'
                 
                   onChange={handleChange}
                 />
               ) : (
                 <p className='text-blue-400'>{}</p>
               )}
-              <p className='font-medium'>Address:</p>
+              <p className='font-medium'>Speciality:</p>
+              {isEdit ? (
+                <select
+                  className='bg-gray-100 max-w-52'
+                  name='speciality'
+                  type='text'
+                onChange={handleChange}
+                >
+                  <option value="">Select</option>
+                  <option value="General Physician">General Physician</option>
+                  <option value="Gynecologist">Gynecologist</option>
+                  <option value="Dermatologist">Dermatologist</option>
+                  <option value="Pediatricians">Pediatricians</option>
+                  <option value="Neurologist">Neurologist</option>
+                  <option value="Gastroenterologist">Gastroenterologist</option>
+                </select>
+              ) : (
+                <p className='text-blue-400'>{}</p>
+              )}
+              <p className='font-medium'>Education:</p>
               {isEdit ? (
                 <input
-                  name='address'
+                  name='degree'
                   className='bg-gray-50'
                   onChange={handleChange}
                  
@@ -158,33 +175,53 @@ const DoctorProfile = () => {
                 <p className='text-gray-500'>{}</p>
               )}
             </div>
-          </div>
+        
 
            {/**third box */}
-          <div>
-            <p className='text-neutral-500 underline mt-3'>BASIC INFORMATION</p>
+        
+            
             <div className='grid grid-cols-[1fr_3fr] gap-y-2.5 mt-3 text-neutral-700'>
-              <p className='font-medium'>Gender:</p>
+              <p className='font-medium'>Experience:</p>
               {isEdit ? (
                 <select
-                  name='gender'
+                  name='experience'
                   className='max-w-20 bg-gray-10'
                   onChange={handleChange}
                   
                 >
                   <option>Select</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
+                  <option value="1 year">1 year</option>
+                  <option value="2 year">2 year</option>
+                  <option value="3 year">3 year</option>
+                  <option value="4 year">4 year</option>
+                  <option value="5 year">5 year</option>
+                  <option value="6 year">6 year</option>
+                  <option value="7 year">7 year</option>
+                  <option value="8 year">8 year</option>
+                  <option value="9 year">9 year</option>
+                  <option value="10 year">10 year</option>
                 </select>
               ) : (
                 <p className='text-gray-400'>{}</p>
               )}
-              <p className='font-medium'>D.O.B:</p>
+              <p className='font-medium'>Fees:</p>
               {isEdit ? (
                 <input
-                  name='dob'
+                  name='fees'
                   className='max-w-28 bg-gray-100'
-                  type='date'
+                  type='number'
+                  onChange={handleChange}
+                 
+                />
+              ) : (
+                <p className='text-gray-400'>{}</p>
+              )}
+               <p className='font-medium'>Fees:</p>
+              {isEdit ? (
+                <input
+                  name='available'
+                  className='max-w-28 bg-gray-100'
+                  type='checkbox'
                   onChange={handleChange}
                  
                 />
@@ -192,7 +229,7 @@ const DoctorProfile = () => {
                 <p className='text-gray-400'>{}</p>
               )}
             </div>
-          </div>
+       
 
           <div className='mt-10'>
             {isEdit ? (
