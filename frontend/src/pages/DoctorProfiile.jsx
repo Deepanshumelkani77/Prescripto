@@ -10,14 +10,13 @@ const MyProfile = () => {
 
   const [doctorData, setDoctorData] = useState({ name: '', image: '', email: '', speciality: '', degree: '', experience: '', about: '',fees:'',available:'',address:{line1:'',line2:''}});
   // Fetch user information
-  const [doctorInfo, setDoctorInfo] = useState(null); // Initialize as null
+  const [doctorInfo, setDoctorInfo] = useState({}); // Initialize as null
 
   useEffect(() => {
     axios.get(`http://localhost:5000/doctor/info/${doctor.email}`)
       .then(response => {
         setDoctorInfo(response.data);
 
-     
       })
       .catch(error => {
         console.error("Error fetching doctor data:", error);
