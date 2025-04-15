@@ -144,7 +144,7 @@ const DoctorProfile = () => {
                   onChange={handleChange}
                 />
               ) : (
-                <p className='text-blue-400'>{doctor.email }</p>
+                <p className='text-blue-400 bg-gray-100 h-[5vh] flex items-center'>{doctor.email }</p>
               )}
              </div>
 
@@ -166,7 +166,7 @@ const DoctorProfile = () => {
                   <option value="Gastroenterologist">Gastroenterologist</option>
                 </select>
               ) : (
-                <p className='text-blue-400'>{doctorInfo.speciality || 'General Physician'}</p>
+                <p className='text-blue-400 bg-gray-100 h-[5vh] flex items-center'>{doctorInfo.speciality || 'General Physician'}</p>
               )}
 </div>
 
@@ -181,7 +181,7 @@ const DoctorProfile = () => {
                   type='text'
                 />
               ) : (
-                <p className='text-gray-500'>{doctorInfo.degree || 'MBBS'}</p>
+                <p className='text-blue-400 bg-gray-100 h-[5vh] flex items-center'>{doctorInfo.degree || 'MBBS'}</p>
               )}
 </div>
 
@@ -196,7 +196,7 @@ const DoctorProfile = () => {
                   type='text'
                 />
               ) : (
-                <p className='text-gray-500'>{doctorInfo.fees || 'XXX'}</p>
+                <p className='text-blue-400 bg-gray-100 h-[5vh] flex items-center'>{doctorInfo.fees || 'XXX'}</p>
               )}
 </div>
 
@@ -231,7 +231,7 @@ const DoctorProfile = () => {
                   <option value="10 year">10 year</option>
                 </select>
               ) : (
-                <p className='text-gray-400'>{doctorInfo.experience || '0 year'}</p>
+                <p className='text-blue-400 bg-gray-100 h-[5vh] flex items-center'>{doctorInfo.experience || '0 year'}</p>
               )}
 </div>
 
@@ -247,7 +247,7 @@ const DoctorProfile = () => {
                  
                 />
               ) : (
-                <p className='text-gray-400'>{doctorInfo.address?.line1 || 'bhimtal haldwani,Naintal'}</p>
+                <p className='text-blue-400 bg-gray-100 h-[5vh] flex items-center'>{doctorInfo.address?.line1 || 'bhimtal haldwani,Naintal'}</p>
               )}
 </div>
 
@@ -263,7 +263,7 @@ const DoctorProfile = () => {
                   type='text'
                 />
               ) : (
-                <p className='text-gray-500'>{doctorInfo.address?.line2 || 'bhimtal haldwani,Naintal'}</p>
+                <p className='text-blue-400 bg-gray-100 h-[5vh] flex items-center'>{doctorInfo.address?.line2 || 'bhimtal haldwani,Naintal'}</p>
               )}
 </div>
 
@@ -280,7 +280,7 @@ const DoctorProfile = () => {
                  
                 />
               ) : (
-                <p className='text-gray-400'>{}</p>
+                <p className='text-blue-400 bg-gray-100 h-[5vh] flex items-center'>{}</p>
               )}
 </div>
 
@@ -303,7 +303,7 @@ const DoctorProfile = () => {
                  
                 />
               ) : (
-                <p className='text-gray-400'>{doctorInfo.about || 'Hello'}</p>
+                <p className='text-blue-400 bg-gray-100 h-[12vh] flex items-center'>{doctorInfo.about || 'I am a dedicated General Physician committed to providing comprehensive and compassionate healthcare for patients of all ages.  I focus on diagnosing and treating a wide range of acute and chronic illnesses, while promoting preventive care and healthy living. '}</p>
               )}
 
 </div>
