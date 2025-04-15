@@ -88,7 +88,7 @@ const DoctorProfile = () => {
         <>
 
         {/**first box */}
-        <div className='w-[30%] flex flex-col m-5 gap-4'>
+        <div className='w-[30%] h-[80vh] flex flex-col m-5 gap-4'>
 
         {isEdit ? (
             <div className='flex justify-evenly pt-5 pb-5 gap-4 text-gray-500 bg-green-200'>
@@ -113,7 +113,7 @@ const DoctorProfile = () => {
           
           {isEdit ? (
             <input
-              className='pl-5  font-medium h-[6vh] w-[100%] border border-[2px] border-gray-400 rounded outline-[#5f6FFF] mt-4'
+              className='pl-5 bg-gray-200 font-medium h-[6vh] w-[100%]   outline-[#5f6FFF] mt-4'
               name='name'
               type='text'
               placeholder='Enter your name'
@@ -126,16 +126,18 @@ const DoctorProfile = () => {
 
         </div>
           
-        <div className='flex flex-col'>
+        <div className='flex flex-col w-[70%] h-[80vh]'>
 
-<div className='flex flex-row'>
+<div className='flex flex-row w-[100%]'>
 
  {/**second box */}
- <div className='grid grid-cols-[1fr_3fr] gap-y-2.5 mt-3 text-neutral-700'>
-              <p className='font-medium'>Email id:</p>
+ <div className='w-[50%]  flex flex-col gap-10 m-5 text-neutral-700'>
+
+             <div className='flex justify-between items-center w-[100%]'>
+             <p className='font-medium'>Email id:</p>
               {isEdit ? (
                 <input
-                  className='bg-gray-100 max-w-52'
+                  className='bg-gray-200  h-[5vh] w-[75%]'
                   name='email'
                   type='email'
                 
@@ -144,10 +146,13 @@ const DoctorProfile = () => {
               ) : (
                 <p className='text-blue-400'>{}</p>
               )}
+             </div>
+
+             <div className='flex justify-between items-center w-[100%]'>
               <p className='font-medium'>Speciality:</p>
               {isEdit ? (
                 <select
-                  className='bg-gray-100 max-w-52'
+                  className='bg-gray-200  h-[5vh] w-[75%]'
                   name='speciality'
                   type='text'
                 onChange={handleChange}
@@ -163,11 +168,14 @@ const DoctorProfile = () => {
               ) : (
                 <p className='text-blue-400'>{}</p>
               )}
+</div>
+
+<div className='flex justify-between items-center w-[100%]'>
               <p className='font-medium'>Education:</p>
               {isEdit ? (
                 <input
                   name='degree'
-                  className='bg-gray-50'
+                  className='bg-gray-200  h-[5vh] w-[75%]'
                   onChange={handleChange}
                  
                   type='text'
@@ -175,12 +183,14 @@ const DoctorProfile = () => {
               ) : (
                 <p className='text-gray-500'>{}</p>
               )}
+</div>
+
 
             </div>
         
 
            {/**third box */}
-            <div className='grid grid-cols-[1fr_3fr] gap-y-2.5 mt-3 text-neutral-700'>
+            <div className='w-[50%] grid grid-cols-[1fr_3fr] gap-y-2.5 mt-3 text-neutral-700'>
               <p className='font-medium'>Experience:</p>
               {isEdit ? (
                 <select
