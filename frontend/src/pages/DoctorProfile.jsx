@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { StoreContext } from '../context/StoreContext';
 
-const MyProfile = () => {
+const DoctorProfile = () => {
   const { doctor } = useContext(StoreContext);
 
   const [doctorData, setDoctorData] = useState({ name: '', image: '', email: '', speciality: '', degree: '', experience: '', about: '',fees:'',available:'',address:{line1:'',line2:''}});
@@ -30,7 +30,7 @@ const MyProfile = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUserData(prev => ({ ...prev, [name]: value }));
+    setDoctorData(prev => ({ ...prev, [name]: value }));
   };
 
   const [file, setFile] = useState(null);
@@ -84,14 +84,14 @@ const MyProfile = () => {
   return (
     <div className='max-w-lg flex flex-col gap-2 text-sm'>
       {/* Conditional rendering: only show the profile picture if userInfo is available */}
-      {userInfo ? (
+      {doctorInfo ? (
         <>
           {isEdit ? (
             <div className='flex flex-items-center gap-4 text-gray-500'>
               <label htmlFor="doc-img">
                 <img
                   className='w-25 h-26 bg-gray-100 rounded-full cursor-pointer'
-                  src={file ? URL.createObjectURL(file) : userData.image}
+                  src={file ? URL.createObjectURL(file) : assets.profile_pic}
                   alt="profile"
                 />
               </label>
@@ -111,7 +111,7 @@ const MyProfile = () => {
               className='bg-gray-50 text-3xl font-medium max-w-60 mt-4'
               name='name'
               type='text'
-              value={userData.name}
+              
               onChange={handleChange}
             />
           ) : (
@@ -132,7 +132,7 @@ const MyProfile = () => {
                   className='bg-gray-100 max-w-52'
                   name='phone'
                   type='text'
-                  value={userData.phone}
+                
                   onChange={handleChange}
                 />
               ) : (
@@ -144,7 +144,7 @@ const MyProfile = () => {
                   name='address'
                   className='bg-gray-50'
                   onChange={handleChange}
-                  value={userData.address}
+                 
                   type='text'
                 />
               ) : (
@@ -163,7 +163,7 @@ const MyProfile = () => {
                   name='gender'
                   className='max-w-20 bg-gray-10'
                   onChange={handleChange}
-                  value={userData.gender}
+                  
                 >
                   <option>Select</option>
                   <option value="Male">Male</option>
@@ -179,7 +179,7 @@ const MyProfile = () => {
                   className='max-w-28 bg-gray-100'
                   type='date'
                   onChange={handleChange}
-                  value={userData.dob}
+                 
                 />
               ) : (
                 <p className='text-gray-400'>{}</p>
@@ -215,4 +215,4 @@ const MyProfile = () => {
   );
 };
 
-export default MyProfile;
+export default DoctorProfile;
