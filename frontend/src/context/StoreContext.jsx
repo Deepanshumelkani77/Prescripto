@@ -31,7 +31,7 @@ console.log(doctor)
         console.log("Login response:", response.data);
         Cookies.set("token", response.data.token, { expires: 1 });
         Cookies.set("doctor", JSON.stringify(response.data.doctor), { expires: 1 });
-        setUser(response.data.doctor);
+        setDoctor(response.data.doctor);
       } catch (error) {
         alert(error.response?.data?.message || "Login failed");
       }

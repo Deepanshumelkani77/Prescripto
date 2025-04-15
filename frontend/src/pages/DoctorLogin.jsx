@@ -27,7 +27,7 @@ const handleChange2 = (e) => setFormData2({ ...formData2, [e.target.name]: e.tar
 const handleSubmit2 = async (e) => {
   e.preventDefault();
   await login(formData2.email, formData2.password);
-  setShowLogin(false);
+  setShowLogin2(false);
   navigate("/"); // Redirect after login
 };
 
@@ -83,7 +83,7 @@ const handleSubmit2 = async (e) => {
 
 {
   state==='signup'?
-  <p>Already have an account? <span onClick={()=>setState('login')} className='text-[#5f6FFF] underline cursor-pointer'>Login here</span> </p>:
+  <p>Already have an account? <span onClick={()=>{setState('login'); console.log("hello")}} className='text-[#5f6FFF] underline cursor-pointer'>Login here</span> </p>:
   <p>Create an new account? <span onClick={()=>setState('signup')} className='text-[#5f6FFF] underline cursor-pointer'>click here</span>
   </p>
 }
