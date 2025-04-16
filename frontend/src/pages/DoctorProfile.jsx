@@ -140,7 +140,7 @@ const handleChange = (e) => {
               onChange={handleChange}
             />
           ) : (
-            <p className='font-medium text-3xl text-neutral-800  mt-4'>{doctor?.username }</p>
+            <p className='font-medium text-3xl text-neutral-800  mt-4'>{doctor?.name }</p>
           )}
 
 
