@@ -12,18 +12,6 @@ const DoctorProfile = () => {
   // Fetch user information
   const [doctorInfo, setDoctorInfo] = useState({}); // Initialize as null
 
-  useEffect(() => {
-    if (doctor && doctor.email) {
-      axios.get(`http://localhost:5000/doctor/info/${doctor.email}`)
-        .then(response => {
-          setDoctorInfo(response.data);
-          setDoctorData(response.data);
-        })
-        .catch(error => {
-          console.error("Error fetching doctor data:", error);
-        });
-    }
-  }, [doctor]);
   
   
 
