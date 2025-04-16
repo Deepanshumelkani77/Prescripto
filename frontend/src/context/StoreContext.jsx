@@ -52,7 +52,7 @@ console.log(doctor)
       Cookies.remove("token");
       Cookies.remove("doctor");
       
-      setUser(null);
+      setDoctor(null);
      
     };
   
