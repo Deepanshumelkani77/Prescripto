@@ -13,15 +13,18 @@ const DoctorProfile = () => {
   const [doctorInfo, setDoctorInfo] = useState({}); // Initialize as null
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/doctor/info/${doctor.email}`)
-      .then(response => {
-        setDoctorInfo(response.data);
-        setDoctorData(response.data); // Add this line
-      })
-      .catch(error => {
-        console.error("Error fetching doctor data:", error);
-      });
-  }, []);
+    if (doctor && doctor.email) {
+      axios.get(`http://localhost:5000/doctor/info/${doctor.email}`)
+        .then(response => {
+          setDoctorInfo(response.data);
+          setDoctorData(response.data);
+        })
+        .catch(error => {
+          console.error("Error fetching doctor data:", error);
+        });
+    }
+  }, [doctor]);
+  
   
 
 
@@ -137,7 +140,7 @@ const handleChange = (e) => {
               onChange={handleChange}
             />
           ) : (
-            <p className='font-medium text-3xl text-neutral-800  mt-4'>{doctor.username }</p>
+            <p className='font-medium text-3xl text-neutral-800  mt-4'>{doctor?.username }</p>
           )}
 
 
@@ -161,7 +164,7 @@ const handleChange = (e) => {
                   onChange={handleChange}
                 />
               ) : (
-                <p className='text-blue-400 bg-gray-100 h-[5vh] flex items-center'>{doctor.email}</p>
+                <p className='text-blue-400 bg-gray-100 h-[5vh] flex items-center'>{doctor?.email}</p>
               )}
              </div>
 
