@@ -9,7 +9,7 @@ export const StoreContext=createContext()
 const StoreContextProvider=(props)=>{
 
 
-const [showLogin2,setShowLogin2]=useState(true)
+const [showLogin2,setShowLogin2]=useState(false)
 
 
 
