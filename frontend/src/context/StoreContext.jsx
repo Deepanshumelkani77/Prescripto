@@ -51,6 +51,7 @@ console.log(doctor)
     const logout = () => {
       Cookies.remove("token");
       Cookies.remove("doctor");
+      
       setUser(null);
      
     };

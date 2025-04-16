@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { AppContext } from '../context/AppContext'
 
 function Nav() {
-const {doctor,logout}=useContext(StoreContext)
+const {doctor,logout,setShowLogin2}=useContext(StoreContext)
 const {state,setState}=useContext(AppContext)
 
   return (
@@ -15,7 +15,7 @@ const {state,setState}=useContext(AppContext)
         <p className='border px-2.5 py-0.5 rounded-full border-gray-500 text-gray-600'>Doctor</p>
       </div>
 {
-doctor?<button onClick={()=>{setState('User');logout()}} className='bg-[#5f6FFF] text-white text-sm px-10 py-2 rounded-full'>Logout</button> :<button className='bg-[#5f6FFF] text-white text-sm px-10 py-2 rounded-full'>Login</button>
+doctor?<button onClick={()=>{setState('User');logout(); }} className='bg-[#5f6FFF] text-white text-sm px-10 py-2 rounded-full'>Logout</button> :<button onClick={()=>{setShowLogin2(true)}} className='bg-[#5f6FFF] text-white text-sm px-10 py-2 rounded-full'>Login</button>
 
 }
       
