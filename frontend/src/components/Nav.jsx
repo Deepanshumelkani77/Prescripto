@@ -1,9 +1,12 @@
 import React, { useContext } from 'react'
 import { assets1 } from '../assets/assets'
 import { StoreContext } from '../context/StoreContext'
+import { useNavigate } from 'react-router-dom'
+import { AppContext } from '../context/AppContext'
 
 function Nav() {
 const {doctor,logout}=useContext(StoreContext)
+const {state,setState}=useContext(AppContext)
 
   return (
     <div className='flex justify-between items-center border-b border-gray-200   py-3  bg-white  h-[9vh]'>
@@ -12,7 +15,7 @@ const {doctor,logout}=useContext(StoreContext)
         <p className='border px-2.5 py-0.5 rounded-full border-gray-500 text-gray-600'>Doctor</p>
       </div>
 {
-doctor?<button onClick={()=>{logout()}} className='bg-[#5f6FFF] text-white text-sm px-10 py-2 rounded-full'>Logout</button> :<button className='bg-[#5f6FFF] text-white text-sm px-10 py-2 rounded-full'>Login</button>
+doctor?<button onClick={()=>{setState('User');logout()}} className='bg-[#5f6FFF] text-white text-sm px-10 py-2 rounded-full'>Logout</button> :<button className='bg-[#5f6FFF] text-white text-sm px-10 py-2 rounded-full'>Login</button>
 
 }
       

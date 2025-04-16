@@ -19,7 +19,7 @@ const {setShowLogin,state,setState}=useContext(AppContext)
     </div>
     <div className='flex gap-4'>
     <button onClick={()=>{setShowLogin(true); scrollTo(0,0)}} className='bg-white text-sm sm:text-base text-gray-600 px-8 py-3 rounded-full mt-6 hover:scale-105 transition-all'>Create account</button>
-    <button onClick={()=>{setState("Doctor"); scrollTo(0,0)}} className='bg-white text-sm sm:text-base text-gray-600 px-8 py-3 rounded-full mt-6 hover:scale-105 transition-all'>Doctor Login</button>
+    <button onClick={()=>{setState("Doctor"); scrollTo(0,0)}} className='bg-white text-sm sm:text-base text-gray-600 px-8 py-3 rounded-full mt-6 hover:scale-105 transition-all'>Doctor Signup</button>
 
     </div>
  
