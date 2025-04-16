@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 const DoctorLogin = () => {
 
 
-  const {setShowLogin2}=useContext(StoreContext)
+  const {doctor,setShowLogin2}=useContext(StoreContext)
 const [state,setState]=useState('signup')
 
 
@@ -35,13 +35,20 @@ const handleSubmit2 = async (e) => {
 
 
 
+
   return (
     <form className='min-h-[100vh] w-[100%] flex items-center fixed z-[999] bg-black/60 '>
       
 <div className='bg-white flex flex-col gap-3 m-auto items-start p-8 min-w-[340px] sm:min-w-96   rounded-xl text-zinc-600 text-sm shadow-xl'>
  <div className='flex justify-between w-[100%]'>
  <p className='text-2xl font-semibold'>{state==='signup'?'Create Account ':"Login"}</p>
- <p onClick={()=>{setShowLogin2(false)}} className='[font-size:20px] font-bold cursor-pointer'>X</p>
+ <p  onClick={() => {
+    if (doctor) {
+      setShowLogin2(false);
+    } else {
+      alert("Please login first");
+    }
+  }} className='[font-size:20px] font-bold cursor-pointer'>X</p>
  </div>
 
   <p>Please {state==='sign-up'?'create Account ':"log in"} to book appointment</p>
