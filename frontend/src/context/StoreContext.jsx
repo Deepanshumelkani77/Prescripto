@@ -23,7 +23,7 @@ const initialUser = doctorCookie && doctorCookie !== "undefined"
 
 const [doctor, setDoctor] = useState(initialUser);
 
-console.log(doctor)
+
   
   const login = async (email, password) => {
       try {
