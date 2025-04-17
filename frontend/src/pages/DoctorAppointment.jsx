@@ -3,9 +3,9 @@ import React from 'react'
 const DoctorAppointment = () => {
   return (
     <div className='w-full max-w-6xl m-5'>
-      <p>All Appointment</p>
+      <p className='mb-3 text-lg font-medium'>All Appointment</p>
 
-<div>
+<div className='bg-white border rounded text-sm max-h-[80vh] min-h-[50vh] overflow-y-scroll'>
   <div>
     <p>#</p>
     <p>patient</p>
