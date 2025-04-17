@@ -35,6 +35,22 @@ res.status(201).send({ message: "Appointment successfully done" });
 )
 
 
+router.delete("/delete/:id",async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const appointment = await Appointment.findByIdAndDelete(id);
+    if (!appointment) {
+      return res.status(404).json({ message: 'Appointment not found' });
+    }
+    res.status(200).json({ message: 'Appointment cancel successfully' });
+  } catch (error) {
+    console.error('Error canceling appointment:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+})
+
+
 
 
 
