@@ -65,7 +65,7 @@ state === 'User' ?
 <div className='flex items-start'>
 <Sidebar/>
 <Routes>
-<Route path='/doctor-appintment' element={<DoctorAppointment/>}></Route>
+<Route path='/doctor-appointment' element={<DoctorAppointment/>}></Route>
 
 <Route path='/' element={<DoctorProfile/>}></Route>
 
