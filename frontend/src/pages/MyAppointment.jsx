@@ -1,8 +1,25 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState,useEffect } from 'react'
 import { AppContext } from '../context/AppContext'
+import axios from 'axios'
 
 const MyAppointment = () => {
-const {doctors}=useContext(AppContext)
+const {doctors,user}=useContext(AppContext)
+const [appointment,setAppointment]=useState([]);
+
+useEffect(() => {
+  // Fetch data from backend
+  axios.get('http://localhost:5000/appointment')
+       // Backend API endpoint
+    .then(response => {
+     
+      setAppointment(response.data); // Store the data in state
+    })
+    .catch(error => {
+      console.error("Error fetching doctor data:", error);
+    });
+   
+}, []);
+
 
   return (
     <div>

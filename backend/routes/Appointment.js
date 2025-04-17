@@ -4,6 +4,18 @@ const Appointment = require("../models/Appointment.js");
 const mongoose = require("mongoose");
 
 
+router.get("/",async (req, res) => {
+    try {
+      const appointment= await Appointment.find(); // Fetch all documents from the Food collection
+      res.status(200).json(appointment);    // Send the data as a JSON response
+    } catch (error) {
+      res.status(500).json({ message: "Error fetching data", error });
+    }
+  })
+
+
+
+
 router.post("/",async(req, res) => {
     try{
   const { user_id,day,date,time,doc_id} = req.body;
