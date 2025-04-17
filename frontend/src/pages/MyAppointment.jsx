@@ -29,7 +29,7 @@ const MyAppointment = () => {
       });
   
       if (response.ok) {
-        setDoctor(prev => prev.filter(doc => doc._id !== id)); // remove from UI
+        setAppointment(prev => prev.filter(doc => doc._id !== id)); // remove from UI
         alert('appointment cancel successfully!');
       } else {
         alert('Failed to cancel appointment.');
