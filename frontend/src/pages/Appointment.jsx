@@ -8,13 +8,15 @@ import axios from 'axios'
 const Appointment = () => {
 
 const {user}=useContext(AppContext)
+const { docId } = useParams();
 
 //state variable for appointment 
 const [appointment, setAppointment] = useState({
   user_id: '',
   day: '',
   date: '',
-  time: ''
+  time: '',
+  doc_id:''
 });
 
 useEffect(() => {
@@ -27,7 +29,36 @@ useEffect(() => {
 }, [user]);
 
 
-  const { docId } = useParams();
+const handleSubmit = async () => {
+  // Simple form validation
+  if (!appointment.user_id || !appointment.day || !appointment.date || !appointment.time) {
+    alert("Please select a date and time slot.");
+    return;
+  }
+
+  const payload = {
+    ...appointment,
+    doc_id: docId
+  };
+
+  try {
+    const res = await axios.post("http://localhost:5000/appointment", payload);
+    
+    if (res.status === 200 || res.status === 201) {
+      alert("Appointment booked successfully!");
+      // Optionally reset or redirect
+    } else {
+      alert("Failed to book appointment.");
+    }
+  } catch (error) {
+    console.error("Error booking appointment:", error);
+    alert("Something went wrong while booking.");
+  }
+};
+
+
+
+ 
  const [doctors,setDoctors]=useState([]);
  useEffect(() => {
   // Fetch data from backend
