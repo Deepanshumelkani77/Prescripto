@@ -1,5 +1,5 @@
 import React, { useContext, useState,useEffect } from 'react'
-import { assets } from '../assets/assets'
+import { assets1 } from '../assets/assets'
 import { StoreContext } from '../context/StoreContext'
 import axios from 'axios'
 
@@ -40,7 +40,7 @@ const DoctorAppointment = () => {
             .filter(item => item.doc_id === doctor.id)
             .map((item, index)=>{
 
-<div key={index}>
+<div className='' key={index}>
 
 <p>{index+1}</p>
 <div>
@@ -53,7 +53,8 @@ const DoctorAppointment = () => {
 <p>{item.date}{item.time}</p>
 <p>50$</p>
 <div>
-  <img src={assets.chats_icon}></img>
+  <img src={assets1.cancel_icon}></img>
+  <img src={assets1.tick_icon}></img>
 </div>
 </div>
 })
