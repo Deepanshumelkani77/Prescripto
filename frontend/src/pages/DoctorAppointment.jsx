@@ -1,8 +1,11 @@
-import React, { useState } from 'react'
+import React, { useContext, useState,useEffect } from 'react'
 import { assets } from '../assets/assets'
+import { StoreContext } from '../context/StoreContext'
+import axios from 'axios'
 
 const DoctorAppointment = () => {
 
+  const {doctor}=useContext(StoreContext)
   const [appointment,setAppointment]=useState([])
    useEffect(() => {
       axios.get('http://localhost:5000/appointment')
@@ -13,6 +16,8 @@ const DoctorAppointment = () => {
           console.error("Error fetching appointment data:", error);
         });
     }, []);
+
+
 
   return (
     <div className='w-full max-w-6xl m-5'>
@@ -31,7 +36,9 @@ const DoctorAppointment = () => {
 
   {
 
-appointment.map((item,index)=>{
+ appointment
+            .filter(item => item.doc_id === doctor.id)
+            .map((item, index)=>{
 
 <div key={index}>
 
