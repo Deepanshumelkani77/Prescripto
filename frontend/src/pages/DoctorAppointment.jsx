@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { assets } from '../assets/assets'
 
 const DoctorAppointment = () => {
 
@@ -19,7 +20,28 @@ const DoctorAppointment = () => {
     <p>action</p>
   </div>
 
+  {
 
+appointment.map((item,index)=>{
+
+<div key={index}>
+
+<p>{index+1}</p>
+<div>
+  <img src="" alt="" /><p></p>
+</div>
+
+<div>not yet</div>
+
+<p>{calculateAge(item.user_id.dob)}</p>
+<p>{item.date}{item.time}</p>
+<p>50$</p>
+<div>
+  <img src={assets.chats_icon}></img>
+</div>
+</div>
+})
+}
 
 
 </div>
