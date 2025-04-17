@@ -4,6 +4,15 @@ import { assets } from '../assets/assets'
 const DoctorAppointment = () => {
 
   const [appointment,setAppointment]=useState([])
+   useEffect(() => {
+      axios.get('http://localhost:5000/appointment')
+        .then(response => {
+          setAppointment(response.data);
+        })
+        .catch(error => {
+          console.error("Error fetching appointment data:", error);
+        });
+    }, []);
 
   return (
     <div className='w-full max-w-6xl m-5'>
