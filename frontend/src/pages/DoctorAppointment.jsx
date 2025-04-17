@@ -1,6 +1,9 @@
 import React from 'react'
 
 const DoctorAppointment = () => {
+
+  const [appointment,setAppointment]=useState([])
+
   return (
     <div className='w-full max-w-6xl m-5'>
       <p className='mb-3 text-lg font-medium'>All Appointment</p>
@@ -15,6 +18,10 @@ const DoctorAppointment = () => {
     <p>fees</p>
     <p>action</p>
   </div>
+
+
+
+
 </div>
 
     </div>
