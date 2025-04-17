@@ -4,14 +4,18 @@ const Appointment = require("../models/Appointment.js");
 const mongoose = require("mongoose");
 
 
-router.get("/",async (req, res) => {
+router.get("/", async (req, res) => {
     try {
-      const appointment= await Appointment.find().populate('doc_id');; // Fetch all documents from the Food collection
-      res.status(200).json(appointment);    // Send the data as a JSON response
+      const appointment = await Appointment.find()
+        .populate('doc_id')   // Populate doctor data
+        .populate('user_id'); // Populate user data
+  
+      res.status(200).json(appointment);
     } catch (error) {
       res.status(500).json({ message: "Error fetching data", error });
     }
-  })
+  });
+  
 
 
 

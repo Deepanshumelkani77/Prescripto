@@ -44,12 +44,12 @@ const DoctorAppointment = () => {
 
 <p>{index+1}</p>
 <div>
-  <img src="" alt="" /><p></p>
+  <img src={item.user_id?.image} alt="" /><p></p>
 </div>
 
 <div>not yet</div>
 
-<p>{calculateAge(item.user_id.dob)}</p>
+<p>{item.user_id?.dob}</p>
 <p>{item.date}{item.time}</p>
 <p>50$</p>
 <div>
