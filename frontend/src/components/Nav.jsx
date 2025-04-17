@@ -16,7 +16,7 @@ const navigate=useNavigate();
         <p className='border px-2.5 py-0.5 rounded-full border-gray-500 text-gray-600'>Doctor</p>
       </div>
 {
-doctor?<button onClick={()=>{logout();setState('User'); }} className='bg-[#5f6FFF] text-white text-sm px-10 py-2 rounded-full cursor-pointer'>Logout</button> :<button onClick={()=>{setShowLogin2(true)}} className='bg-[#5f6FFF] text-white text-sm px-10 py-2 rounded-full cursor-pointer'>Login</button>
+doctor?<button onClick={()=>{logout();setState('User'); navigate('/')}} className='bg-[#5f6FFF] text-white text-sm px-10 py-2 rounded-full cursor-pointer'>Logout</button> :<button onClick={()=>{setShowLogin2(true)}} className='bg-[#5f6FFF] text-white text-sm px-10 py-2 rounded-full cursor-pointer'>Login</button>
 
 }
       
