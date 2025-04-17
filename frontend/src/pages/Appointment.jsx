@@ -94,7 +94,7 @@ const handleSubmit = async () => {
 
 //state variable for days
  const [docSlots,setDocSlots]=useState([]);
- const [slotIndex,setSlotIndex]=useState(0);
+ const [slotIndex,setSlotIndex]=useState(null);
  const [slotTime,setSlotTime]=useState('')
 const daysOfWeek=['SUN','MON','TUE','WED','THU','FRI','SAT']
 
@@ -214,7 +214,7 @@ useEffect(() => {
 </div>
 
 <div className='flex items-center gap-3 w-full overflow-x-scroll mt-4'>
-  {docSlots.length && docSlots[slotIndex].map((item,index)=>(
+  {slotIndex !== null && docSlots.length && docSlots[slotIndex].map((item,index)=>(
 <p onClick={()=>{setSlotTime(item.time);setAppointment({...appointment,time:item.time.toLowerCase()})}} className={`text-sm font-light flex-shrink-0 px-5 py-2 rounded-full cursor-pointer ${item.time===slotTime ? 'bg-[#5f6FFF] text-white' :' text-gray-400 border border-gray-300'}`} key={index}>{item.time.toLowerCase()}</p>
 
   ))}
