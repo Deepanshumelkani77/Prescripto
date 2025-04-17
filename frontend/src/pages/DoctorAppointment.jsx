@@ -40,7 +40,7 @@ const DoctorAppointment = () => {
             .filter(item => item.doc_id === doctor.id)
             .map((item, index)=>{
 
-<div className='' key={index}>
+<div className='flex flex-wrap justify-between max-sm:gap-5 max-sm:text-base' key={index}>
 
 <p>{index+1}</p>
 <div>
