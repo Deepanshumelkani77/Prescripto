@@ -17,6 +17,15 @@ const [appointment, setAppointment] = useState({
   time: ''
 });
 
+useEffect(() => {
+  if (user) {
+
+    setAppointment({
+      user_id: user.id
+    });
+  }
+}, [user]);
+
 
   const { docId } = useParams();
  const [doctors,setDoctors]=useState([]);
@@ -157,7 +166,7 @@ useEffect(() => {
 <div className='flex gap-3 items-center w-full overflow-x-scroll mt-4 '>
   {
     docSlots.length && docSlots.map((item,index)=>(
-<div onClick={()=>{setSlotIndex(index);console.log(item[0] && daysOfWeek[item[0].datetime.getDay()]);console.log(item[0] && item[0].datetime.getDate())}} className={`text-center py-6 min-w-16 rounded-full cursor-pointer ${slotIndex=== index ?'bg-[#5f6FFF] text-white' : 'border border-gray-200'}`} key={index}>
+<div onClick={()=>{setSlotIndex(index);setAppointment({...appointment,day:item[0] && daysOfWeek[item[0].datetime.getDay()]});setAppointment({...appointment,date:item[0] && item[0].datetime.getDate()})}} className={`text-center py-6 min-w-16 rounded-full cursor-pointer ${slotIndex=== index ?'bg-[#5f6FFF] text-white' : 'border border-gray-200'}`} key={index}>
   <p >{item[0] && daysOfWeek[item[0].datetime.getDay()]}</p>
   <p>{item[0] && item[0].datetime.getDate()}</p>
 
@@ -169,7 +178,7 @@ useEffect(() => {
 
 <div className='flex items-center gap-3 w-full overflow-x-scroll mt-4'>
   {docSlots.length && docSlots[slotIndex].map((item,index)=>(
-<p onClick={()=>{setSlotTime(item.time);console.log(item.time.toLowerCase())}} className={`text-sm font-light flex-shrink-0 px-5 py-2 rounded-full cursor-pointer ${item.time===slotTime ? 'bg-[#5f6FFF] text-white' :' text-gray-400 border border-gray-300'}`} key={index}>{item.time.toLowerCase()}</p>
+<p onClick={()=>{setSlotTime(item.time);setAppointment({...appointment,time:item.time.toLowerCase()})}} className={`text-sm font-light flex-shrink-0 px-5 py-2 rounded-full cursor-pointer ${item.time===slotTime ? 'bg-[#5f6FFF] text-white' :' text-gray-400 border border-gray-300'}`} key={index}>{item.time.toLowerCase()}</p>
 
   ))}
 </div>
