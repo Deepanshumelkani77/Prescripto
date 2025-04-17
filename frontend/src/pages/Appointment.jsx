@@ -21,16 +21,17 @@ const [appointment, setAppointment] = useState({
 
 useEffect(() => {
   if (user) {
-
-    setAppointment({
+    setAppointment(prev => ({
+      ...prev,
       user_id: user.id
-    });
+    }));
   }
 }, [user]);
 
 
 const handleSubmit = async () => {
   // Simple form validation
+ 
   if (!appointment.user_id || !appointment.day || !appointment.date || !appointment.time) {
     alert("Please select a date and time slot.");
     return;
@@ -197,7 +198,12 @@ useEffect(() => {
 <div className='flex gap-3 items-center w-full overflow-x-scroll mt-4 '>
   {
     docSlots.length && docSlots.map((item,index)=>(
-<div onClick={()=>{setSlotIndex(index);setAppointment({...appointment,day:item[0] && daysOfWeek[item[0].datetime.getDay()]});setAppointment({...appointment,date:item[0] && item[0].datetime.getDate()})}} className={`text-center py-6 min-w-16 rounded-full cursor-pointer ${slotIndex=== index ?'bg-[#5f6FFF] text-white' : 'border border-gray-200'}`} key={index}>
+<div onClick={()=>{setSlotIndex(index);setAppointment(prev => ({
+  ...prev,
+  day: item[0] && daysOfWeek[item[0].datetime.getDay()],
+  date: item[0] && item[0].datetime.toDateString(), // Better than just getDate()
+}));
+}} className={`text-center py-6 min-w-16 rounded-full cursor-pointer ${slotIndex=== index ?'bg-[#5f6FFF] text-white' : 'border border-gray-200'}`} key={index}>
   <p >{item[0] && daysOfWeek[item[0].datetime.getDay()]}</p>
   <p>{item[0] && item[0].datetime.getDate()}</p>
 
