@@ -40,21 +40,21 @@ const DoctorAppointment = () => {
             .filter(item => item.doc_id === doctor.id)
             .map((item, index)=>{
 
-<div className='flex flex-wrap justify-between max-sm:gap-5 max-sm:text-base sm:grid grid-cols-[0.5fr_2fr_1fr_1fr_3fr_1fr_1fr] gap-1 items-center text-gray-500 py-3 px-6 border-b' key={index}>
+<div className='flex flex-wrap justify-between max-sm:gap-5 max-sm:text-base sm:grid grid-cols-[0.5fr_2fr_1fr_1fr_3fr_1fr_1fr] gap-1 items-center text-gray-500 py-3 px-6 border-b hover:bg-gray-50' key={index}>
 
-<p>{index+1}</p>
-<div>
-  <img src={item.user_id?.image} alt="" /><p></p>
+<p className='max-sm:hidden'>{index+1}</p>
+<div className='flex items-center gap-2'>
+  <img className='w-8 runded-full' src={item.user_id?.image} alt="" /><p></p>
 </div>
 
-<div>not yet</div>
+<div className=''>not yet</div>
 
-<p>{item.user_id?.dob}</p>
+<p className='max-sm:hidden'>{item.user_id?.dob}</p>
 <p>{item.date}{item.time}</p>
 <p>50$</p>
-<div>
-  <img src={assets1.cancel_icon}></img>
-  <img src={assets1.tick_icon}></img>
+<div className='flex'>
+  <img className='w-10 cursor-pointer  ' src={assets1.cancel_icon}></img>
+  <img className='w-10 cursor-pointer  ' src={assets1.tick_icon}></img>
 </div>
 </div>
 })
