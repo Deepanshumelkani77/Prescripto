@@ -16,6 +16,30 @@ const MyAppointment = () => {
       });
   }, []);
 
+
+
+
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm('Are you sure you want to cancel appointment?');
+    if (!confirmDelete) return;
+  
+    try {
+      const response = await fetch(`http://localhost:5000/appointment/delete/${id}`, {
+        method: 'DELETE',
+      });
+  
+      if (response.ok) {
+        setDoctor(prev => prev.filter(doc => doc._id !== id)); // remove from UI
+        alert('appointment cancel successfully!');
+      } else {
+        alert('Failed to cancel appointment.');
+      }
+    } catch (error) {
+      console.error('Error canceling appointment:', error);
+      alert('An error occurred while canceling the appointment.');
+    }
+  };
+
   return (
     <div>
       <p className='pb-3 mt-12 font-medium text-zinc-700 border-b border-gray-400'>My Appointment</p>
@@ -42,7 +66,7 @@ const MyAppointment = () => {
 
                 <div className='flex flex-col gap-4'>
                   <button className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-[#5f6FFF] hover:text-white transition-all duration-300'>Pay Online</button>
-                  <button className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-red-600 hover:text-white transition-all duration-300'>Cancel appointment</button>
+                  <button onClick={()=>handleDelete(item._id)} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-red-600 hover:text-white transition-all duration-300'>Cancel appointment</button>
                 </div>
               </div>
             ))
