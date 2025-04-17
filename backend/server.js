@@ -44,3 +44,5 @@ const user=require("./routes/User.js");
 app.use("/user",user);
 const doctorLogin=require("./routes/DoctorLogin.js");
 app.use("/doctorLogin",doctorLogin);
+const appointment=require("./routes/Appointment.js");
+app.use("/appointment",appointment)
