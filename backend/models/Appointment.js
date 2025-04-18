@@ -7,7 +7,8 @@ user_id:{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 day:{type:String},
 date:{type:String},
 time:{type:String},
-doc_id:{ type: mongoose.Schema.Types.ObjectId, ref: 'Doctor', required: true }
+doc_id:{ type: mongoose.Schema.Types.ObjectId, ref: 'Doctor', required: true },
+paid:Boolean
 
 
 

@@ -68,7 +68,22 @@ router.delete("/delete/:id",async (req, res) => {
 })
 
 
+router.post('/update-payment/:id', async (req, res) => {
+  const { id } = req.params;
+  const { paid, payment_id } = req.body;
 
+  try {
+    const updated = await Appointment.findByIdAndUpdate(
+      id,
+      { paid, payment_id },
+      { new: true }
+    );
+    res.json(updated);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
 
 
 module.exports=router

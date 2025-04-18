@@ -125,7 +125,7 @@ const DoctorAppointment = () => {
                   <p>{item.user_id?.username}</p>
                 </div>
 
-                <div>not yet</div>
+                <div>{item.paid? 'Paid' : 'Cash'}</div>
 
                 <p className='max-sm:hidden'>{calculateAge(item.user_id?.dob)}</p>
 
