@@ -41,34 +41,60 @@ const MyAppointment = () => {
     }
   };
 
+  const [paid,setPaid]=useState({})
 
   //for payment
-  const handlePayment = async (amount) => {
-    const res = await axios.post("http://localhost:5000/payment/create-order", { amount });
+  const handlePayment = async (amount, appointmentId) => {
+    try {
+      const res = await axios.post("http://localhost:5000/payment/create-order", { amount });
   
-    const options = {
-      key: "rzp_test_e0fTSfe78HnUuT", // Razorpay Key ID
-      amount: res.data.amount,
-      currency: "INR",
-      name: "DocApp",
-      description: "Appointment Payment",
-      order_id: res.data.id,
-      handler: function (response) {
-        alert("Payment successful! Payment ID: " + response.razorpay_payment_id);
-        // You can now call backend to update appointment as paid
-      },
-      prefill: {
-        name: user?.username,
-        email: user?.email,
-      },
-      theme: {
-        color: "#5f6FFF",
-      },
-    };
+      const options = {
+        key: "rzp_test_e0fTSfe78HnUuT",
+        amount: res.data.amount,
+        currency: "INR",
+        name: "DocApp",
+        description: "Appointment Payment",
+        order_id: res.data.id,
+        handler: async function (response) {
+          alert("Payment successful! Payment ID: " + response.razorpay_payment_id);
+          
+          // 1. Update local state (optional)
+          setPaid({ paid: true });
   
-    const razor = new window.Razorpay(options);
-    razor.open();
+          // 2. Send payment status to backend
+          try {
+            await axios.post(`http://localhost:5000/appointment/update-payment/${appointmentId}`, {
+              paid: true,
+              payment_id: response.razorpay_payment_id,
+            });
+  
+            alert("Appointment marked as paid!");
+  
+          
+          } catch (error) {
+            console.error("Error updating payment status:", error);
+            alert("Payment succeeded, but failed to update appointment.");
+          }
+        },
+        prefill: {
+          name: user?.username,
+          email: user?.email,
+        },
+        theme: {
+          color: "#5f6FFF",
+        },
+      };
+  
+      const razor = new window.Razorpay(options);
+      razor.open();
+    } catch (error) {
+      console.error("Error creating payment order:", error);
+      alert("Failed to initiate payment.");
+    }
   };
+  
+
+  
   
 
   return (
@@ -97,7 +123,7 @@ const MyAppointment = () => {
                 </div>
 
                 <div className='flex flex-col gap-4'>
-                  <button onClick={() => handlePayment(item.doc_id?.fees || 500)}  className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-[#5f6FFF] hover:text-white transition-all duration-300'>Pay Online</button>
+                  <button onClick={() => handlePayment(item.doc_id?.fees || 500, item._id)}  className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-[#5f6FFF] hover:text-white transition-all duration-300'>Pay Online</button>
                   <button onClick={()=>handleDelete(item._id)} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-red-600 hover:text-white transition-all duration-300'>Cancel appointment</button>
                 </div>
               </div>
