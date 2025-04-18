@@ -46,3 +46,5 @@ const doctorLogin=require("./routes/DoctorLogin.js");
 app.use("/doctorLogin",doctorLogin);
 const appointment=require("./routes/Appointment.js");
 app.use("/appointment",appointment)
+const paymentRoute = require("./routes/Payment.js");
+app.use("/payment", paymentRoute);
