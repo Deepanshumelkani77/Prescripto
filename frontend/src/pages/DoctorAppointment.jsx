@@ -71,6 +71,28 @@ const DoctorAppointment = () => {
     }
   }, [doctor]);
   
+
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm('Are you sure you want to cancel appointment');
+    if (!confirmDelete) return;
+  
+    try {
+      const response = await fetch(`http://localhost:5000/appointment/delete/${id}`, {
+        method: 'DELETE',
+      });
+  
+      if (response.ok) {
+        setAppointment(prev => prev.filter(doc => doc._id !== id)); // remove from UI
+        alert('Appointment cancel successfully!');
+      } else {
+        alert('Failed to cancel appointment.');
+      }
+    } catch (error) {
+      console.error('Error canceling appointment:', error);
+      alert('An error occurred while canceling appointment.');
+    }
+  };
+  
   
 
   return (
@@ -112,7 +134,7 @@ const DoctorAppointment = () => {
                 <p>$50</p>
 
                 <div className='flex gap-2'>
-                  <img className='w-6 cursor-pointer' src={assets1.cancel_icon} alt="cancel" />
+                  <img onClick={()=>{handleDelete(item._id)}} className='w-6 cursor-pointer' src={assets1.cancel_icon} alt="cancel" />
                   <img className='w-6 cursor-pointer' src={assets1.tick_icon} alt="confirm" />
                 </div>
               </div>
