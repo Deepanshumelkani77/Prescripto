@@ -191,7 +191,7 @@ const MyProfile = () => {
                   value={userData.dob}
                 />
               ) : (
-                <p className='text-gray-400'>{userInfo.dob.slice(0, 10) || '0000-00-00'}</p>
+                <p className='text-gray-400'>{userInfo.dob?.slice(0, 10) || '0000-00-00'}</p>
               )}
             </div>
           </div>
