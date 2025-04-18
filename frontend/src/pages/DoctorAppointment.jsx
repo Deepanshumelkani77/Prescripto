@@ -34,6 +34,22 @@ const DoctorAppointment = () => {
   
     return age;
   };
+  const formatDateTime = (dateTimeStr) => {
+    if (!dateTimeStr) return '-';
+    
+    const date = new Date(dateTimeStr);
+  
+    // If parsing fails
+    if (isNaN(date.getTime())) return dateTimeStr;
+  
+    return date.toLocaleString('en-US', {
+      dateStyle: 'long', // e.g. April 18, 2025
+      timeStyle: 'short', // e.g. 10:00 AM
+    });
+  };
+  
+
+
 
   const [doctors,setDoctors]=useState([])
   const [myDoctor,setMyDoctor]=useState({})
@@ -62,7 +78,7 @@ const DoctorAppointment = () => {
       <p className='mb-3 text-lg font-medium'>All Appointments</p>
 
       <div className='bg-white border rounded border-gray-200 text-sm max-h-[80vh] min-h-[50vh] overflow-y-scroll'>
-        <div className='max-sm:hidden grid grid-cols-[0.5fr_2fr_1fr_1fr_3fr_1fr_1fr] gap-1 py-3 px-6 border-b border-gray-400 font-medium'>
+        <div className='max-sm:hidden grid grid-cols-[0.5fr_2fr_1fr_1fr_3fr_1fr_1fr] gap-1 py-3 px-6 border-b border-gray-300 font-medium'>
           <p>#</p>
           <p>Patient</p>
           <p>Payment</p>
@@ -78,7 +94,7 @@ const DoctorAppointment = () => {
             .map((item, index) => (
               <div
                 key={index}
-                className='flex flex-wrap justify-between max-sm:gap-5 max-sm:text-base sm:grid grid-cols-[0.5fr_2fr_1fr_1fr_3fr_1fr_1fr] gap-1 items-center text-gray-500 py-3 px-6 border-b border-gray-400 hover:bg-gray-50'
+                className='flex flex-wrap justify-between max-sm:gap-5 max-sm:text-base sm:grid grid-cols-[0.5fr_2fr_1fr_1fr_3fr_1fr_1fr] gap-1 items-center text-gray-500 py-3 px-6 border-b border-gray-300 hover:bg-gray-50'
               >
                 <p className='max-sm:hidden'>{index + 1}</p>
 
@@ -91,7 +107,7 @@ const DoctorAppointment = () => {
 
                 <p className='max-sm:hidden'>{calculateAge(item.user_id?.dob)}</p>
 
-                <p>{item.date} {item.time}</p>
+                <p>{formatDateTime(`${item.date} ${item.time}`)}</p>
 
                 <p>$50</p>
 
