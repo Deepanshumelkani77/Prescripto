@@ -18,6 +18,26 @@ const DoctorAppointment = () => {
   }, []);
 
   const [doctors,setDoctors]=useState([])
+  const [myDoctor,setMyDoctor]=useState({})
+  useEffect(() => {
+    if (doctor?.email) {
+      axios.get('http://localhost:5000/doctor')
+        .then(response => {
+          const doctorsData = response.data;
+          setDoctors(doctorsData);
+  
+          const matchedDoctor = doctorsData.find(doc => doc.email === doctor.email);
+          if (matchedDoctor) {
+            setMyDoctor(matchedDoctor);
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching doctor data:", error);
+        });
+    }
+  }, [doctor]);
+  
+  
 
   return (
     <div className='w-full max-w-6xl m-5'>
@@ -36,7 +56,7 @@ const DoctorAppointment = () => {
 
         {
           appointment
-            .filter(item => item.doc_id?._id === doctor.id)
+            .filter(item => item.doc_id?._id === myDoctor._id)
             .map((item, index) => (
               <div
                 key={index}
