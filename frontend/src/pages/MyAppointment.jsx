@@ -49,7 +49,7 @@ const MyAppointment = () => {
       const res = await axios.post("http://localhost:5000/payment/create-order", { amount });
   
       const options = {
-        key: "rzp_test_e0fTSfe78HnUuT",
+        key: "rzp_test_PuXf2SZhGaKEGd",
         amount: res.data.amount,
         currency: "INR",
         name: "DocApp",
