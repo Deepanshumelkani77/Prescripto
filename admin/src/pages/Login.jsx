@@ -51,27 +51,27 @@ const handleSubmit2 = async (e) => {
   <>
 <div className='w-full'>
     <p>Full Name</p>
-    <input name='username' onChange={handleChange} placeholder='Your name' className='border border-zinc-300 rounded w-full p-2 mt-1 outline-[#5f6FFF]' type="text"   />
+    <input value={formData.username} name='username' onChange={handleChange} placeholder='Your name' className='border border-zinc-300 rounded w-full p-2 mt-1 outline-[#5f6FFF]' type="text"   />
   </div>
  
   <div className='w-full'>
     <p>Email</p>
-    <input name='email' onChange={handleChange} placeholder='Your email' className='border border-zinc-300 rounded w-full p-2 mt-1 outline-[#5f6FFF]' type="email"  />
+    <input  value={formData.email} name='email' onChange={handleChange} placeholder='Your email' className='border border-zinc-300 rounded w-full p-2 mt-1 outline-[#5f6FFF]' type="email"  />
   </div>
 
   <div className='w-full'>
     <p>Password</p>
-    <input  name='password' onChange={handleChange} placeholder='password' className='border border-zinc-300 rounded w-full p-2 mt-1 outline-[#5f6FFF]' type="password"  />
+    <input   value={formData.password} name='password' onChange={handleChange} placeholder='password' className='border border-zinc-300 rounded w-full p-2 mt-1 outline-[#5f6FFF]' type="password"  />
   </div> </>
   
   :<> <div className='w-full'>
     <p>Email</p>
-    <input name='email' onChange={handleChange2} placeholder='Your email' className='border border-zinc-300 rounded w-full p-2 mt-1 outline-[#5f6FFF]' type="email"  />
+    <input value={formData2.email} name='email' onChange={handleChange2} placeholder='Your email' className='border border-zinc-300 rounded w-full p-2 mt-1 outline-[#5f6FFF]' type="email"  />
   </div>
 
   <div className='w-full'>
     <p>Password</p>
-    <input name='password' onChange={handleChange2} placeholder='password' className='border border-zinc-300 rounded w-full p-2 mt-1 outline-[#5f6FFF]' type="password"  />
+    <input   value={formData2.password} name='password' onChange={handleChange2} placeholder='password' className='border border-zinc-300 rounded w-full p-2 mt-1 outline-[#5f6FFF]' type="password"  />
   </div> </>
 
  }
