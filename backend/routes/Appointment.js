@@ -8,14 +8,14 @@ router.get("/", async (req, res) => {
     try {
       const appointment = await Appointment.find()
         .populate('doc_id')   // Populate doctor data
-        .populate('user_id'); // Populate user data
+        // Populate user data
   
       res.status(200).json(appointment);
     } catch (error) {
       res.status(500).json({ message: "Error fetching data", error });
     }
   });
-  
+
 
 
 
@@ -37,6 +37,19 @@ res.status(201).send({ message: "Appointment successfully done" });
 
 }
 )
+
+router.get("/doctor", async (req, res) => {
+  try {
+    const appointment = await Appointment.find()
+    .populate('user_id')   // populate user
+  .populate('doc_id'); 
+  
+    res.status(200).json(appointment);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching data", error });
+  }
+});
+
 
 
 router.delete("/delete/:id",async (req, res) => {

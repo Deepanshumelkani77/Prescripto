@@ -9,6 +9,7 @@ const MyAppointment = () => {
   useEffect(() => {
     axios.get('http://localhost:5000/appointment')
       .then(response => {
+        console.log("Appointments from backend:", response.data); 
         setAppointment(response.data);
       })
       .catch(error => {
@@ -40,13 +41,14 @@ const MyAppointment = () => {
     }
   };
 
+
   return (
     <div>
       <p className='pb-3 mt-12 font-medium text-zinc-700 border-b border-gray-400'>My Appointment</p>
       <div>
         {
           appointment
-            .filter(item => item.user_id === user.id)
+            .filter(item => item.user_id === user?.id)
             .map((item, index) => (
               <div className='grid grid-cols-[1fr_2fr] gap-4 sm:flex sm:gap-6 py-2 border-b border-gray-400' key={index}>
                 <div>
@@ -54,6 +56,7 @@ const MyAppointment = () => {
                 </div>
 
                 <div className='flex-1 text-sm text-zinc-600'>
+                
                   <p className='text-neutral-800 font-semibold'>{item.doc_id?.name}</p>
                   <p>{item.doc_id?.speciality}</p>
                   <p className='text-zinc-700 font-medium mt-1'>Address</p>

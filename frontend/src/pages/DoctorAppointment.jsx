@@ -8,7 +8,7 @@ const DoctorAppointment = () => {
   const [appointment, setAppointment] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/appointment')
+    axios.get('http://localhost:5000/appointment/doctor')
       .then(response => {
         setAppointment(response.data);
       })
