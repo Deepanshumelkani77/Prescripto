@@ -23,10 +23,10 @@ router.post("/create-order", async (req, res) => {
         receipt: "receipt_" + Date.now(),
       });
   
-      console.log("✅ Razorpay order created:", order);
+      console.log(" Razorpay order created:", order);
       res.status(200).json(order);
     } catch (err) {
-      console.error("❌ Razorpay error:", err);
+      console.error(" Razorpay error:", err);
       res.status(500).json({ error: "Razorpay order creation failed" });
     }
   });
