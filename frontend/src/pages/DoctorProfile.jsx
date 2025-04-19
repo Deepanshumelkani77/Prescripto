@@ -136,6 +136,7 @@ const handleChange = (e) => {
               name='name'
               type='text'
               placeholder='Enter your name'
+              value={doctor?.name }
               onChange={handleChange}
             />
           ) : (
@@ -159,11 +160,11 @@ const handleChange = (e) => {
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   name='email'
                   type='email'
-                
+                value={doctor?.email}
                   onChange={handleChange}
                 />
               ) : (
-                <p className='text-blue-400 bg-gray-100 h-[5vh] flex items-center'>{doctor?.email}</p>
+                <p className='text-blue-400 bg-[#F2F3FF] h-[5vh] flex items-center'>{doctor?.email}</p>
               )}
              </div>
 
@@ -174,6 +175,7 @@ const handleChange = (e) => {
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   name='speciality'
                   type='text'
+                  value={doctorInfo.speciality || 'General Physician'}
                 onChange={handleChange}
                 >
                   <option value="">Select</option>
@@ -185,7 +187,7 @@ const handleChange = (e) => {
                   <option value="Gastroenterologist">Gastroenterologist</option>
                 </select>
               ) : (
-                <p className='text-blue-400 bg-gray-100 h-[5vh] flex items-center'>{doctorInfo.speciality || 'General Physician'}</p>
+                <p className='text-blue-400 bg-[#F2F3FF] h-[5vh] flex items-center'>{doctorInfo.speciality || 'General Physician'}</p>
               )}
 </div>
 
@@ -196,11 +198,11 @@ const handleChange = (e) => {
                   name='degree'
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   onChange={handleChange}
-                 
+                 value={doctorInfo.degree || 'MBBS'}
                   type='text'
                 />
               ) : (
-                <p className='text-blue-400 bg-gray-100 h-[5vh] flex items-center'>{doctorInfo.degree || 'MBBS'}</p>
+                <p className='text-blue-400 bg-[#F2F3FF] h-[5vh] flex items-center'>{doctorInfo.degree || 'MBBS'}</p>
               )}
 </div>
 
@@ -211,11 +213,11 @@ const handleChange = (e) => {
                   name='fees'
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   onChange={handleChange}
-                 
+                 value={doctorInfo.fees || 'XXX'}
                   type='number'
                 />
               ) : (
-                <p className='text-blue-400 bg-gray-100 h-[5vh] flex items-center'>{doctorInfo.fees || 'XXX'}</p>
+                <p className='text-blue-400 bg-[#F2F3FF] h-[5vh] flex items-center'>{doctorInfo.fees || 'XXX'}</p>
               )}
 </div>
 
@@ -235,7 +237,7 @@ const handleChange = (e) => {
                   name='experience'
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   onChange={handleChange}
-                  
+                  value={doctorInfo.experience || '0 year'}
                 >
                   <option>Select</option>
                   <option value="1 year">1 year</option>
@@ -250,7 +252,7 @@ const handleChange = (e) => {
                   <option value="10 year">10 year</option>
                 </select>
               ) : (
-                <p className='text-blue-400 bg-gray-100 h-[5vh] flex items-center'>{doctorInfo.experience || '0 year'}</p>
+                <p className='text-blue-400 bg-[#F2F3FF] h-[5vh] flex items-center'>{doctorInfo.experience || '0 year'}</p>
               )}
 </div>
 
@@ -263,10 +265,10 @@ const handleChange = (e) => {
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   type='text'
                   onChange={handleChange}
-                 
+                 value={doctorInfo.address?.line1 || 'bhimtal haldwani,Naintal'}
                 />
               ) : (
-                <p className='text-blue-400 bg-gray-100 h-[5vh] flex items-center'>{doctorInfo.address?.line1 || 'bhimtal haldwani,Naintal'}</p>
+                <p className='text-blue-400 bg-[#F2F3FF] h-[5vh] flex items-center'>{doctorInfo.address?.line1 || 'bhimtal haldwani,Naintal'}</p>
               )}
 </div>
 
@@ -278,11 +280,11 @@ const handleChange = (e) => {
                   name='line2'
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   onChange={handleChange}
-                 
+                 value={doctorInfo.address?.line2 || 'bhimtal haldwani,Naintal'}
                   type='text'
                 />
               ) : (
-                <p className='text-blue-400 bg-gray-100 h-[5vh] flex items-center'>{doctorInfo.address?.line2 || 'bhimtal haldwani,Naintal'}</p>
+                <p className='text-blue-400 bg-[#F2F3FF] h-[5vh] flex items-center'>{doctorInfo.address?.line2 || 'bhimtal haldwani,Naintal'}</p>
               )}
 </div>
 
@@ -317,12 +319,12 @@ const handleChange = (e) => {
                 <textarea
                   name='about'
                   className='w-[100%] bg-gray-200 h-[10vh] outline-[#5f6FFF]'
-                  
+                  value={doctorInfo.about || 'I am a dedicated General Physician committed to providing comprehensive and compassionate healthcare for patients of all ages.  I focus on diagnosing and treating a wide range of acute and chronic illnesses, while promoting preventive care and healthy living. '}
                   onChange={handleChange}
                  
                 />
               ) : (
-                <p className='text-blue-400 bg-gray-100 h-[12vh] flex items-center'>{doctorInfo.about || 'I am a dedicated General Physician committed to providing comprehensive and compassionate healthcare for patients of all ages.  I focus on diagnosing and treating a wide range of acute and chronic illnesses, while promoting preventive care and healthy living. '}</p>
+                <p className='text-blue-400 bg-[#F2F3FF] h-[12vh] flex items-center'>{doctorInfo.about || 'I am a dedicated General Physician committed to providing comprehensive and compassionate healthcare for patients of all ages.  I focus on diagnosing and treating a wide range of acute and chronic illnesses, while promoting preventive care and healthy living. '}</p>
               )}
 
 </div>
