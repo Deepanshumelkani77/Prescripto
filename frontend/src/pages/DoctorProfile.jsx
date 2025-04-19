@@ -36,23 +36,30 @@ const DoctorProfile = () => {
 
   const [isEdit, setIsEdit] = useState(false);
 
- 
-const handleChange = (e) => {
-  const { name, value } = e.target;
-
-  // Handle nested address object
-  if (name === 'line1' || name === 'line2') {
-    setDoctorData(prev => ({
-      ...prev,
-      address: {
-        ...prev.address,
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+  
+    if (name === 'line1' || name === 'line2') {
+      setDoctorData(prev => ({
+        ...prev,
+        address: {
+          ...prev.address,
+          [name]: value
+        }
+      }));
+    } else if (type === 'checkbox') {
+      setDoctorData(prev => ({
+        ...prev,
+        [name]: checked
+      }));
+    } else {
+      setDoctorData(prev => ({
+        ...prev,
         [name]: value
-      }
-    }));
-  } else {
-    setDoctorData({ ...doctorData, [name]: value });
-  }
-};
+      }));
+    }
+  };
+  
 
   const [file, setFile] = useState(null);
   const handleFileChange = (e) => {
@@ -301,7 +308,7 @@ const handleChange = (e) => {
                   className='bg-gray-200  h-[3vh] w-[10%] outline-[#5f6FFF]'
                   type='checkbox'
                   onChange={handleChange}
-                 checked={true}
+                 checked={doctorData.available}
                 />
               ) : (
                 <input type='checkbox' checked={doctorInfo.available}/>
