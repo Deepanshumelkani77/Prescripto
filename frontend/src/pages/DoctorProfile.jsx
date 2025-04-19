@@ -12,8 +12,8 @@ const DoctorProfile = () => {
   // Fetch user information
   const [doctorInfo, setDoctorInfo] = useState({}); // Initialize as null
   useEffect(() => {
-    if (doctor && doctor.email) {
-      axios.get(`http://localhost:5000/doctor/info/${doctor.email}`)
+    if (doctor && doctor.id) {
+      axios.get(`http://localhost:5000/doctor/info/${doctor.id}`)
         .then(response => {
           setDoctorInfo(response.data);
         })

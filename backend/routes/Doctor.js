@@ -95,21 +95,21 @@ router.delete("/delete/:id",async (req, res) => {
   }
 })
 
-router.get("/info/:email", async (req, res) => {
-  console.log("hello dev")
+router.get("/info/:id", async (req, res) => {
+  console.log("Fetching doctor by ID");
   try {
-    const { email } = req.params;
+    const { id } = req.params;
 
-    // Find doctor by email
-    const doctor = await Doctor.findOne({ email });
+    // Find doctor by ID
+    const doctor = await Doctor.findById(id);
 
     if (!doctor) {
       return res.status(404).json({ message: 'Doctor not found' });
     }
 
-    res.json(doctor);  // Send doctor data
+    res.json(doctor);
   } catch (error) {
-    console.error('Error fetching doctor by email:', error);
+    console.error('Error fetching doctor by ID:', error);
     res.status(500).json({ message: 'Server error', error });
   }
 });
