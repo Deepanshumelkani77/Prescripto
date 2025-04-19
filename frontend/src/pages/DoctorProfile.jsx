@@ -11,12 +11,14 @@ const DoctorProfile = () => {
   const [doctorData, setDoctorData] = useState({ name: '' , email: '', speciality: '', degree: '', experience: '', about: '',fees:'',available:'',address:{line1:'',line2:''}});
   // Fetch user information
   const [doctorInfo, setDoctorInfo] = useState({}); // Initialize as null
+  const [images,setImages]=useState('')
   useEffect(() => {
     if (doctor && doctor.id) {
       axios.get(`http://localhost:5000/doctor/info/${doctor.id}`)
         .then(response => {
           setDoctorInfo(response.data);
           setDoctorData({name: response.data.name , email: response.data.email, speciality:response.data.speciality, degree: response.data.degree, experience: response.data.experience, about: response.data.about,fees:response.data.fees,available:response.data.available,address:{line1:response.data.address.line1,line2:response.data.address.line2}})
+        setImages(response.data.image)
         })
         .catch(error => {
           console.error("Error fetching appointment data:", error);
@@ -115,7 +117,7 @@ const handleChange = (e) => {
               <label htmlFor="doc-img">
                 <img
                   className='w-25 h-26 bg-gray-100 rounded-full cursor-pointer'
-                  src={file ? URL.createObjectURL(file) : assets.profile_pic}
+                  src={file ? URL.createObjectURL(file) :images|| assets.profile_pic}
                   alt="profile"
                 />
               </label>
