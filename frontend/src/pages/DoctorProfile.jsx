@@ -100,6 +100,8 @@ const handleChange = (e) => {
     }
   };
 
+
+
   return (
     <div className='w-[70%] h-[80vh] m-auto bg-white flex flex-row gap-2 text-sm'>
       {/* Conditional rendering: only show the profile picture if userInfo is available */}
@@ -136,7 +138,7 @@ const handleChange = (e) => {
               name='name'
               type='text'
               placeholder='Enter your name'
-              value={doctor?.name }
+              value={doctorData.name }
               onChange={handleChange}
             />
           ) : (
@@ -160,7 +162,7 @@ const handleChange = (e) => {
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   name='email'
                   type='email'
-                value={doctor?.email}
+                value={doctor.email}
                   onChange={handleChange}
                 />
               ) : (
@@ -345,7 +347,7 @@ const handleChange = (e) => {
             ) : (
               <button
                 className='border border-[#5f6FFF] px-8 py-2 rounded-full hover:bg-[#5f6FFF] hover:text-white transition-all'
-                onClick={() => setIsEdit(true)}
+                onClick={() => { setIsEdit(true)}}
               >
                 Edit
               </button>
