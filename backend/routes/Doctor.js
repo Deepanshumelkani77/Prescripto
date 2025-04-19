@@ -116,4 +116,3 @@ router.get("/info/:email", async (req, res) => {
 
 
 module.exports=router
-helo

@@ -67,7 +67,7 @@ router.get("/info/:id",async (req, res) => {
   try {
     const { id } = req.params;  // Extract the id from params correctly
     if (!mongoose.Types.ObjectId.isValid(id)) {  // Optional: check if id is a valid ObjectId
-      return res.status(400).json({ message: 'Invalid food ID' });
+      return res.status(400).json({ message: 'Invalid user ID' });
     }
 
     
