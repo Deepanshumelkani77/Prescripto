@@ -16,7 +16,6 @@ const DoctorProfile = () => {
       axios.get(`http://localhost:5000/doctor/info/${doctor.email}`)
         .then(response => {
           setDoctorInfo(response.data);
-          setDoctorData({name:response.data.name,email:response.data.email,speciality:response.data.speciality,degree:response.data.degree,experience:response.data.experience,about:response.data.about,fees:response.data.fees,available:response.data.available,address:{line1:response.data.address.line1,line2:response.data.address.line2}})
         })
         .catch(error => {
           console.error("Error fetching appointment data:", error);
@@ -101,8 +100,6 @@ const handleChange = (e) => {
     }
   };
 
-
-
   return (
     <div className='w-[70%] h-[80vh] m-auto bg-white flex flex-row gap-2 text-sm'>
       {/* Conditional rendering: only show the profile picture if userInfo is available */}
@@ -139,7 +136,6 @@ const handleChange = (e) => {
               name='name'
               type='text'
               placeholder='Enter your name'
-              value={doctorData.name }
               onChange={handleChange}
             />
           ) : (
@@ -163,7 +159,7 @@ const handleChange = (e) => {
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   name='email'
                   type='email'
-                value={doctorData.email}
+                
                   onChange={handleChange}
                 />
               ) : (
@@ -178,7 +174,6 @@ const handleChange = (e) => {
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   name='speciality'
                   type='text'
-                  value={doctorInfo.speciality || 'General Physician'}
                 onChange={handleChange}
                 >
                   <option value="">Select</option>
@@ -201,7 +196,7 @@ const handleChange = (e) => {
                   name='degree'
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   onChange={handleChange}
-                 value={doctorData.degree || 'MBBS'}
+                 
                   type='text'
                 />
               ) : (
@@ -216,7 +211,7 @@ const handleChange = (e) => {
                   name='fees'
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   onChange={handleChange}
-                 value={doctorData.fees || 'XXX'}
+                 
                   type='number'
                 />
               ) : (
@@ -240,7 +235,7 @@ const handleChange = (e) => {
                   name='experience'
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   onChange={handleChange}
-                  value={doctorData.experience || '0 year'}
+                  
                 >
                   <option>Select</option>
                   <option value="1 year">1 year</option>
@@ -268,7 +263,7 @@ const handleChange = (e) => {
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   type='text'
                   onChange={handleChange}
-                 value={doctorData.address?.line1 || 'bhimtal haldwani,Naintal'}
+                 
                 />
               ) : (
                 <p className='text-blue-400 bg-[#F2F3FF] h-[5vh] flex items-center'>{doctorInfo.address?.line1 || 'bhimtal haldwani,Naintal'}</p>
@@ -283,7 +278,7 @@ const handleChange = (e) => {
                   name='line2'
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   onChange={handleChange}
-                 value={doctorData.address?.line2 || 'bhimtal haldwani,Naintal'}
+                 
                   type='text'
                 />
               ) : (
@@ -322,7 +317,7 @@ const handleChange = (e) => {
                 <textarea
                   name='about'
                   className='w-[100%] bg-gray-200 h-[10vh] outline-[#5f6FFF]'
-                  value={doctorData.about || 'I am a dedicated General Physician committed to providing comprehensive and compassionate healthcare for patients of all ages.  I focus on diagnosing and treating a wide range of acute and chronic illnesses, while promoting preventive care and healthy living. '}
+                  
                   onChange={handleChange}
                  
                 />
@@ -348,7 +343,7 @@ const handleChange = (e) => {
             ) : (
               <button
                 className='border border-[#5f6FFF] px-8 py-2 rounded-full hover:bg-[#5f6FFF] hover:text-white transition-all'
-                onClick={() => { setIsEdit(true)}}
+                onClick={() => setIsEdit(true)}
               >
                 Edit
               </button>
