@@ -54,13 +54,13 @@ const DoctorAppointment = () => {
   const [doctors,setDoctors]=useState([])
   const [myDoctor,setMyDoctor]=useState({})
   useEffect(() => {
-    if (doctor?.email) {
+    if (doctor?.id) {
       axios.get('http://localhost:5000/doctor')
         .then(response => {
           const doctorsData = response.data;
           setDoctors(doctorsData);
   
-          const matchedDoctor = doctorsData.find(doc => doc.email === doctor.email);
+          const matchedDoctor = doctorsData.find(doc => doc._id === doctor.id);
           if (matchedDoctor) {
             setMyDoctor(matchedDoctor);
           }
