@@ -137,7 +137,7 @@ const DoctorProfile = () => {
               </p>
             </div>
           ) : (
-            <img className='w-[100%] h-[40vh] rounded' src={doctorInfo.image } alt="" />
+            <img className='w-[100%] h-[40vh] rounded' src={doctorInfo.image ||  assets.profile_pic} alt="" />
           )}
 
           {/* Name Section */}
