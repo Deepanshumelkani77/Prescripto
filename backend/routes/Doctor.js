@@ -116,9 +116,9 @@ router.get("/info/:email", async (req, res) => {
 
 router.post("/signup", async (req, res) => {
     try {
-      const { username, email, password } = req.body;
+      const { name, email, password } = req.body;
       const hashedPassword = await bcrypt.hash(password, 10);
-      const doctor = new DoctorLogin({ username, email, password: hashedPassword });
+      const doctor = new Doctor({ name, email, password: hashedPassword });
       await doctor.save();
       res.status(201).json({ message: "Doctor registered successfully" });
     } catch (err) {
@@ -131,7 +131,7 @@ router.post("/signup", async (req, res) => {
 
   router.post('/login',async (req, res) => {
     const { email, password } = req.body;
-    const doctor = await DoctorLogin.findOne({ email });
+    const doctor = await Doctor.findOne({ email });
 
     if (!doctor) return res.status(400).json({ message: "Doctor not found" });
   
@@ -139,7 +139,7 @@ router.post("/signup", async (req, res) => {
     if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
   
     const token = jwt.sign({ id: doctor._id }, "secret", { expiresIn: "1h" });
-    res.json({ token, doctor: {id:doctor._id, name: doctor.username, email: doctor.email } });
+    res.json({ token, doctor: {id:doctor._id, name: doctor.name, email: doctor.email } });
 
 
   })

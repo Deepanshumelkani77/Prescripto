@@ -27,7 +27,7 @@ const [doctor, setDoctor] = useState(initialUser);
   
   const login = async (email, password) => {
       try {
-        const response = await axios.post("http://localhost:5000/doctorLogin/login", { email, password });
+        const response = await axios.post("http://localhost:5000/doctor/login", { email, password });
         console.log("Login response:", response.data);
         Cookies.set("token", response.data.token, { expires: 1 });
         Cookies.set("doctor", JSON.stringify(response.data.doctor), { expires: 1 });
@@ -37,9 +37,9 @@ const [doctor, setDoctor] = useState(initialUser);
       }
     }
   
-    const signup = async (username, email, password) => {
+    const signup = async (name, email, password) => {
       try {
-        await axios.post("http://localhost:5000/doctorLogin/signup", { username, email, password });
+        await axios.post("http://localhost:5000/doctor/signup", {name, email, password });
         alert("Signup successful! Please login.");
       } catch (error) {
         alert(error.response?.data?.message || "Signup failed");
