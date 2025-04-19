@@ -16,6 +16,7 @@ const DoctorProfile = () => {
       axios.get(`http://localhost:5000/doctor/info/${doctor.email}`)
         .then(response => {
           setDoctorInfo(response.data);
+          setDoctorData({name:response.data.name,email:response.data.email,speciality:response.data.speciality,degree:response.data.degree,experience:response.data.experience,about:response.data.about,fees:response.data.fees,available:response.data.available,address:{line1:response.data.address.line1,line2:response.data.address.line2}})
         })
         .catch(error => {
           console.error("Error fetching appointment data:", error);
@@ -162,7 +163,7 @@ const handleChange = (e) => {
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   name='email'
                   type='email'
-                value={doctor.email}
+                value={doctorData.email}
                   onChange={handleChange}
                 />
               ) : (
@@ -200,7 +201,7 @@ const handleChange = (e) => {
                   name='degree'
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   onChange={handleChange}
-                 value={doctorInfo.degree || 'MBBS'}
+                 value={doctorData.degree || 'MBBS'}
                   type='text'
                 />
               ) : (
@@ -215,7 +216,7 @@ const handleChange = (e) => {
                   name='fees'
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   onChange={handleChange}
-                 value={doctorInfo.fees || 'XXX'}
+                 value={doctorData.fees || 'XXX'}
                   type='number'
                 />
               ) : (
@@ -239,7 +240,7 @@ const handleChange = (e) => {
                   name='experience'
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   onChange={handleChange}
-                  value={doctorInfo.experience || '0 year'}
+                  value={doctorData.experience || '0 year'}
                 >
                   <option>Select</option>
                   <option value="1 year">1 year</option>
@@ -267,7 +268,7 @@ const handleChange = (e) => {
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   type='text'
                   onChange={handleChange}
-                 value={doctorInfo.address?.line1 || 'bhimtal haldwani,Naintal'}
+                 value={doctorData.address?.line1 || 'bhimtal haldwani,Naintal'}
                 />
               ) : (
                 <p className='text-blue-400 bg-[#F2F3FF] h-[5vh] flex items-center'>{doctorInfo.address?.line1 || 'bhimtal haldwani,Naintal'}</p>
@@ -282,7 +283,7 @@ const handleChange = (e) => {
                   name='line2'
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   onChange={handleChange}
-                 value={doctorInfo.address?.line2 || 'bhimtal haldwani,Naintal'}
+                 value={doctorData.address?.line2 || 'bhimtal haldwani,Naintal'}
                   type='text'
                 />
               ) : (
@@ -321,7 +322,7 @@ const handleChange = (e) => {
                 <textarea
                   name='about'
                   className='w-[100%] bg-gray-200 h-[10vh] outline-[#5f6FFF]'
-                  value={doctorInfo.about || 'I am a dedicated General Physician committed to providing comprehensive and compassionate healthcare for patients of all ages.  I focus on diagnosing and treating a wide range of acute and chronic illnesses, while promoting preventive care and healthy living. '}
+                  value={doctorData.about || 'I am a dedicated General Physician committed to providing comprehensive and compassionate healthcare for patients of all ages.  I focus on diagnosing and treating a wide range of acute and chronic illnesses, while promoting preventive care and healthy living. '}
                   onChange={handleChange}
                  
                 />
