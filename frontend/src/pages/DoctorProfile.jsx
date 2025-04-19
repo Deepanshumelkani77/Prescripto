@@ -299,7 +299,7 @@ const handleChange = (e) => {
                   className='bg-gray-200  h-[3vh] w-[10%] outline-[#5f6FFF]'
                   type='checkbox'
                   onChange={handleChange}
-                 
+                 checked={true}
                 />
               ) : (
                 <input type='checkbox' checked={doctorInfo.available}/>
