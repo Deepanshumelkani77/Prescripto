@@ -16,6 +16,7 @@ const DoctorProfile = () => {
       axios.get(`http://localhost:5000/doctor/info/${doctor.id}`)
         .then(response => {
           setDoctorInfo(response.data);
+          setDoctorData({name: response.data.name , email: response.data.email, speciality:response.data.speciality, degree: response.data.degree, experience: response.data.experience, about: response.data.about,fees:response.data.fees,available:response.data.available,address:{line1:response.data.address.line1,line2:response.data.address.line2}})
         })
         .catch(error => {
           console.error("Error fetching appointment data:", error);
@@ -82,8 +83,8 @@ const handleChange = (e) => {
     const updatedData = { ...doctorData, image: imageUrl };
 
     try {
-      const response = await fetch(`http://localhost:5000/doctor`, {
-        method: 'POST',
+      const response = await fetch(`http://localhost:5000/doctor/edit/${doctor.id}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedData),
       });
@@ -137,6 +138,7 @@ const handleChange = (e) => {
               type='text'
               placeholder='Enter your name'
               onChange={handleChange}
+              value={doctorData.name}
             />
           ) : (
             <p className='font-medium text-3xl text-neutral-800  mt-4'>{doctor?.name }</p>
@@ -159,7 +161,7 @@ const handleChange = (e) => {
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   name='email'
                   type='email'
-                
+                value={doctorData.email}
                   onChange={handleChange}
                 />
               ) : (
@@ -175,6 +177,7 @@ const handleChange = (e) => {
                   name='speciality'
                   type='text'
                 onChange={handleChange}
+                value={doctorData.speciality}
                 >
                   <option value="">Select</option>
                   <option value="General Physician">General Physician</option>
@@ -196,7 +199,7 @@ const handleChange = (e) => {
                   name='degree'
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   onChange={handleChange}
-                 
+                  value={doctorData.degree}
                   type='text'
                 />
               ) : (
@@ -211,7 +214,7 @@ const handleChange = (e) => {
                   name='fees'
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   onChange={handleChange}
-                 
+                  value={doctorData.fees}
                   type='number'
                 />
               ) : (
@@ -235,7 +238,7 @@ const handleChange = (e) => {
                   name='experience'
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   onChange={handleChange}
-                  
+                  value={doctorData.experience}
                 >
                   <option>Select</option>
                   <option value="1 year">1 year</option>
@@ -263,7 +266,7 @@ const handleChange = (e) => {
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   type='text'
                   onChange={handleChange}
-                 
+                  value={doctorData.address.line1}
                 />
               ) : (
                 <p className='text-blue-400 bg-[#F2F3FF] h-[5vh] flex items-center'>{doctorInfo.address?.line1 || 'bhimtal haldwani,Naintal'}</p>
@@ -278,7 +281,7 @@ const handleChange = (e) => {
                   name='line2'
                   className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
                   onChange={handleChange}
-                 
+                  value={doctorData.address.line2}
                   type='text'
                 />
               ) : (
@@ -317,7 +320,7 @@ const handleChange = (e) => {
                 <textarea
                   name='about'
                   className='w-[100%] bg-gray-200 h-[10vh] outline-[#5f6FFF]'
-                  
+                  value={doctorData.about}
                   onChange={handleChange}
                  
                 />

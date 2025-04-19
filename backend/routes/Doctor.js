@@ -60,7 +60,7 @@ res.status(201).send({ message: "Doctor added successfully" });
 
 router.put('/edit/:id',async (req, res) => {
   const { id } = req.params;
-  
+  console.log(req.body)
   const { name, email,speciality, degree,experience,about,fees,address:{line1,line2},image } = req.body;
 
   // Perform update logic here
