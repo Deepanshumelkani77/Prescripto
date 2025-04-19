@@ -141,7 +141,7 @@ const handleChange = (e) => {
               value={doctorData.name}
             />
           ) : (
-            <p className='font-medium text-3xl text-neutral-800  mt-4'>{doctor?.name }</p>
+            <p className='font-medium text-3xl text-neutral-800  mt-4'>{doctorInfo.name }</p>
           )}
 
 
@@ -165,7 +165,7 @@ const handleChange = (e) => {
                   onChange={handleChange}
                 />
               ) : (
-                <p className='text-blue-400 bg-[#F2F3FF] h-[5vh] flex items-center'>{doctor?.email}</p>
+                <p className='text-blue-400 bg-[#F2F3FF] h-[5vh] flex items-center'>{doctorInfo.email}</p>
               )}
              </div>
 
