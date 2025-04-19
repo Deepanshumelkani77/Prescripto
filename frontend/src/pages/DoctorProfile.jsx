@@ -71,14 +71,14 @@ const DoctorProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    let imageUrl = assets.profile_pic;
-
+  
+    let imageUrl = images || assets.profile_pic;  // Use previous image if exists
+  
     if (file) {
       const uploadData = new FormData();
       uploadData.append('file', file);
       uploadData.append('upload_preset', uploadPreset);
-
+  
       try {
         const res = await axios.post(cloudinaryUrl, uploadData);
         imageUrl = res.data.secure_url;
@@ -88,19 +88,20 @@ const DoctorProfile = () => {
         return;
       }
     }
-
+  
     const updatedData = { ...doctorData, image: imageUrl };
-
+  
     try {
       const response = await fetch(`http://localhost:5000/doctor/edit/${doctor.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedData),
       });
-
+  
       if (response.ok) {
         alert('Doctor updated successfully!');
-        setDoctorInfo(updatedData); // <-- update local info with new data
+        setDoctorInfo(updatedData); // Update info
+        setImages(imageUrl); // Update image state
         setIsEdit(false);
       } else {
         console.error('Failed to update doctor');
@@ -109,6 +110,7 @@ const DoctorProfile = () => {
       console.error('Error updating user:', error);
     }
   };
+  
 
   return (
     <div className='w-[70%] h-[80vh] m-auto bg-white flex flex-row gap-2 text-sm'>
@@ -135,7 +137,7 @@ const DoctorProfile = () => {
               </p>
             </div>
           ) : (
-            <img className='w-[100%] h-[40vh] rounded' src={doctorInfo.image || assets.profile_pic} alt="" />
+            <img className='w-[100%] h-[40vh] rounded' src={doctorInfo.image } alt="" />
           )}
 
           {/* Name Section */}
