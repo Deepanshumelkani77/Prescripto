@@ -2,6 +2,8 @@ const express=require("express");
 const router=express.Router();
 const Doctor = require("../models/Doctor.js");
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs"); 
+const jwt = require("jsonwebtoken"); 
 
 
 router.get("/:id",async (req, res) => {

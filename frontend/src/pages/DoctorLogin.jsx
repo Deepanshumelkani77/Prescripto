@@ -12,11 +12,11 @@ const [state,setState]=useState('signup')
 
 //signup
 const {signup}=useContext(StoreContext)
-  const [formData, setFormData] = useState({ username: "", email: "", password: "" });
+  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
   const handleSubmit = (e) => {
     e.preventDefault();
-    signup(formData.username, formData.email, formData.password);
+    signup(formData.name, formData.email, formData.password);
   };
 
 //login
@@ -58,7 +58,7 @@ const handleSubmit2 = async (e) => {
   <>
 <div className='w-full'>
     <p>Full Name</p>
-    <input value={formData.username} name='username' onChange={handleChange} placeholder='Your name' className='border border-zinc-300 rounded w-full p-2 mt-1 outline-[#5f6FFF]' type="text"   />
+    <input value={formData.name} name='name' onChange={handleChange} placeholder='Your name' className='border border-zinc-300 rounded w-full p-2 mt-1 outline-[#5f6FFF]' type="text"   />
   </div>
  
   <div className='w-full'>

@@ -6,16 +6,16 @@ const doctorSchema=new mongoose.Schema({
 email:{type:String,required:true},
 password:{type:String,required:true},
 image:{type:String},
-email:{type:String,required:true},
-speciality:{type:String,required:true},
-degree:{type:String,required:true},
-experience: {type:String,required:true},
-about:  {type:String,required:true},
-fees: {type:Number,required:true} ,
-available: { type: Boolean, default: true },
+email:{type:String},
+speciality:{type:String},
+degree:{type:String},
+experience: {type:String},
+about:  {type:String},
+fees: {type:Number} ,
+available: { type: Boolean, },
 address:{
-    line1: {type:String,required:true} ,
-    line2:   {type:String,required:true}
+    line1: {type:String} ,
+    line2:   {type:String}
 }
 
 
