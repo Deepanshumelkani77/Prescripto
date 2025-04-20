@@ -1,376 +1,288 @@
-import React, { useContext } from 'react';
-import { assets } from '../assets/assets';
-import { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import { StoreContext } from '../context/StoreContext';
+import { assets } from '../assets/assets';
+import { useNavigate } from 'react-router-dom';
 
 const DoctorProfile = () => {
   const { doctor } = useContext(StoreContext);
-
-  const [doctorData, setDoctorData] = useState({ name: '' , email: '', speciality: '', degree: '', experience: '', about: '',fees:'',available:'',address:{line1:'',line2:''}});
-  // Fetch user information
-  const [doctorInfo, setDoctorInfo] = useState({}); // Initialize as null
-  const [images,setImages]=useState('')
-  useEffect(() => {
-    if (doctor && doctor.id) {
-      axios.get(`http://localhost:5000/doctor/info/${doctor.id}`)
-        .then(response => {
-          setDoctorInfo(response.data);
-          setDoctorData({name: response.data.name , email: response.data.email, speciality:response.data.speciality, degree: response.data.degree, experience: response.data.experience, about: response.data.about,fees:response.data.fees,available:response.data.available,address:{line1:response.data.address.line1,line2:response.data.address.line2}})
-        setImages(response.data.image)
-        })
-        .catch(error => {
-          console.error("Error fetching appointment data:", error);
-        });
-    }
-  }, [doctor]);
-  
-  
-  
-
-
-
-
   const navigate = useNavigate();
 
-  const [isEdit, setIsEdit] = useState(false);
+  const [doctorData, setDoctorData] = useState({
+    name: '', email: '', speciality: '', degree: '', experience: '',
+    about: '', fees: '', available: false,
+    address: { line1: '', line2: '' }
+  });
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-  
-    if (name === 'line1' || name === 'line2') {
-      setDoctorData(prev => ({
-        ...prev,
-        address: {
-          ...prev.address,
-          [name]: value
-        }
-      }));
-    } else if (type === 'checkbox') {
-      setDoctorData(prev => ({
-        ...prev,
-        [name]: checked
-      }));
-    } else {
-      setDoctorData(prev => ({
-        ...prev,
-        [name]: value
-      }));
-    }
-  };
-  
-
+  const [initialData, setInitialData] = useState({});
+  const [doctorInfo, setDoctorInfo] = useState({});
+  const [images, setImages] = useState('');
   const [file, setFile] = useState(null);
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
+  const [isEdit, setIsEdit] = useState(false);
 
   const cloudinaryUrl = "https://api.cloudinary.com/v1_1/drx3wkg1h/image/upload";
   const uploadPreset = "Prescripto";
 
+  useEffect(() => {
+    if (doctor?.id) {
+      axios.get(`http://localhost:5000/doctor/info/${doctor.id}`)
+        .then(({ data }) => {
+          setDoctorInfo(data);
+          const formatted = {
+            name: data.name,
+            email: data.email,
+            speciality: data.speciality,
+            degree: data.degree,
+            experience: data.experience,
+            about: data.about,
+            fees: data.fees,
+            available: data.available,
+            address: {
+              line1: data.address?.line1 || '',
+              line2: data.address?.line2 || ''
+            }
+          };
+          setDoctorData(formatted);
+          setInitialData(formatted);
+          setImages(data.image);
+        })
+        .catch(err => console.error("Error fetching doctor info:", err));
+    }
+  }, [doctor]);
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    if (name === 'line1' || name === 'line2') {
+      setDoctorData(prev => ({
+        ...prev,
+        address: { ...prev.address, [name]: value }
+      }));
+    } else {
+      setDoctorData(prev => ({
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value
+      }));
+    }
+  };
+
+  const handleFileChange = (e) => setFile(e.target.files[0]);
+
+  const deepEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    let imageUrl = images || assets.profile_pic;  // Use previous image if exists
-  
+
+    let imageUrl = images || assets.profile_pic;
+
     if (file) {
       const uploadData = new FormData();
       uploadData.append('file', file);
       uploadData.append('upload_preset', uploadPreset);
-  
       try {
         const res = await axios.post(cloudinaryUrl, uploadData);
         imageUrl = res.data.secure_url;
       } catch (error) {
-        console.error("Image upload error:", error.response?.data || error);
         alert("Image upload failed");
         return;
       }
     }
-  
+
     const updatedData = { ...doctorData, image: imageUrl };
-  
+
+    if (deepEqual(initialData, doctorData) && imageUrl === images) {
+      alert("No changes detected.");
+      setIsEdit(false);
+      return;
+    }
+
     try {
       const response = await fetch(`http://localhost:5000/doctor/edit/${doctor.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedData),
+        body: JSON.stringify(updatedData)
       });
-  
+
       if (response.ok) {
-        alert('Doctor updated successfully!');
-        setDoctorInfo(updatedData); // Update info
-        setImages(imageUrl); // Update image state
+        alert("Profile updated successfully!");
+        setDoctorInfo(updatedData);
+        setInitialData(updatedData);
+        setImages(imageUrl);
         setIsEdit(false);
+        setFile(null);
       } else {
-        console.error('Failed to update doctor');
+        alert("Failed to update");
       }
-    } catch (error) {
-      console.error('Error updating user:', error);
+    } catch (err) {
+      console.error("Error updating doctor:", err);
     }
   };
-  
+
+  const renderInput = (label, name, type = 'text', options = null) => (
+    <div className="flex flex-col gap-1 w-full">
+      <label className="font-medium text-gray-700">{label}</label>
+      {isEdit ? (
+        options ? (
+          <select
+            name={name}
+            className="bg-gray-100 rounded-md h-10 px-3 outline-[#5f6FFF]"
+            value={doctorData[name]}
+            onChange={handleChange}
+          >
+            {options.map(opt => (
+              <option key={opt} value={opt}>{opt}</option>
+            ))}
+          </select>
+        ) : (
+          <input
+            name={name}
+            type={type}
+            className="bg-gray-100 rounded-md h-10 px-3 outline-[#5f6FFF]"
+            value={doctorData[name]}
+            onChange={handleChange}
+          />
+        )
+      ) : (
+        <p className="text-blue-500 bg-gray-50 rounded-md h-10 flex items-center px-3">
+          {doctorInfo[name] || 'N/A'}
+        </p>
+      )}
+    </div>
+  );
+
+  const renderAddressInput = (label, name) => (
+    <div className="flex flex-col gap-1 w-full">
+      <label className="font-medium text-gray-700">{label}</label>
+      {isEdit ? (
+        <input
+          name={name}
+          type="text"
+          className="bg-gray-100 rounded-md h-10 px-3 outline-[#5f6FFF]"
+          value={doctorData.address[name]}
+          onChange={handleChange}
+        />
+      ) : (
+        <p className="text-blue-500 bg-gray-50 rounded-md h-10 flex items-center px-3">
+          {doctorInfo.address?.[name] || 'N/A'}
+        </p>
+      )}
+    </div>
+  );
+
+  if (!doctorInfo) return <div className="text-center p-10">Loading...</div>;
 
   return (
-    <div className='w-[70%] h-[80vh] m-auto bg-white flex flex-row gap-2 text-sm'>
-      {/* Conditional rendering: only show the profile picture if userInfo is available */}
-      {doctorInfo ? (
-        <>
+    <div className="w-full max-w-6xl mx-auto mt-10 px-4">
+      <div className="flex flex-col lg:flex-row gap-10 bg-white rounded-lg p-6 shadow-lg">
 
-        {/**first box */}
-        <div className='w-[30%] h-[80vh] flex flex-col m-5 gap-4'>
-
-        {isEdit ? (
-            <div className='flex justify-evenly pt-5 pb-5 gap-4 text-gray-500 bg-gray-200'>
-              <label htmlFor="doc-img">
-                <img
-                  className='w-25 h-26 bg-gray-100 rounded-full cursor-pointer'
-                  src={file ? URL.createObjectURL(file) :images|| assets.profile_pic}
-                  alt="profile"
-                />
-              </label>
-              <input type="file" onChange={handleFileChange} name='image' id="doc-img" hidden />
-              <p className='m-6 font-bold text-xl'>
-                Upload <br />
-                picture
-              </p>
-            </div>
-          ) : (
-            <img className='w-[100%] h-[40vh] rounded' src={doctorInfo.image ||  assets.profile_pic} alt="" />
-          )}
-
-          {/* Name Section */}
-          
-          {isEdit ? (
-            <input
-              className='pl-5 bg-gray-200 font-medium h-[6vh] w-[100%]   outline-[#5f6FFF] mt-4'
-              name='name'
-              type='text'
-              placeholder='Enter your name'
-              onChange={handleChange}
-              value={doctorData.name}
+        {/* Left Section */}
+        <div className="w-full lg:w-1/3 flex flex-col items-center gap-4">
+          <label htmlFor="doc-img" className="cursor-pointer relative group">
+            <img
+              src={file ? URL.createObjectURL(file) : images || assets.profile_pic}
+              alt="Profile"
+              className="w-40 h-40 rounded-full object-cover border-2 border-blue-300 transition-transform duration-300 group-hover:scale-105"
             />
-          ) : (
-            <p className='font-medium text-3xl text-neutral-800  mt-4'>{doctorInfo.name }</p>
-          )}
-
-
-        </div>
-          
-        <div className='flex flex-col  w-[70%] h-[80vh]'>
-
-<div className='flex flex-row w-[100%]'>
-
- {/**second box */}
- <div className='w-[50%]  flex flex-col gap-5 m-5 text-neutral-700'>
-
-             <div className='flex flex-col gap-1 w-[100%]'>
-             <p className='font-medium'>Email id:</p>
-              {isEdit ? (
-                <input
-                  className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
-                  name='email'
-                  type='email'
-                value={doctorData.email}
-                  onChange={handleChange}
-                />
-              ) : (
-                <p className='text-blue-400 bg-[#F2F3FF] h-[5vh] flex items-center'>{doctorInfo.email}</p>
-              )}
-             </div>
-
-             <div className=' flex flex-col gap-1 w-[100%]'>
-              <p className='font-medium'>Speciality:</p>
-              {isEdit ? (
-                <select
-                  className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
-                  name='speciality'
-                  type='text'
-                onChange={handleChange}
-                value={doctorData.speciality}
-                >
-                  <option value="">Select</option>
-                  <option value="General Physician">General Physician</option>
-                  <option value="Gynecologist">Gynecologist</option>
-                  <option value="Dermatologist">Dermatologist</option>
-                  <option value="Pediatricians">Pediatricians</option>
-                  <option value="Neurologist">Neurologist</option>
-                  <option value="Gastroenterologist">Gastroenterologist</option>
-                </select>
-              ) : (
-                <p className='text-blue-400 bg-[#F2F3FF] h-[5vh] flex items-center'>{doctorInfo.speciality || 'General Physician'}</p>
-              )}
-</div>
-
-<div className='flex flex-col gap-1 w-[100%]'>
-              <p className='font-medium'>Education:</p>
-              {isEdit ? (
-                <input
-                  name='degree'
-                  className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
-                  onChange={handleChange}
-                  value={doctorData.degree}
-                  type='text'
-                />
-              ) : (
-                <p className='text-blue-400 bg-[#F2F3FF] h-[5vh] flex items-center'>{doctorInfo.degree || 'MBBS'}</p>
-              )}
-</div>
-
-<div className='flex flex-col gap-1 w-[100%]'>
-              <p className='font-medium'>Fees:</p>
-              {isEdit ? (
-                <input
-                  name='fees'
-                  className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
-                  onChange={handleChange}
-                  value={doctorData.fees}
-                  type='number'
-                />
-              ) : (
-                <p className='text-blue-400 bg-[#F2F3FF] h-[5vh] flex items-center'>{doctorInfo.fees || 'XXX'}</p>
-              )}
-</div>
-
-
-
-
-            </div>
-        
-
-           {/**third box */}
-            <div className='w-[50%] flex flex-col gap-5 m-5 text-neutral-700'>
-
-            <div className='flex flex-col gap-1 w-[100%] '>
-              <p className='font-medium'>Experience:</p>
-              {isEdit ? (
-                <select
-                  name='experience'
-                  className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
-                  onChange={handleChange}
-                  value={doctorData.experience}
-                >
-                  <option>Select</option>
-                  <option value="1 year">1 year</option>
-                  <option value="2 year">2 year</option>
-                  <option value="3 year">3 year</option>
-                  <option value="4 year">4 year</option>
-                  <option value="5 year">5 year</option>
-                  <option value="6 year">6 year</option>
-                  <option value="7 year">7 year</option>
-                  <option value="8 year">8 year</option>
-                  <option value="9 year">9 year</option>
-                  <option value="10 year">10 year</option>
-                </select>
-              ) : (
-                <p className='text-blue-400 bg-[#F2F3FF] h-[5vh] flex items-center'>{doctorInfo.experience || '0 year'}</p>
-              )}
-</div>
-
-
-<div className='flex flex-col gap-1 w-[100%]'>
-              <p className='font-medium'>Address 1:</p>
-              {isEdit ? (
-                <input
-                  name='line1'
-                  className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
-                  type='text'
-                  onChange={handleChange}
-                  value={doctorData.address.line1}
-                />
-              ) : (
-                <p className='text-blue-400 bg-[#F2F3FF] h-[5vh] flex items-center'>{doctorInfo.address?.line1 || 'bhimtal haldwani,Naintal'}</p>
-              )}
-</div>
-
-
-<div className='flex flex-col gap-1 w-[100%]'>
-              <p className='font-medium'>Address 2:</p>
-              {isEdit ? (
-                <input
-                  name='line2'
-                  className='bg-gray-200  h-[5vh] w-[100%] outline-[#5f6FFF]'
-                  onChange={handleChange}
-                  value={doctorData.address.line2}
-                  type='text'
-                />
-              ) : (
-                <p className='text-blue-400 bg-[#F2F3FF] h-[5vh] flex items-center'>{doctorInfo.address?.line2 || 'bhimtal haldwani,Naintal'}</p>
-              )}
-</div>
-
-
-
-<div className='mt-5 flex gap-5 items-center w-[100%]'>
-               <p className='font-medium'>Available:</p>
-              {isEdit ? (
-                <input
-                  name='available'
-                  className='bg-gray-200  h-[3vh] w-[10%] outline-[#5f6FFF]'
-                  type='checkbox'
-                  onChange={handleChange}
-                 checked={doctorData.available}
-                />
-              ) : (
-                <input type='checkbox' checked={doctorInfo.available}/>
-              )}
-</div>
-
-
-
-
-            </div>
-  
-    </div>
-
-<div className='p-5 w-[100%]  '>
-
-<p className='font-medium'>About:</p>
-              {isEdit ? (
-                <textarea
-                  name='about'
-                  className='w-[100%] bg-gray-200 h-[10vh] outline-[#5f6FFF]'
-                  value={doctorData.about}
-                  onChange={handleChange}
-                 
-                />
-              ) : (
-                <p className='text-blue-400 bg-[#F2F3FF] h-[12vh] flex items-center'>{doctorInfo.about || 'I am a dedicated General Physician committed to providing comprehensive and compassionate healthcare for patients of all ages.  I focus on diagnosing and treating a wide range of acute and chronic illnesses, while promoting preventive care and healthy living. '}</p>
-              )}
-
-</div>
-
-
-       {/**buttons */}
-            <div className='mt-10'>
+            {isEdit && (
+              <div className="absolute inset-0 bg-black bg-opacity-40 rounded-full flex items-center justify-center text-white text-sm opacity-0 group-hover:opacity-100 transition">
+                Click to change
+              </div>
+            )}
+            {isEdit && <input type="file" hidden id="doc-img" onChange={handleFileChange} />}
+          </label>
+          <div className="text-center w-full">
             {isEdit ? (
-              <button
-                className='border border-[#5f6FFF] px-8 py-2 rounded-full hover:bg-[#5f6FFF] hover:text-white transition-all'
-                onClick={(e) => {
-                  handleSubmit(e);
-                  
-                }}
-              >
-                Save information
-              </button>
+              <input
+                name="name"
+                className="text-xl font-bold text-center w-full outline-none bg-gray-100 py-2 rounded-md"
+                value={doctorData.name}
+                onChange={handleChange}
+              />
             ) : (
-              <button
-                className='border border-[#5f6FFF] px-8 py-2 rounded-full hover:bg-[#5f6FFF] hover:text-white transition-all'
-                onClick={() => setIsEdit(true)}
-              >
-                Edit
-              </button>
+              <h2 className="text-2xl font-bold text-gray-800">{doctorInfo.name}</h2>
+            )}
+          </div>
+        </div>
+
+        {/* Right Section */}
+        <form onSubmit={handleSubmit} className="w-full lg:w-2/3 flex flex-col gap-6">
+          <div className="grid md:grid-cols-2 gap-4">
+            {renderInput("Email", "email", "email")}
+            {renderInput("Speciality", "speciality", "text", [
+              "General Physician", "Gynecologist", "Dermatologist", "Pediatricians",
+              "Neurologist", "Gastroenterologist"
+            ])}
+            {renderInput("Education", "degree")}
+            {renderInput("Experience", "experience", "text", [
+              "1 year", "2 year", "3 year", "4 year", "5 year",
+              "6 year", "7 year", "8 year", "9 year", "10 year"
+            ])}
+            {renderInput("Fees", "fees", "number")}
+            {renderAddressInput("Address Line 1", "line1")}
+            {renderAddressInput("Address Line 2", "line2")}
+          </div>
+
+          {/* About */}
+          <div className="flex flex-col gap-1">
+            <label className="font-medium text-gray-700">About</label>
+            {isEdit ? (
+              <textarea
+                name="about"
+                className="bg-gray-100 rounded-md p-3 outline-[#5f6FFF]"
+                rows={4}
+                value={doctorData.about}
+                onChange={handleChange}
+              />
+            ) : (
+              <p className="text-blue-500 bg-gray-50 rounded-md p-3">
+                {doctorInfo.about || 'No description'}
+              </p>
             )}
           </div>
 
-
+          {/* Available */}
+          <div className="flex items-center gap-3">
+            <label className="font-medium">Available:</label>
+            {isEdit ? (
+              <input type="checkbox" name="available" checked={doctorData.available} onChange={handleChange} />
+            ) : (
+              <input type="checkbox" checked={doctorInfo.available} readOnly />
+            )}
           </div>
-          
-        </>
-      ) : (
-        <div>Loading...</div> // Show loading indicator while fetching userInfo
-      )}
+
+          {/* Buttons */}
+          <div className="flex justify-end gap-4">
+            {isEdit ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDoctorData(initialData);
+                    setIsEdit(false);
+                    setFile(null);
+                  }}
+                  className="bg-gray-200 text-gray-700 px-6 py-2 rounded-full hover:bg-gray-300 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition"
+                >
+                  Save Changes
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setIsEdit(true)}
+                className="border border-blue-600 text-blue-600 px-6 py-2 rounded-full hover:bg-blue-600 hover:text-white transition"
+              >
+                Edit Profile
+              </button>
+            )}
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
