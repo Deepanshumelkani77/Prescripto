@@ -104,7 +104,7 @@ const DoctorAppointment = () => {
 
 
   return (
-    <div className='w-[100%]  bg-green-200 mx-auto px-4 py-6'>
+    <div className='w-[100%]   mx-auto px-4 py-6'>
       
       <div className="grid grid-cols-2 gap-6 mb-6 max-w-lg">
   <div className="bg-white rounded-xl shadow-md flex items-center gap-4 p-4">
@@ -171,10 +171,20 @@ const DoctorAppointment = () => {
                         title="Mark as Done (UI Only)"
                         onClick={() => {
                           handleComplete(item._id);
+                        
+                          const newEarning = (myDoctor?.earning || 0) + (myDoctor?.fees || 0);
+                          const newCompleted = (myDoctor?.completed_appointment || 0) + 1;
+                        
                           setEarning({
                             earnings: myDoctor?.fees || 0,
                             completed_appointment: 1
                           });
+                        
+                          setMyDoctor(prev => ({
+                            ...prev,
+                            earning: newEarning,
+                            completed_appointment: newCompleted
+                          }));
                         }}
                       />
                     </div>
