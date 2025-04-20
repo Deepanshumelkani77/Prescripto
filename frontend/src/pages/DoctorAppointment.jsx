@@ -63,6 +63,26 @@ const DoctorAppointment = () => {
     }
   };
 
+  const handleComplete = async (id) => {
+    const confirm = window.confirm('Are you sure appointment is completed?');
+    if (!confirm) return;
+    try {
+      const res = await fetch(`http://localhost:5000/appointment/delete/${id}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        setAppointments(prev => prev.filter(a => a._id !== id));
+        alert('Appointment completed successfully!');
+      } else {
+        alert('Error completing appointment.');
+      }
+    } catch (err) {
+      console.error("Error deleting:", err);
+      alert("Something went wrong!");
+    }
+  };
+
+
 
   const [earning,setEarning]=useState({earnings:0,completed_appointment:0})
   useEffect(() => {
@@ -85,6 +105,26 @@ const DoctorAppointment = () => {
 
   return (
     <div className='w-[100%]  bg-green-200 mx-auto px-4 py-6'>
+      
+      <div className="grid grid-cols-2 gap-6 mb-6 max-w-lg">
+  <div className="bg-white rounded-xl shadow-md flex items-center gap-4 p-4">
+    <img src={assets1.earning_icon} alt="earning" className="w-10 h-10" />
+    <div>
+      <h4 className="text-gray-600 text-sm">Total Earnings</h4>
+      <p className="text-xl font-semibold text-green-600">₹{myDoctor?.earning || 0}</p>
+    </div>
+  </div>
+  <div className="bg-white rounded-xl shadow-md flex items-center gap-4 p-4">
+    <img src={assets1.appointment_icon} alt="appointments" className="w-10 h-10" />
+    <div>
+      <h4 className="text-gray-600 text-sm">Appointments Done</h4>
+      <p className="text-xl font-semibold text-blue-600">{myDoctor?.completed_appointment || 0}</p>
+    </div>
+  </div>
+</div>
+
+
+
       <h2 className='text-2xl font-semibold mb-4'>My Appointments</h2>
 
       <div className='bg-white bg-pink-200 rounded-xl border border-gray-200 overflow-x-auto shadow-sm'>
@@ -130,10 +170,11 @@ const DoctorAppointment = () => {
                         className='w-6 h-6 cursor-pointer hover:scale-110 transition'
                         title="Mark as Done (UI Only)"
                         onClick={() => {
+                          handleComplete(item._id);
                           setEarning({
                             earnings: myDoctor?.fees || 0,
                             completed_appointment: 1
-                          });handleDelete(item._id);
+                          });
                         }}
                       />
                     </div>
