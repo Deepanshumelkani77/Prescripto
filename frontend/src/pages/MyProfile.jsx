@@ -11,7 +11,7 @@ const MyProfile = () => {
   const [userData, setUserData] = useState({ name: '', image: '', email: '', phone: '', address: '', gender: '', dob: '' });
   // Fetch user information
   const [userInfo, setUserInfo] = useState(null); // Initialize as null
-
+const [images,setImages]=useState('')
   useEffect(() => {
     axios.get(`http://localhost:5000/user/info/${user.id}`)
       .then(response => {
@@ -26,7 +26,7 @@ const MyProfile = () => {
           address: response.data.address || '',
           gender: response.data.gender || '',
           dob: response.data.dob ? response.data.dob.slice(0, 10) : '',
-        });
+        }); setImages(response.data.image)
       })
       .catch(error => {
         console.error("Error fetching user data:", error);
@@ -53,7 +53,7 @@ const MyProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let imageUrl = user.image || userData.image;
+    let imageUrl =images || assets.profile_pic; 
 
     if (file) {
       const uploadData = new FormData();
@@ -80,8 +80,10 @@ const MyProfile = () => {
       });
 
       if (response.ok) {
+        const updatedUser = await response.json(); // assuming you return the updated user from the backend
+        setUserInfo(updatedUser); // update the state so UI reflects changes immediately
+        setIsEdit(false);
         alert('User updated successfully!');
-        navigate('/myprofile');
       } else {
         console.error('Failed to update user');
       }
@@ -100,7 +102,7 @@ const MyProfile = () => {
               <label htmlFor="doc-img">
                 <img
                   className='w-25 h-26 bg-gray-100 rounded-full cursor-pointer'
-                  src={file ? URL.createObjectURL(file) : userData.image}
+                  src={file ? URL.createObjectURL(file) :images|| assets.profile_pic}
                   alt="profile"
                 />
               </label>
