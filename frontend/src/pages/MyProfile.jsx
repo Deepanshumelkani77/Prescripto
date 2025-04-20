@@ -102,7 +102,7 @@ const [images,setImages]=useState('')
         <>
 
 { /**Box first */}
-<div className='w-[40%] h-[80vh] bg-green-200 flex flex flex-col gap-3 p-15 pt-10'>
+<div className='w-[40%] h-[80vh] bg-[#5f6FFF] flex flex flex-col gap-3 p-15 pt-10'>
 
 
 {isEdit ? (
@@ -142,10 +142,14 @@ const [images,setImages]=useState('')
 
           
 
-          {/* Contact Information Section */}
-          <div>
-            <p className='text-neutral-500 underline mt-3'>CONTACT INFORMATION</p>
-            <div className='grid grid-cols-[1fr_3fr] gap-y-2.5 mt-3 text-neutral-700'>
+
+          {/* second box */}
+
+<div className='flex flex-col gap-5 bg-green-200 w-[60%] h-[80vh]  pl-10 pt-10'>
+
+<div>
+            <p className='text-neutral-500 underline text-xl '>CONTACT INFORMATION</p>
+            <div className='grid grid-cols-[1fr_3fr] gap-y-5 mt-6 text-neutral-700 text-lg'>
               <p className='font-medium'>Email id:</p>
               <p className='text-blue-500'>{userInfo.email}</p>
               <p className='font-medium'>Phone:</p>
@@ -177,8 +181,8 @@ const [images,setImages]=useState('')
 
           {/* Basic Information Section */}
           <div>
-            <p className='text-neutral-500 underline mt-3'>BASIC INFORMATION</p>
-            <div className='grid grid-cols-[1fr_3fr] gap-y-2.5 mt-3 text-neutral-700'>
+            <p className='text-neutral-500 underline mt-3 text-xl'>BASIC INFORMATION</p>
+            <div className='grid grid-cols-[1fr_3fr] gap-y-5 text-lg mt-6 text-neutral-700'>
               <p className='font-medium'>Gender:</p>
               {isEdit ? (
                 <select
@@ -209,7 +213,7 @@ const [images,setImages]=useState('')
             </div>
           </div>
 
-          <div className='mt-10'>
+          <div className='mt-5'>
             {isEdit ? (
               <button
                 className='border border-[#5f6FFF] px-8 py-2 rounded-full hover:bg-[#5f6FFF] hover:text-white transition-all'
@@ -229,6 +233,10 @@ const [images,setImages]=useState('')
               </button>
             )}
           </div>
+
+</div>
+
+         
         </>
       ) : (
         <div>Loading...</div> // Show loading indicator while fetching userInfo
