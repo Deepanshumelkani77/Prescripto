@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 const MyProfile = () => {
   const { user } = useContext(AppContext);
 
-  const [userData, setUserData] = useState({ name: '', image: '', email: '', phone: '', address: '', gender: '', dob: '' });
+  const [userData, setUserData] = useState({ name: '', email: '', phone: '', address: '', gender: '', dob: '' });
   // Fetch user information
   const [userInfo, setUserInfo] = useState(null); // Initialize as null
 const [images,setImages]=useState('')
@@ -20,7 +20,7 @@ const [images,setImages]=useState('')
         // Set userData only after userInfo is fetched
         setUserData({
           name: response.data.username || '',
-          image: response.data.image || assets.profile_pic,
+         
           email: response.data.email || '',
           phone: response.data.phone_no || '',
           address: response.data.address || '',
@@ -80,10 +80,11 @@ const [images,setImages]=useState('')
       });
 
       if (response.ok) {
-        const updatedUser = await response.json(); // assuming you return the updated user from the backend
-        setUserInfo(updatedUser); // update the state so UI reflects changes immediately
-        setIsEdit(false);
+      
         alert('User updated successfully!');
+        setUserInfo(updatedData); // Update info
+        setImages(imageUrl); // Update image state
+        setIsEdit(false);
       } else {
         console.error('Failed to update user');
       }
