@@ -5,145 +5,129 @@ import axios from 'axios';
 
 const DoctorAppointment = () => {
   const { doctor } = useContext(StoreContext);
-  const [appointment, setAppointment] = useState([]);
+  const [appointments, setAppointments] = useState([]);
+  const [doctors, setDoctors] = useState([]);
+  const [myDoctor, setMyDoctor] = useState({});
 
   useEffect(() => {
     axios.get('http://localhost:5000/appointment/doctor')
-      .then(response => {
-        setAppointment(response.data);
-      })
-      .catch(error => {
-        console.error("Error fetching appointment data:", error);
-      });
+      .then(res => setAppointments(res.data))
+      .catch(err => console.error("Error fetching appointments:", err));
   }, []);
 
-  const calculateAge = (dob) => {
-    if (!dob) return '-';
-  
-    const birthDate = new Date(dob);
-    const today = new Date();
-  
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    const dayDiff = today.getDate() - birthDate.getDate();
-  
-    // Adjust age if birthday hasn't occurred yet this year
-    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
-      age--;
-    }
-  
-    return age;
-  };
-  const formatDateTime = (dateTimeStr) => {
-    if (!dateTimeStr) return '-';
-    
-    const date = new Date(dateTimeStr);
-  
-    // If parsing fails
-    if (isNaN(date.getTime())) return dateTimeStr;
-  
-    return date.toLocaleString('en-US', {
-      dateStyle: 'long', // e.g. April 18, 2025
-      timeStyle: 'short', // e.g. 10:00 AM
-    });
-  };
-  
-
-
-
-  const [doctors,setDoctors]=useState([])
-  const [myDoctor,setMyDoctor]=useState({})
   useEffect(() => {
     if (doctor?.id) {
       axios.get('http://localhost:5000/doctor')
-        .then(response => {
-          const doctorsData = response.data;
-          setDoctors(doctorsData);
-  
-          const matchedDoctor = doctorsData.find(doc => doc._id === doctor.id);
-          if (matchedDoctor) {
-            setMyDoctor(matchedDoctor);
-          }
+        .then(res => {
+          const doctorList = res.data;
+          setDoctors(doctorList);
+          const found = doctorList.find(doc => doc._id === doctor.id);
+          setMyDoctor(found || {});
         })
-        .catch(error => {
-          console.error("Error fetching doctor data:", error);
-        });
+        .catch(err => console.error("Error fetching doctor data:", err));
     }
   }, [doctor]);
-  
+
+  const calculateAge = (dob) => {
+    if (!dob) return '-';
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+    return age;
+  };
+
+  const formatDateTime = (dateTimeStr) => {
+    const date = new Date(dateTimeStr);
+    if (isNaN(date.getTime())) return dateTimeStr;
+    return date.toLocaleString('en-US', { dateStyle: 'long', timeStyle: 'short' });
+  };
 
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm('Are you sure you want to cancel appointment');
-    if (!confirmDelete) return;
-  
+    const confirm = window.confirm('Cancel this appointment?');
+    if (!confirm) return;
     try {
-      const response = await fetch(`http://localhost:5000/appointment/delete/${id}`, {
+      const res = await fetch(`http://localhost:5000/appointment/delete/${id}`, {
         method: 'DELETE',
       });
-  
-      if (response.ok) {
-        setAppointment(prev => prev.filter(doc => doc._id !== id)); // remove from UI
-        alert('Appointment cancel successfully!');
+      if (res.ok) {
+        setAppointments(prev => prev.filter(a => a._id !== id));
+        alert('Appointment cancelled!');
       } else {
-        alert('Failed to cancel appointment.');
+        alert('Error cancelling appointment.');
       }
-    } catch (error) {
-      console.error('Error canceling appointment:', error);
-      alert('An error occurred while canceling appointment.');
+    } catch (err) {
+      console.error("Error deleting:", err);
+      alert("Something went wrong!");
     }
   };
-  
-  
 
   return (
-    <div className='w-full max-w-6xl m-5'>
-      <p className='mb-3 text-lg font-medium'>All Appointments</p>
+    <div className='max-w-7xl mx-auto px-4 py-6'>
+      <h2 className='text-2xl font-semibold mb-4'>My Appointments</h2>
 
-      <div className='bg-white border rounded border-gray-200 text-sm max-h-[80vh] min-h-[50vh] overflow-y-scroll'>
-        <div className='max-sm:hidden grid grid-cols-[0.5fr_2fr_1fr_1fr_3fr_1fr] gap-1 py-3 px-6 border-b border-gray-300 font-medium'>
-          <p>#</p>
-          <p>Patient</p>
-          <p>Payment</p>
-          <p>Age</p>
-          <p>Date & Time</p>
-         
-          <p>Action</p>
-        </div>
+      <div className='bg-white rounded-xl border border-gray-200 overflow-x-auto shadow-sm'>
+        <table className='w-full text-sm text-left min-w-[600px]'>
+          <thead className='bg-gray-100 sticky top-0 z-10'>
+            <tr className='text-gray-700 font-medium'>
+              <th className='px-4 py-3'>#</th>
+              <th className='px-4 py-3'>Patient</th>
+              <th className='px-4 py-3'>Payment</th>
+              <th className='px-4 py-3'>Age</th>
+              <th className='px-4 py-3'>Date & Time</th>
+              <th className='px-4 py-3 text-center'>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              appointments.filter(a => a.doc_id?._id === myDoctor._id).map((item, idx) => (
+                <tr key={item._id} className='border-t hover:bg-gray-50'>
+                  <td className='px-4 py-3'>{idx + 1}</td>
+                  <td className='px-4 py-3 flex items-center gap-2'>
+                    <img src={item.user_id?.image} className='w-8 h-8 rounded-full object-cover' alt="patient" />
+                    <span>{item.user_id?.username || 'Unknown'}</span>
+                  </td>
+                  <td className='px-4 py-3'>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${item.paid ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                      {item.paid ? 'Paid' : 'Cash'}
+                    </span>
+                  </td>
+                  <td className='px-4 py-3'>{calculateAge(item.user_id?.dob)}</td>
+                  <td className='px-4 py-3'>{formatDateTime(`${item.date} ${item.time}`)}</td>
+                  <td className='px-4 py-3 text-center'>
+                    <div className='flex justify-center gap-3'>
+                      <img
+                        src={assets1.cancel_icon}
+                        alt='cancel'
+                        className='w-6 h-6 cursor-pointer hover:scale-110 transition'
+                        onClick={() => handleDelete(item._id)}
+                        title="Cancel Appointment"
+                      />
+                      <img
+                        src={assets1.tick_icon}
+                        alt='confirm'
+                        className='w-6 h-6 cursor-pointer hover:scale-110 transition'
+                        title="Mark as Done (UI Only)"
+                      />
+                    </div>
+                  </td>
+                </tr>
+              ))
+            }
 
-        {
-          appointment
-            .filter(item => item.doc_id?._id === myDoctor._id)
-            .map((item, index) => (
-              <div
-                key={index}
-                className='flex flex-wrap justify-between max-sm:gap-5 max-sm:text-base sm:grid grid-cols-[0.5fr_2fr_1fr_1fr_3fr_1fr] gap-1 items-center text-gray-500 py-3 px-6 border-b border-gray-300 hover:bg-gray-50'
-              >
-                <p className='max-sm:hidden'>{index + 1}</p>
-
-                <div className='flex items-center gap-2'>
-                  <img className='w-8 rounded-full' src={item.user_id?.image} alt="user" />
-                  <p>{item.user_id?.username}</p>
-                </div>
-
-                <div>{item.paid? 'Paid' : 'Cash'}</div>
-
-                <p className='max-sm:hidden'>{calculateAge(item.user_id?.dob)}</p>
-
-                <p>{formatDateTime(`${item.date} ${item.time}`)}</p>
-
-               
-
-                <div className='flex gap-2'>
-                  <img onClick={()=>{handleDelete(item._id)}} className='w-6 cursor-pointer' src={assets1.cancel_icon} alt="cancel" />
-                  <img className='w-6 cursor-pointer' src={assets1.tick_icon} alt="confirm" />
-                </div>
-              </div>
-            ))
-        }
+            {
+              appointments.filter(a => a.doc_id?._id === myDoctor._id).length === 0 && (
+                <tr>
+                  <td colSpan="6" className='px-4 py-6 text-center text-gray-500'>No appointments found</td>
+                </tr>
+              )
+            }
+          </tbody>
+        </table>
       </div>
     </div>
   );
 };
 
 export default DoctorAppointment;
-/**hello */
