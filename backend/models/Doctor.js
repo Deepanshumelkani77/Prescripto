@@ -16,7 +16,10 @@ available: { type: Boolean, },
 address:{
     line1: {type:String} ,
     line2:   {type:String}
-}
+},
+earning:{type:Number},
+completed_appointment:{type:Number}
+
 
 
 
