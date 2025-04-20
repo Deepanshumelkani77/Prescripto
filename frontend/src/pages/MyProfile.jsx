@@ -93,11 +93,19 @@ const [images,setImages]=useState('')
   };
 
   return (
-    <div className='max-w-lg flex flex-col gap-2 text-sm'>
+    <div className='w-[80%] flex flex gap-2 h-[80vh] m-auto bg-[#5f6FFF]'>
       {/* Conditional rendering: only show the profile picture if userInfo is available */}
+
+
+      
       {userInfo ? (
         <>
-          {isEdit ? (
+
+{ /**Box first */}
+<div className='w-[40%] h-[80vh] bg-green-200 flex flex flex-col gap-3 p-15 pt-10'>
+
+
+{isEdit ? (
             <div className='flex flex-items-center gap-4 text-gray-500'>
               <label htmlFor="doc-img">
                 <img
@@ -113,7 +121,7 @@ const [images,setImages]=useState('')
               </p>
             </div>
           ) : (
-            <img className='w-36 h-36 rounded' src={userInfo.image || assets.profile_pic} alt="" />
+            <img className='w-[100%] h-[50vh] rounded' src={userInfo.image || assets.profile_pic} alt="" />
           )}
 
           {/* Name Section */}
@@ -129,7 +137,10 @@ const [images,setImages]=useState('')
             <p className='font-medium text-3xl text-neutral-800 mt-4'>{userInfo.username || user.name}</p>
           )}
 
-          <hr className='bg-zinc-400 h-[1px] border-none' />
+
+</div>
+
+          
 
           {/* Contact Information Section */}
           <div>
