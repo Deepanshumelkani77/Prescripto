@@ -73,9 +73,9 @@ const DoctorAppointment = () => {
             <tr className='text-gray-700 font-medium'>
               <th className='px-4 py-3'>#</th>
               <th className='px-4 py-3'>Patient</th>
-              <th className='px-4 py-3'>Payment</th>
-              <th className='px-4 py-3'>Age</th>
-              <th className='px-4 py-3'>Date & Time</th>
+              <th className='px-4 py-3 hidden md:table-cell'>Payment</th>
+              <th className='px-4 py-3 hidden md:table-cell'>Age</th>
+              <th className='px-4 py-3 '>Date & Time</th>
               <th className='px-4 py-3 text-center'>Action</th>
             </tr>
           </thead>
@@ -89,11 +89,11 @@ const DoctorAppointment = () => {
                     <span>{item.user_id?.username || 'Unknown'}</span>
                   </td>
                   <td className='px-4 py-3'>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${item.paid ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                    <span className={`px-2 py-1 rounded-full text-xs hidden md:table-cell font-medium ${item.paid ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
                       {item.paid ? 'Paid' : 'Cash'}
                     </span>
                   </td>
-                  <td className='px-4 py-3'>{calculateAge(item.user_id?.dob)}</td>
+                  <td className='px-4 py-3 hidden md:table-cell'>{calculateAge(item.user_id?.dob)}</td>
                   <td className='px-4 py-3'>{formatDateTime(`${item.date} ${item.time}`)}</td>
                   <td className='px-4 py-3 text-center'>
                     <div className='flex justify-center gap-3'>
