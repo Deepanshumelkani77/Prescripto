@@ -78,11 +78,28 @@ router.put('/edit/:id',async (req, res) => {
   }
 })
 
-router.post("/edit_earning/:id",async(req,res)=>{
+router.post("/edit_earning/:id", async (req, res) => {
+  const { id } = req.params;
+  const { earnings, completed_appointment } = req.body;
+console.log(req.body)
+  try {
+    const doctor = await Doctor.findById(id);
+    if (!doctor) {
+      return res.status(404).json({ message: 'Doctor not found' });
+    }
 
-  console.log(req.body)
+    // Update earnings and completed appointments
+    doctor.earning = (doctor.earning || 0) + earnings;
+    doctor.completed_appointment = (doctor.completed_appointment || 0) + completed_appointment;
 
-})
+    await doctor.save();
+
+    res.status(200).json({ message: 'Earnings updated successfully', doctor });
+  } catch (error) {
+    console.error("Failed to update earnings:", error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
 
 
 

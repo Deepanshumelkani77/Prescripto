@@ -133,7 +133,7 @@ const DoctorAppointment = () => {
                           setEarning({
                             earnings: myDoctor?.fees || 0,
                             completed_appointment: 1
-                          });
+                          })
                         }}
                       />
                     </div>
