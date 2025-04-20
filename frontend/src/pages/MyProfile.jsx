@@ -19,7 +19,7 @@ const MyProfile = () => {
 
         // Set userData only after userInfo is fetched
         setUserData({
-          name: response.data.name || '',
+          name: response.data.username || '',
           image: response.data.image || assets.profile_pic,
           email: response.data.email || '',
           phone: response.data.phone_no || '',
@@ -124,7 +124,7 @@ const MyProfile = () => {
               onChange={handleChange}
             />
           ) : (
-            <p className='font-medium text-3xl text-neutral-800 mt-4'>{userInfo.username}</p>
+            <p className='font-medium text-3xl text-neutral-800 mt-4'>{userInfo.username || user.name}</p>
           )}
 
           <hr className='bg-zinc-400 h-[1px] border-none' />
