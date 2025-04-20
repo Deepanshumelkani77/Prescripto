@@ -134,7 +134,7 @@ const [images,setImages]=useState('')
               onChange={handleChange}
             />
           ) : (
-            <p className='font-medium text-3xl text-neutral-800 mt-4'>{userInfo.username || user.name}</p>
+            <p className='font-medium text-3xl text-white mt-4'>{userInfo.username || user.name}</p>
           )}
 
 
@@ -145,14 +145,14 @@ const [images,setImages]=useState('')
 
           {/* second box */}
 
-<div className='flex flex-col gap-5 bg-green-200 w-[60%] h-[80vh]  pl-10 pt-10'>
+<div className='flex flex-col gap-5 bg-[#5f6FFF] w-[60%] h-[80vh]  pl-10 pt-10'>
 
 <div>
-            <p className='text-neutral-500 underline text-xl '>CONTACT INFORMATION</p>
+            <p className='text-white font-medium underline text-xl '>CONTACT INFORMATION</p>
             <div className='grid grid-cols-[1fr_3fr] gap-y-5 mt-6 text-neutral-700 text-lg'>
-              <p className='font-medium'>Email id:</p>
-              <p className='text-blue-500'>{userInfo.email}</p>
-              <p className='font-medium'>Phone:</p>
+              <p className='font-medium text-white'>Email id:</p>
+              <p className='text-white '>{userInfo.email}</p>
+              <p className='font-medium text-white'>Phone:</p>
               {isEdit ? (
                 <input
                   className='bg-gray-100 max-w-52'
@@ -162,9 +162,9 @@ const [images,setImages]=useState('')
                   onChange={handleChange}
                 />
               ) : (
-                <p className='text-blue-400'>{console.log(userInfo.phone_no)}{userInfo.phone_no || '0000000000'}</p>
+                <p className='text-white'>{console.log(userInfo.phone_no)}{userInfo.phone_no || '0000000000'}</p>
               )}
-              <p className='font-medium'>Address:</p>
+              <p className='font-medium text-white'>Address:</p>
               {isEdit ? (
                 <input
                   name='address'
@@ -174,14 +174,14 @@ const [images,setImages]=useState('')
                   type='text'
                 />
               ) : (
-                <p className='text-gray-500'>{userInfo.address ||'Haldwani , Bhimtal Uttarakhand'}</p>
+                <p className='text-white'>{userInfo.address ||'Haldwani , Bhimtal Uttarakhand'}</p>
               )}
             </div>
           </div>
 
           {/* Basic Information Section */}
           <div>
-            <p className='text-neutral-500 underline mt-3 text-xl'>BASIC INFORMATION</p>
+            <p className='text-white underline mt-3 text-xl font-medium'>BASIC INFORMATION</p>
             <div className='grid grid-cols-[1fr_3fr] gap-y-5 text-lg mt-6 text-neutral-700'>
               <p className='font-medium'>Gender:</p>
               {isEdit ? (
@@ -208,7 +208,7 @@ const [images,setImages]=useState('')
                   value={userData.dob}
                 />
               ) : (
-                <p className='text-gray-400'>{userInfo.dob?.slice(0, 10) || '0000-00-00'}</p>
+                <p className='text-white'>{userInfo.dob?.slice(0, 10) || '0000-00-00'}</p>
               )}
             </div>
           </div>
