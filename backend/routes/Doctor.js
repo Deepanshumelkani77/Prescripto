@@ -78,6 +78,12 @@ router.put('/edit/:id',async (req, res) => {
   }
 })
 
+router.post("/edit_earning/:id",async(req,res)=>{
+
+  console.log(req.body)
+
+})
+
 
 
 router.delete("/delete/:id",async (req, res) => {

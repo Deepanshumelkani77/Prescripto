@@ -63,6 +63,26 @@ const DoctorAppointment = () => {
     }
   };
 
+
+  const [earning,setEarning]=useState({earnings:0,completed_appointment:0})
+  useEffect(() => {
+    const updateEarnings = async () => {
+      if (!earning.earnings || !myDoctor?._id) return;
+      try {
+        const res = await axios.post(`http://localhost:5000/doctor/edit_earning/${myDoctor._id}`, earning);
+        if (res.status === 200) {
+          console.log("Earning updated!");
+        }
+      } catch (err) {
+        console.error("Failed to update earnings:", err);
+      }
+    };
+  
+    updateEarnings();
+  }, [earning, myDoctor]);
+  
+
+
   return (
     <div className='w-[100%]  bg-green-200 mx-auto px-4 py-6'>
       <h2 className='text-2xl font-semibold mb-4'>My Appointments</h2>
@@ -109,6 +129,12 @@ const DoctorAppointment = () => {
                         alt='confirm'
                         className='w-6 h-6 cursor-pointer hover:scale-110 transition'
                         title="Mark as Done (UI Only)"
+                        onClick={() => {
+                          setEarning({
+                            earnings: myDoctor?.fees || 0,
+                            completed_appointment: 1
+                          });
+                        }}
                       />
                     </div>
                   </td>
