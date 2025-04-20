@@ -64,7 +64,7 @@ const DoctorAppointment = () => {
   };
 
   return (
-    <div className='max-w-7xl mx-auto px-4 py-6'>
+    <div className='max-w-7xl bg-green-200 mx-auto px-4 py-6'>
       <h2 className='text-2xl font-semibold mb-4'>My Appointments</h2>
 
       <div className='bg-white rounded-xl border border-gray-200 overflow-x-auto shadow-sm'>
