@@ -88,8 +88,8 @@ const DoctorAppointment = () => {
                     <img src={item.user_id?.image} className='w-8 h-8 rounded-full object-cover' alt="patient" />
                     <span>{item.user_id?.username || 'Unknown'}</span>
                   </td>
-                  <td className='px-4 py-3'>
-                    <span className={`px-2 py-1 rounded-full text-xs hidden md:table-cell font-medium ${item.paid ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                  <td className='px-4 py-3 hidden md:table-cell'>
+                    <span className={`px-2 py-1 rounded-full text-xs  font-medium ${item.paid ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
                       {item.paid ? 'Paid' : 'Cash'}
                     </span>
                   </td>
