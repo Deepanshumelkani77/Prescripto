@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 const MyProfile = () => {
   const { user } = useContext(AppContext);
 
-  const [userData, setUserData] = useState({ name: '', email: '', phone: '', address: '', gender: '', dob: '' });
+  const [userData, setUserData] = useState({ name: '', email: '', phone_no: '', address: '', gender: '', dob: '' });
   // Fetch user information
   const [userInfo, setUserInfo] = useState(null); // Initialize as null
 const [images,setImages]=useState('')
@@ -20,9 +20,8 @@ const [images,setImages]=useState('')
         // Set userData only after userInfo is fetched
         setUserData({
           name: response.data.username || '',
-         
-          email: response.data.email || '',
-          phone: response.data.phone_no || '',
+         email: response.data.email || '',
+          phone_no: response.data.phone_no || '',
           address: response.data.address || '',
           gender: response.data.gender || '',
           dob: response.data.dob ? response.data.dob.slice(0, 10) : '',
@@ -142,13 +141,13 @@ const [images,setImages]=useState('')
               {isEdit ? (
                 <input
                   className='bg-gray-100 max-w-52'
-                  name='phone'
+                  name='phone_no'
                   type='text'
-                  value={userData.phone}
+                  value={userData.phone_no}
                   onChange={handleChange}
                 />
               ) : (
-                <p className='text-blue-400'>{userInfo.phone_no || '0000000000'}</p>
+                <p className='text-blue-400'>{console.log(userInfo.phone_no)}{userInfo.phone_no || '0000000000'}</p>
               )}
               <p className='font-medium'>Address:</p>
               {isEdit ? (
