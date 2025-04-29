@@ -60,7 +60,7 @@ const Navbar = () => {
                 <div className={`absolute bottom-0 left-0 w-full h-0.5 bg-[#5f6FFF] transform scale-x-0 transition-transform duration-300 ${isActive ? 'scale-x-100' : ''}`}></div>
               </>
             )}
-          </NavLink>
+        </NavLink>
           <NavLink 
             to='/contact' 
             className={({ isActive }) => 
@@ -73,8 +73,8 @@ const Navbar = () => {
                 <div className={`absolute bottom-0 left-0 w-full h-0.5 bg-[#5f6FFF] transform scale-x-0 transition-transform duration-300 ${isActive ? 'scale-x-100' : ''}`}></div>
               </>
             )}
-          </NavLink>
-        </ul>
+        </NavLink>
+      </ul>
 
         {/* User Actions */}
         <div className='flex items-center gap-4'>
@@ -131,9 +131,9 @@ const Navbar = () => {
           >
             <img className='w-6' src={assets.menu_icon} alt="Menu" />
           </button>
-        </div>
-      </div>
-
+            </div>
+            </div> 
+             
       {/* Mobile Menu */}
       <div 
         className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-50 transition-all duration-300 ${
@@ -230,8 +230,8 @@ const Navbar = () => {
                 </button>
               </div>
             )}
-          </div>
-        </div>
+  </div>
+</div>
       </div>
     </nav>
   )
