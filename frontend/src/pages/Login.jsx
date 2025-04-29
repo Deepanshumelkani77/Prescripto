@@ -118,7 +118,7 @@ const Login = () => {
                   onClick={handleSubmit2}
                   className='w-full py-3 mt-6 text-white bg-gradient-to-r from-[#5f6FFF] to-[#4a5ae8] rounded-lg font-medium hover:opacity-90 transform hover:scale-105 transition-all duration-300 shadow-lg'
                 >
-                  Sign In
+                  Login
                 </button>
               </>
             )}
@@ -134,7 +134,7 @@ const Login = () => {
                   }}
                   className='ml-2 text-[#5f6FFF] font-medium hover:underline transition-colors duration-300'
                 >
-                  {state === 'signup' ? 'Sign In' : 'Create Account'}
+                  {state === 'signup' ? 'Login' : 'Create Account'}
                 </button>
               </p>
             </div>
