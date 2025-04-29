@@ -59,7 +59,7 @@ state === 'User' ?
     {
       showLogin2?<DoctorLogin/>:<></>
     }
-    <div className='bg-[#F2F3FF] mx-8 sm:mx[10%] h-[100vh]' >
+    <div className='bg-[#F2F3FF] mx-0 sm:mx-8 h-[100vh] ' >
 
 <Nav/>
 <div className='flex items-start'>
