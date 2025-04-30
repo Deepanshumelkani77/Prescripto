@@ -140,7 +140,7 @@ const DoctorAppointment = () => {
           <table className="w-full text-sm text-left">
             <thead className="bg-gray-50 text-gray-700">
               <tr>
-                <th className="px-4 py-3 font-medium">#</th>
+                <th className="px-4 py-3 font-medium hidden md:table-cell">#</th>
                 <th className="px-4 py-3 font-medium">Patient</th>
                 <th className="px-4 py-3 font-medium hidden md:table-cell">Payment</th>
                 <th className="px-4 py-3 font-medium hidden md:table-cell">Age</th>
@@ -151,7 +151,7 @@ const DoctorAppointment = () => {
             <tbody className="divide-y divide-gray-200">
               {appointments.filter(a => a.doc_id?._id === myDoctor._id).map((item, idx) => (
                 <tr key={item._id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-4 py-3">{idx + 1}</td>
+                  <td className="px-4 py-3 hidden md:table-cell">{idx + 1}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       <img 
