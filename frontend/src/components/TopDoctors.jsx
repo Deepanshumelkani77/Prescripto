@@ -31,7 +31,7 @@ const TopDoctors = () => {
   }
 
   return (
-    <div className='flex flex-col items-center gap-6 my-16 text-gray-900 md:mx-10'>
+    <div className='flex flex-col items-center gap-6 my-16 text-gray-900 w-full'>
       <div className='text-center space-y-3'>
         <h1 className='text-3xl font-bold bg-gradient-to-r from-[#5f6FFF] to-[#4a5ae8] bg-clip-text text-transparent'>
           Top Doctors to Book
@@ -41,16 +41,16 @@ const TopDoctors = () => {
         </p>
       </div>
 
-      <div className='w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pt-5 px-4 sm:px-0'>
+      <div className='w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pt-5 px-4'>
         {doctor.slice(0, 12).map((item, index) => (
           <div
             key={index}
             onClick={() => { navigate(`./appointment/${item._id}`); scrollTo(0, 0) }}
-            className='group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer'
+            className='group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer w-full'
           >
-            <div className='relative h-64 overflow-hidden'>
+            <div className='relative h-48 overflow-hidden'>
               <img 
-                className='bg-blue-50 w-full h-full object-cover object-center transform group-hover:scale-110 transition-transform duration-500' 
+                className='bg-blue-50 w-full h-full object-contain object-center transform group-hover:scale-110 transition-transform duration-500' 
                 src={item.image} 
                 alt={item.name} 
               />
@@ -63,9 +63,9 @@ const TopDoctors = () => {
               </div>
             </div>
             
-            <div className='p-5 space-y-3'>
+            <div className='p-4 space-y-2'>
               <div>
-                <h3 className='text-xl font-semibold text-gray-800 group-hover:text-[#5f6FFF] transition-colors duration-300'>
+                <h3 className='text-lg font-semibold text-gray-800 group-hover:text-[#5f6FFF] transition-colors duration-300'>
                   {item.name}
                 </h3>
                 <p className='text-gray-600 text-sm mt-1'>{item.speciality}</p>
