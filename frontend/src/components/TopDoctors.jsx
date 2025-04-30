@@ -46,7 +46,7 @@ const TopDoctors = () => {
           <div
             key={index}
             onClick={() => { navigate(`./appointment/${item._id}`); scrollTo(0, 0) }}
-            className='group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer w-full'
+            className='group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer w-full max-w-[290px] mx-auto'
           >
             <div className='relative h-48 overflow-hidden'>
               <img 
