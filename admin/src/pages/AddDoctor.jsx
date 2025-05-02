@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { assets } from "../assets/assets";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddDoctor = () => {
   const navigate = useNavigate();
@@ -55,7 +57,7 @@ const AddDoctor = () => {
         imageUrl = res.data.secure_url;
       } catch (error) {
         console.error("Image upload error:", error.response?.data || error);
-        alert("Image upload failed");
+        toast.error("Failed to upload image. Please try again.");
         setIsSubmitting(false);
         return;
       }
@@ -71,14 +73,16 @@ const AddDoctor = () => {
       });
 
       if (response.ok) {
-        alert('Doctor added successfully!');
-        navigate('/');
+        toast.success("Doctor added successfully!");
+        setTimeout(() => {
+          navigate('/');
+        }, 2000);
       } else {
-        alert('Failed to add doctor. Please try again.');
+        toast.error("Failed to add doctor. Please try again.");
       }
     } catch (error) {
       console.error('Error adding doctor:', error);
-      alert('An error occurred while adding the doctor.');
+      toast.error("An error occurred while adding the doctor.");
     } finally {
       setIsSubmitting(false);
     }
@@ -86,6 +90,18 @@ const AddDoctor = () => {
 
   return (
     <div className='h-[85vh]  bg-[#F2F3FF]  w-[100%]'>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <div className='max-w-4xl   mx-auto py-8 px-4 sm:px-6 lg:px-8'>
         <div className='bg-white h-[82vh] overflow-y-auto rounded-2xl shadow-xl overflow-hidden'>
           {/* Header */}
