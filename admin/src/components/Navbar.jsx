@@ -25,7 +25,7 @@ const Navbar = () => {
         {!user ? (
           <button 
             onClick={() => setShowLogin(true)} 
-            className='bg-[#5f6FFF] text-white text-sm px-10 py-2 rounded-full hover:bg-[#4a5ae8] transition-colors duration-300'
+            className='bg-[#5f6FFF] text-white  text-sm px-10 py-2 rounded-full hover:bg-[#4a5ae8] transition-colors duration-300'
           >
             Login
           </button>
