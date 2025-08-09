@@ -57,18 +57,68 @@ useEffect(() => {
   </div>
 
 
-<div className='w-full grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4 gap-y-6'>
+<div className='w-full grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-6 gap-y-8'>
   {
 filterDoc.map((item,index)=>(
-  <div onClick={()=>{navigate(`/appointment/${item._id}`);scrollTo(0,0)}} key={index} className='border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500'>
-  <img className='bg-blue-50 h-[240px] w-[100%]' src={item.image} alt="" />
-  <div className='p-4'>
-      <div className='flex items-center gap-2 text-sm text-center text-green-500'>
-          <p className='w-2 h-2 bg-green-500 rounded-full'></p><p>Available</p>
+  <div 
+    onClick={()=>{navigate(`/appointment/${item._id}`);scrollTo(0,0)}} 
+    key={index} 
+    className='group bg-white border border-gray-100 rounded-2xl overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transform hover:scale-105 hover:-translate-y-2 transition-all duration-500 ease-out'
+  >
+    {/* Image Container with Gradient Overlay */}
+    <div className='relative overflow-hidden'>
+      <img 
+        className='bg-gradient-to-br from-blue-50 to-indigo-100 h-[260px] w-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out' 
+        src={item.image} 
+        alt={item.name} 
+      />
+      <div className='absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300'></div>
+      
+      {/* Specialty Badge */}
+      <div className='absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow-lg'>
+        <p className='text-xs font-semibold text-indigo-600'>{item.speciality}</p>
       </div>
-      <p className='text-gray-800 text-lg font-medium'>{item.name}</p>
-      <p className='text-gray-600 text-sm'>{item.speciality}</p>
-  </div>
+    </div>
+    
+    {/* Card Content */}
+    <div className='p-6 space-y-3'>
+      {/* Availability Status */}
+      <div className='flex items-center gap-2'>
+        <div className='flex items-center gap-2 px-3 py-1 bg-green-50 rounded-full border border-green-200'>
+          <div className='w-2 h-2 bg-green-500 rounded-full animate-pulse'></div>
+          <p className='text-green-700 text-xs font-medium'>Available Now</p>
+        </div>
+      </div>
+      
+      {/* Doctor Name */}
+      <div>
+        <h3 className='text-gray-900 text-xl font-bold group-hover:text-indigo-600 transition-colors duration-300 leading-tight'>
+          Dr. {item.name}
+        </h3>
+        <p className='text-gray-500 text-sm font-medium mt-1'>{item.speciality}</p>
+      </div>
+      
+      {/* Rating & Experience (placeholder for future implementation) */}
+      <div className='flex items-center justify-between pt-2 border-t border-gray-100'>
+        <div className='flex items-center gap-1'>
+          <div className='flex text-yellow-400'>
+            <span className='text-sm'>⭐⭐⭐⭐⭐</span>
+          </div>
+          <span className='text-gray-600 text-xs'>(4.8)</span>
+        </div>
+        <div className='text-right'>
+          <p className='text-gray-500 text-xs'>Experience</p>
+          <p className='text-gray-800 text-sm font-semibold'>5+ years</p>
+        </div>
+      </div>
+      
+      {/* Book Appointment Button */}
+      <div className='pt-3'>
+        <div className='w-full bg-gradient-to-r from-indigo-500 to-blue-600 text-white py-2 px-4 rounded-xl font-medium text-center text-sm group-hover:from-indigo-600 group-hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg'>
+          Book Appointment
+        </div>
+      </div>
+    </div>
   </div>
   
           ))
