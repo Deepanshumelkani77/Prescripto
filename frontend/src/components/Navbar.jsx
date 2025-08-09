@@ -25,7 +25,7 @@ const Navbar = () => {
           <NavLink 
             to='/' 
             className={({ isActive }) => 
-              `relative py-3 px-2 group ${isActive ? 'text-indigo-600' : 'text-gray-700 hover:text-indigo-600'} transition-all duration-300 font-medium tracking-wide`
+              `relative py-3 px-2 group ${isActive ? 'text-indigo-600' : 'text-gray-700 hover:text-indigo-600'} transition-all duration-300 font-medium tracking-wide text-lg`
             }
           >
             {({ isActive }) => (
@@ -40,7 +40,7 @@ const Navbar = () => {
           <NavLink 
             to='/doctor' 
             className={({ isActive }) => 
-              `relative py-3 px-2 group ${isActive ? 'text-indigo-600' : 'text-gray-700 hover:text-indigo-600'} transition-all duration-300 font-medium tracking-wide`
+              `relative py-3 px-2 group ${isActive ? 'text-indigo-600' : 'text-gray-700 hover:text-indigo-600'} transition-all duration-300 font-medium tracking-wide text-lg`
             }
           >
             {({ isActive }) => (
@@ -55,7 +55,7 @@ const Navbar = () => {
           <NavLink 
             to='/about' 
             className={({ isActive }) => 
-              `relative py-3 px-2 group ${isActive ? 'text-indigo-600' : 'text-gray-700 hover:text-indigo-600'} transition-all duration-300 font-medium tracking-wide`
+              `relative py-3 px-2 group ${isActive ? 'text-indigo-600' : 'text-gray-700 hover:text-indigo-600'} transition-all duration-300 font-medium tracking-wide text-lg`
             }
           >
             {({ isActive }) => (
@@ -70,7 +70,7 @@ const Navbar = () => {
           <NavLink 
             to='/contact' 
             className={({ isActive }) => 
-              `relative py-3 px-2 group ${isActive ? 'text-indigo-600' : 'text-gray-700 hover:text-indigo-600'} transition-all duration-300 font-medium tracking-wide`
+              `relative py-3 px-2 group ${isActive ? 'text-indigo-600' : 'text-gray-700 hover:text-indigo-600'} transition-all duration-300 font-medium tracking-wide text-lg`
             }
           >
             {({ isActive }) => (
@@ -184,7 +184,7 @@ const Navbar = () => {
                   } transition-all duration-300`
                 }
               >
-                <span className='text-lg'>HOME</span>
+                <span className='text-xl'>HOME</span>
               </NavLink>
               <NavLink 
                 onClick={() => setShowMenu(false)} 
@@ -197,7 +197,7 @@ const Navbar = () => {
                   } transition-all duration-300`
                 }
               >
-                <span className='text-lg'>ALL DOCTORS</span>
+                <span className='text-xl'>ALL DOCTORS</span>
               </NavLink>
               <NavLink 
                 onClick={() => setShowMenu(false)} 
@@ -210,7 +210,7 @@ const Navbar = () => {
                   } transition-all duration-300`
                 }
               >
-                <span className='text-lg'>ABOUT</span>
+                <span className='text-xl'>ABOUT</span>
               </NavLink>
               <NavLink 
                 onClick={() => setShowMenu(false)} 
@@ -223,7 +223,7 @@ const Navbar = () => {
                   } transition-all duration-300`
                 }
               >
-                <span className='text-lg'>CONTACT</span>
+                <span className='text-xl'>CONTACT</span>
               </NavLink>
             </ul>
 
