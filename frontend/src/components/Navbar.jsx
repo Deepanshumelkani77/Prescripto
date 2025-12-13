@@ -62,7 +62,7 @@ const Navbar = () => {
                 key={link.to}
                 to={link.to}
                 className={({ isActive }) =>
-                  `px-4 py-2.5 rounded-lg text-sm font-medium flex items-center transition-colors duration-200 ${
+                  `px-4 py-2.5 rounded-lg text-lg font-large flex items-center transition-colors duration-200 ${
                     isActive
                       ? 'text-blue-600 bg-blue-50 font-semibold'
                       : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
@@ -95,12 +95,20 @@ const Navbar = () => {
                   className="flex items-center space-x-2 text-sm font-medium text-gray-700 hover:text-blue-600 focus:outline-none"
                   onClick={() => navigate('/myprofile')}
                 >
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold">
-                    {user.name?.charAt(0).toUpperCase() || 'U'}
+                  <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-blue-500">
+                    <img 
+                      src={assets.profile_pic} 
+                      alt="Profile" 
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = `https://ui-avatars.com/api/?name=${user.name || 'User'}&background=3B82F6&color=fff`;
+                      }}
+                    />
                   </div>
                   <span className="hidden lg:inline">{user.name?.split(' ')[0] || 'Profile'}</span>
                 </button>
-                <div className="hidden group-hover:block absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                <div className="hidden group-hover:block absolute right-0  w-48 bg-white rounded-md shadow-lg py-1 z-50">
                   <button
                     onClick={() => {
                       logout();
