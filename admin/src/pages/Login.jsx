@@ -140,7 +140,7 @@ const Login = () => {
             <p>
               Don't have an account?{' '}
               <button
-                onClick={() => setState('login')}
+                onClick={() => setState('signup')}
                 className='text-[#5f6FFF] font-medium hover:underline transition-all duration-300'
               >
                 Sign up here

@@ -52,6 +52,7 @@ const Appointment = () => {
     }
   };
 
+
   const [doctors, setDoctors] = useState([]);
   useEffect(() => {
     setIsLoading(true);

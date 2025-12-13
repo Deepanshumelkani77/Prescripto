@@ -9,7 +9,7 @@ const Doctor = require("./models/Doctor");
  const connectDB = async () => {
     try {
       await mongoose.connect(
-"mongodb+srv://deepumelkani123:appointment@cluster0.ykmvxml.mongodb.net/prescripto?retryWrites=true&w=majority&appName=Cluster0"
+"mongodb+srv://deepumelkani123_db_user:Prescripto@cluster0.dp2e1h4.mongodb.net/?appName=Cluster0"
       );
       console.log("database connected successfully");
     } catch (error) {
