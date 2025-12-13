@@ -78,20 +78,7 @@ const SpecialityMenu = () => {
           ))}
         </div>
 
-        {/* Bottom CTA Section */}
-        <div className="mt-16 text-center">
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-3xl p-8 border border-blue-100">
-            <h3 className="text-2xl lg:text-4xl md:text-3xl font-bold text-gray-800 mb-4">
-              Can't find your specialty?
-            </h3>
-            <p className="text-gray-600 mb-6 max-w-2xl mx-auto lg:text-lg">
-              Our comprehensive network includes specialists across all medical fields. Contact us to find the right doctor for your specific needs.
-            </p>
-            <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:shadow-lg transform hover:scale-105 transition-all duration-300">
-              Contact Support
-            </button>
-          </div>
-        </div>
+      
       </div>
 
       

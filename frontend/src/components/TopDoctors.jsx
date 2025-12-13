@@ -5,137 +5,160 @@ import { assets } from '../assets/assets'
 
 const TopDoctors = () => {
   const navigate = useNavigate()
-  const [doctor, setDoctor] = useState([])
+  const [doctors, setDoctors] = useState([])
   const [isLoading, setIsLoading] = useState(true)
+  const [hoveredCard, setHoveredCard] = useState(null)
 
   useEffect(() => {
-    setIsLoading(true)
-    axios.get('http://localhost:5000/doctor')
-      .then(response => {
-        setDoctor(response.data)
-        setIsLoading(false)
-      })
-      .catch(error => {
+    const fetchDoctors = async () => {
+      setIsLoading(true)
+      try {
+        const response = await axios.get('http://localhost:5000/doctor')
+        setDoctors(response.data)
+      } catch (error) {
         console.error("Error fetching doctor data:", error)
+      } finally {
         setIsLoading(false)
-      })
+      }
+    }
+    
+    fetchDoctors()
   }, [])
 
   if (isLoading) {
     return (
-      <div className='flex flex-col items-center gap-6 py-16'>
-        <div className="relative">
-          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-          <div className="absolute inset-0 w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" style={{ animationDelay: '0.2s' }}></div>
+      <div className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center space-x-4">
+              <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+              <p className='text-lg font-medium text-gray-700'>Loading our expert doctors...</p>
+            </div>
+          </div>
         </div>
-        <p className='text-gray-600 font-medium'>Loading our expert doctors...</p>
       </div>
     )
   }
 
   return (
-    <div className='w-full'>
-      <div className='w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8'>
-        {doctor.slice(0, 12).map((item, index) => (
-          <div
-            key={index}
-            onClick={() => { navigate(`./appointment/${item._id}`); scrollTo(0, 0) }}
-            className='group relative bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 cursor-pointer w-full max-w-[320px] mx-auto border border-gray-100'
-          >
-            {/* Image Section */}
-            <div className='relative h-56 overflow-hidden'>
-              <img 
-                className='w-full h-full object-cover object-center transform group-hover:scale-110 transition-transform  duration-700' 
-                src={item.image} 
-                alt={item.name} 
-              />
-              <div className='absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover: transition-opacity duration-500'></div>
-            </div>
-            
-            {/* Content Section */}
-            <div className='p-6 space-y-4'>
-              {/* Doctor Info */}
-              <div className='space-y-2'>
-                <h3 className='text-xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors duration-300'>
-                  Dr. {item.name}
-                </h3>
-                <p className='text-gray-600 text-sm font-medium'>{item.speciality}</p>
-              </div>
+    <div className="bg-gradient-to-b from-gray-50 to-white py-12 sm:py-16">
+      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+            Our Expert Doctors
+          </h2>
+          <p className="mt-3 max-w-2xl mx-auto text-xl text-gray-500 sm:mt-4">
+            Experienced healthcare professionals dedicated to your well-being
+          </p>
+        </div>
 
-              {/* Stats Row */}
-              <div className='flex items-center justify-between py-3 border-t border-gray-100'>
-                <div className='flex items-center gap-2 text-sm text-gray-600'>
-                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-full flex items-center justify-center">
-                    <svg className='w-4 h-4 text-blue-600' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                      <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z' />
-                    </svg>
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+          {doctors.slice(0, 10).map((doctor, index) => (
+            <div
+              key={doctor._id}
+              className={`relative bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 transform hover:shadow-2xl hover:-translate-y-2 border border-gray-100 ${
+                hoveredCard === index ? 'ring-2 ring-blue-500' : ''
+              }`}
+              onMouseEnter={() => setHoveredCard(index)}
+              onMouseLeave={() => setHoveredCard(null)}
+              onClick={() => {
+                navigate(`/appointment/${doctor._id}`)
+                window.scrollTo(0, 0)
+              }}
+            >
+              {/* Doctor Image */}
+              <div className="relative h-60 overflow-hidden">
+                <img
+                  className="w-full h-full object-cover transition-transform duration-700"
+                  style={{
+                    transform: hoveredCard === index ? 'scale(1.05)' : 'scale(1)',
+                  }}
+                  src={doctor.image || assets.doc1}
+                  alt={`Dr. ${doctor.name}`}
+                  onError={(e) => {
+                    e.target.onerror = null
+                    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(doctor.name)}&background=3B82F6&color=fff&size=400`
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 hover:opacity-100 flex items-end">
+                  <div className="w-full p-4 text-white">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      <span className="text-sm font-medium">4.9 (120 reviews)</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">
+                        <span className="text-xl font-bold">{doctor.experience || '5'}</span> Years Exp.
+                      </span>
+                      <span className="px-3 py-1 bg-blue-600 text-white text-xs font-semibold rounded-full">
+                        Available Today
+                      </span>
+                    </div>
                   </div>
-                  <span className="font-medium">{item.experience} Years</span>
-                </div>
-                
-                <div className='text-right'>
-                  <div className='text-2xl font-bold text-blue-600'>₹{item.fees}</div>
-                  <div className='text-xs text-gray-500'>Consultation</div>
                 </div>
               </div>
 
-              {/* Rating */}
-              <div className='flex items-center gap-2'>
-                <div className='flex items-center gap-1'>
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <svg key={star} className='w-4 h-4 text-yellow-400' fill='currentColor' viewBox='0 0 20 20'>
-                      <path d='M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z' />
-                    </svg>
-                  ))}
+              {/* Doctor Info */}
+              <div className="p-5">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900">Dr. {doctor.name}</h3>
+                    <p className="text-sm text-blue-600 font-medium">{doctor.speciality || 'General Physician'}</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-2xl font-bold text-blue-600">₹{doctor.fees || '500'}</div>
+                    <span className="text-xs text-gray-500">Consultation</span>
+                  </div>
                 </div>
-                <span className='text-sm text-gray-600 font-medium'>4.9 (120 reviews)</span>
+
+                <div className="mt-4 pt-4 border-t border-gray-100">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <div className="p-1.5 bg-blue-50 rounded-full">
+                        <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                      </div>
+                      <span className="text-xs text-gray-600">New Delhi</span>
+                    </div>
+                    <button 
+                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/appointment/${doctor._id}`);
+                        window.scrollTo(0, 0);
+                      }}
+                    >
+                      Book Now
+                    </button>
+                  </div>
+                </div>
               </div>
 
-              {/* Badges Row */}
-              <div className='flex items-center justify-between pt-2'>
-                {/* Speciality Badge */}
-                <div className='bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-2 rounded-full text-xs font-semibold shadow-md'>
-                  {item.speciality}
-                </div>
-                
-                {/* Availability Badge */}
-                <div className='bg-white/95 backdrop-blur-sm px-3 py-2 rounded-full flex items-center gap-2 shadow-md border border-green-200'>
-                  <span className='w-2 h-2 bg-green-500 rounded-full animate-pulse'></span>
-                  <p className='text-sm text-green-600 font-semibold'>Available</p>
-                </div>
+              {/* Speciality Badge */}
+              <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold text-blue-700 shadow-md">
+                {doctor.speciality || 'General'}
               </div>
-
-              {/* CTA Button */}
-              <button className='w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 shadow-lg hover:shadow-xl'>
-                <span className="flex items-center justify-center gap-2">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  Book Appointment
-                </span>
-              </button>
             </div>
+          ))}
+        </div>
 
-            {/* Floating Elements */}
-            <div className="absolute top-2 left-2 w-2 h-2 bg-blue-500/30 rounded-full animate-pulse"></div>
-            <div className="absolute top-2 right-2 w-2 h-2 bg-purple-500/30 rounded-full animate-pulse delay-500"></div>
+        {doctors.length > 8 && (
+          <div className="mt-10 text-center">
+            <button
+              onClick={() => navigate('/doctor')}
+              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+            >
+              View All Doctors
+              <svg className="ml-2 -mr-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </button>
           </div>
-        ))}
-      </div>
-
-      {/* View All Button */}
-      <div className="text-center mt-12">
-        <button
-          onClick={() => { navigate('/doctor'); scrollTo(0, 0) }}
-          className='group px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full font-semibold text-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 shadow-lg'
-        >
-          <span className="flex items-center justify-center gap-2">
-            View All Doctors
-            <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </span>
-        </button>
+        )}
       </div>
     </div>
   )
