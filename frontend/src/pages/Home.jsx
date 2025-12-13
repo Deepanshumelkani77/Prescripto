@@ -23,6 +23,7 @@ const Home = () => {
 
       {/* Main Content */}
       <div className="relative z-10">
+
         {/* Header Section */}
         <section className="relative">
           <div className="absolute inset-0 bg-gradient-to-b from-blue-50/50 to-transparent"></div>
@@ -42,7 +43,7 @@ const Home = () => {
         {/* Top Doctors Section */}
         <section className="relative py-8">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-50/30 to-transparent"></div>
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="relative max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <TopDoctors />
           </div>

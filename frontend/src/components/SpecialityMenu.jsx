@@ -10,7 +10,7 @@ const SpecialityMenu = () => {
       <div className="absolute top-0 left-0 w-32 h-32 bg-blue-500/10 rounded-full -translate-x-16 -translate-y-16"></div>
       <div className="absolute bottom-0 right-0 w-40 h-40 bg-purple-500/10 rounded-full translate-x-20 translate-y-20"></div>
 
-      <div className='relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+      <div className='relative max-w-8xl mx-auto px-4 sm:px-6 lg:px-8'>
         {/* Header Section */}
         <div className='text-center mb-16'>
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-blue-600 px-4 py-2 rounded-full text-sm font-medium mb-6 border border-blue-200">

@@ -3,7 +3,7 @@ import { assets } from '../assets/assets'
 
 const Header = () => {
   return (
-    <div className='relative flex flex-col md:flex-row flex-wrap bg-blue-800 rounded-3xl px-6 md:px-10 lg:px-20 mx-4 md:mx-10 overflow-hidden'>
+    <div className=' relative flex flex-col md:flex-row flex-wrap bg-[#021189] rounded-3xl px-6 md:px-10 lg:px-20 mx-4 md:mx-10 overflow-hidden'>
         
       {/* Decorative background elements */}
       <div className='absolute inset-0 overflow-hidden pointer-events-none'>
