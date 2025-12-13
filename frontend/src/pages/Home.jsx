@@ -50,7 +50,7 @@ const Home = () => {
         </section>
 
         {/* Banner Section */}
-        <section className="relative py-8">
+        <section className="relative py-4">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-50/30 to-transparent"></div>
           <div className="relative">
             <Banner />
