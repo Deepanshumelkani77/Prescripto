@@ -36,9 +36,10 @@ state === 'User' ?
       showLogin?<Login/>:<></>
     }
 
-<div className='mx-8  '>  
+<div className=' '>  
    
    <Navbar/>
+   <div className='pt-[15vh] '>
 <Routes>
 <Route path='/' element={<Home/>}/>
 <Route path='/doctor' element={<Doctor/>}/>
@@ -49,6 +50,8 @@ state === 'User' ?
 <Route path='/appointment/:docId' element={<Appointment/>}/>
 <Route path='contact' element={<Contact/>}/>
 </Routes>
+   </div>
+
 <Footer/>
    </div> 
 
