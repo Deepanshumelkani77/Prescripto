@@ -14,8 +14,8 @@ const SpecialityMenu = () => {
         {/* Header Section */}
         <div className='text-center mb-16'>
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-blue-600 px-4 py-2 rounded-full text-sm font-medium mb-6 border border-blue-200">
-            <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-            Healthcare Specialties
+            <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse lg:text-xl"></div>
+            <span className="lg:text-xl">Healthcare Specialties</span>
           </div>
           
           <h1 className='text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 mb-6'>
@@ -81,10 +81,10 @@ const SpecialityMenu = () => {
         {/* Bottom CTA Section */}
         <div className="mt-16 text-center">
           <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-3xl p-8 border border-blue-100">
-            <h3 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
+            <h3 className="text-2xl lg:text-4xl md:text-3xl font-bold text-gray-800 mb-4">
               Can't find your specialty?
             </h3>
-            <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+            <p className="text-gray-600 mb-6 max-w-2xl mx-auto lg:text-lg">
               Our comprehensive network includes specialists across all medical fields. Contact us to find the right doctor for your specific needs.
             </p>
             <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:shadow-lg transform hover:scale-105 transition-all duration-300">
