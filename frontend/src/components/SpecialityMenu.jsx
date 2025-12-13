@@ -63,7 +63,7 @@ const SpecialityMenu = () => {
                 </div>
                 
                 {/* Speciality Name */}
-                <p className="text-sm sm:text-base font-semibold text-gray-800 text-center group-hover:text-blue-600 transition-colors duration-300">
+                <p className="text-sm lg:text-xl sm:text-base font-semibold text-gray-800 text-center group-hover:text-blue-600 transition-colors duration-300">
                   {item.speciality}
                 </p>
                 

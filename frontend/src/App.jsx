@@ -39,7 +39,7 @@ state === 'User' ?
 <div className=' '>  
    
    <Navbar/>
-   <div className='pt-[15vh] '>
+   <div className='pt-[12vh] '>
 <Routes>
 <Route path='/' element={<Home/>}/>
 <Route path='/doctor' element={<Doctor/>}/>
