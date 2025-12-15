@@ -75,7 +75,7 @@ const App = () => {
           {/* Overlay for mobile menu */}
           {isMobileMenuOpen && (
             <div 
-              className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+              className="fixed inset-0 bg-black/50 bg-opacity-50 z-30 md:hidden"
               onClick={() => setIsMobileMenuOpen(false)}
             />
           )}
