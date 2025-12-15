@@ -1,22 +1,28 @@
-import React, { useContext, useState, useEffect } from 'react';
-import axios from 'axios';
-import { StoreContext } from '../context/StoreContext';
-import { assets } from '../assets/assets';
-import { useNavigate } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from "react";
+import { assets } from "../assets/assets";
+import { StoreContext } from "../context/StoreContext";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { FiEdit2, FiSave, FiUser, FiPhone, FiMail, FiMapPin, FiBriefcase, FiAward, FiDollarSign, FiInfo, FiCheckCircle } from "react-icons/fi";
 
 const DoctorProfile = () => {
   const { doctor } = useContext(StoreContext);
   const navigate = useNavigate();
 
   const [doctorData, setDoctorData] = useState({
-    name: '', email: '', speciality: '', degree: '', experience: '',
-    about: '', fees: '', available: false,
+    name: '', 
+    email: '', 
+    speciality: '', 
+    degree: '', 
+    experience: '',
+    about: '', 
+    fees: '', 
+    available: false,
     address: { line1: '', line2: '' }
   });
 
-  const [initialData, setInitialData] = useState({});
   const [doctorInfo, setDoctorInfo] = useState({});
-  const [images, setImages] = useState('');
+  const [image, setImage] = useState("");
   const [file, setFile] = useState(null);
   const [isEdit, setIsEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -24,11 +30,16 @@ const DoctorProfile = () => {
   const cloudinaryUrl = "https://api.cloudinary.com/v1_1/drx3wkg1h/image/upload";
   const uploadPreset = "Prescripto";
 
+  const specialities = [
+    'Cardiology', 'Dermatology', 'Neurology', 'Pediatrics', 'Orthopedics', 
+    'Ophthalmology', 'Gynecology', 'ENT', 'Dentistry', 'General Physician'
+  ];
+
   useEffect(() => {
-    if (doctor?.id) {
-      setIsLoading(true);
-      axios.get(`http://localhost:5000/doctor/info/${doctor.id}`)
-        .then(({ data }) => {
+    const fetchDoctorData = async () => {
+      if (doctor?.id) {
+        try {
+          const { data } = await axios.get(`http://localhost:5000/doctor/info/${doctor.id}`);
           setDoctorInfo(data);
           const formatted = {
             name: data.name,
@@ -45,15 +56,16 @@ const DoctorProfile = () => {
             }
           };
           setDoctorData(formatted);
-          setInitialData(formatted);
-          setImages(data.image);
-          setIsLoading(false);
-        })
-        .catch(err => {
+          setImage(data.image);
+        } catch (err) {
           console.error("Error fetching doctor info:", err);
+        } finally {
           setIsLoading(false);
-        });
-    }
+        }
+      }
+    };
+
+    fetchDoctorData();
   }, [doctor]);
 
   const handleChange = (e) => {
@@ -71,252 +83,413 @@ const DoctorProfile = () => {
     }
   };
 
-  const handleFileChange = (e) => setFile(e.target.files[0]);
-
-  const deepEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
-    let imageUrl = images || assets.profile_pic;
+    let imageUrl = image || assets.profile_pic;
 
     if (file) {
-      const uploadData = new FormData();
-      uploadData.append('file', file);
-      uploadData.append('upload_preset', uploadPreset);
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", uploadPreset);
+
       try {
-        const res = await axios.post(cloudinaryUrl, uploadData);
+        const res = await axios.post(cloudinaryUrl, formData);
         imageUrl = res.data.secure_url;
-      } catch (error) {
+      } catch (err) {
+        console.error("Image upload failed:", err);
         alert("Image upload failed");
+        setIsLoading(false);
         return;
       }
     }
 
     const updatedData = { ...doctorData, image: imageUrl };
 
-    if (deepEqual(initialData, doctorData) && imageUrl === images) {
-      alert("No changes detected.");
-      setIsEdit(false);
-      return;
-    }
-
     try {
-      const response = await fetch(`http://localhost:5000/doctor/edit/${doctor.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedData)
-      });
-
-      if (response.ok) {
-        alert("Profile updated successfully!");
+      const response = await axios.put(
+        `http://localhost:5000/doctor/edit/${doctor.id}`,
+        updatedData
+      );
+      
+      if (response.status === 200) {
         setDoctorInfo(updatedData);
-        setInitialData(updatedData);
-        setImages(imageUrl);
+        setImage(imageUrl);
         setIsEdit(false);
         setFile(null);
-      } else {
-        alert("Failed to update");
+        alert("Profile updated successfully!");
       }
     } catch (err) {
-      console.error("Error updating doctor:", err);
+      console.error("Update error:", err);
+      alert("Failed to update profile. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const renderInput = (label, name, type = 'text', options = null) => (
-    <div className="flex flex-col gap-1 w-full">
-      <label className="font-medium text-gray-700">{label}</label>
-      {isEdit ? (
-        options ? (
-          <select
-            name={name}
-            className="bg-gray-100 rounded-md h-10 px-3 outline-[#5f6FFF] focus:ring-2 focus:ring-[#5f6FFF]/20 transition-all duration-300"
-            value={doctorData[name]}
-            onChange={handleChange}
-          >
-            {options.map(opt => (
-              <option key={opt} value={opt}>{opt}</option>
-            ))}
-          </select>
-        ) : (
-          <input
-            name={name}
-            type={type}
-            className="bg-gray-100 rounded-md h-10 px-3 outline-[#5f6FFF] focus:ring-2 focus:ring-[#5f6FFF]/20 transition-all duration-300"
-            value={doctorData[name]}
-            onChange={handleChange}
-          />
-        )
-      ) : (
-        <p className="text-blue-500 bg-gray-50 rounded-md h-10 flex items-center px-3">
-          {doctorInfo[name] || 'N/A'}
-        </p>
-      )}
-    </div>
-  );
-
-  const renderAddressInput = (label, name) => (
-    <div className="flex flex-col gap-1 w-full">
-      <label className="font-medium text-gray-700">{label}</label>
-      {isEdit ? (
-        <input
+  const InfoCard = ({ icon: Icon, label, value, isEdit, name, type = "text", onChange, options, className = "" }) => (
+    <div className={`bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow ${className}`}>
+      <div className="flex items-center mb-2">
+        <div className="p-2 bg-blue-50 rounded-lg text-blue-600 mr-3">
+          <Icon className="w-5 h-5" />
+        </div>
+        <span className="text-sm font-medium text-gray-500">{label}</span>
+      </div>
+      {isEdit && type === 'select' ? (
+        <select
           name={name}
-          type="text"
-          className="bg-gray-100 rounded-md h-10 px-3 outline-[#5f6FFF] focus:ring-2 focus:ring-[#5f6FFF]/20 transition-all duration-300"
-          value={doctorData.address[name]}
-          onChange={handleChange}
+          value={value}
+          onChange={onChange}
+          className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        >
+          <option value="">Select {label}</option>
+          {options.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      ) : isEdit && type === 'checkbox' ? (
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            name={name}
+            checked={value}
+            onChange={onChange}
+            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+          />
+          <span className="ml-2 text-gray-700">{value ? 'Available' : 'Not Available'}</span>
+        </div>
+      ) : isEdit ? (
+        <input
+          type={type}
+          name={name}
+          value={value}
+          onChange={onChange}
+          className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       ) : (
-        <p className="text-blue-500 bg-gray-50 rounded-md h-10 flex items-center px-3">
-          {doctorInfo.address?.[name] || 'N/A'}
-        </p>
+        <p className="text-gray-800 font-medium pl-11">{value || "Not provided"}</p>
       )}
     </div>
   );
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#5f6FFF]"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-pulse text-center">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-200"></div>
+          <div className="h-4 bg-gray-200 rounded w-48 mx-auto mb-2"></div>
+          <div className="h-4 bg-gray-200 rounded w-32 mx-auto"></div>
+        </div>
       </div>
     );
   }
 
-  if (!doctorInfo) return <div className="text-center p-10">Loading...</div>;
+  if (!doctorInfo) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center text-gray-600">
+          <p>No doctor information found. Please log in.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="w-full max-w-6xl mx-auto mt-5 px-4 sm:h-[calc(85vh)] sm:overflow-hidden">
-      <div className="flex flex-col lg:flex-row gap-10 bg-white rounded-2xl p-6 shadow-lg sm:h-full">
-        {/* Left Section */}
-        <div className="w-full lg:w-1/3 flex flex-col items-center gap-4">
-          <label htmlFor="doc-img" className="cursor-pointer relative group">
-            <div className="relative">
-              <img
-                src={file ? URL.createObjectURL(file) : images || assets.profile_pic}
-                alt="Profile"
-                className="w-32 h-32 lg:w-40 lg:h-40 rounded-full object-cover border-4 border-[#5f6FFF]/20 shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:border-[#5f6FFF]/40"
-              />
-              {isEdit && (
-                <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center text-white text-sm opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm">
-                  Click to change
-                </div>
-              )}
-            </div>
-            {isEdit && <input type="file" hidden id="doc-img" onChange={handleFileChange} accept="image/*" />}
-          </label>
-          <div className="text-center w-full">
-            {isEdit ? (
-              <input
-                name="name"
-                className="text-lg lg:text-xl font-bold text-center w-full outline-none bg-gray-100 py-2 rounded-md focus:ring-2 focus:ring-[#5f6FFF]/20 transition-all duration-300"
-                value={doctorData.name}
-                onChange={handleChange}
-              />
-            ) : (
-              <h2 className="text-xl lg:text-2xl font-bold text-gray-800">{doctorInfo.name}</h2>
-            )}
-          </div>
-          <div className="flex items-center gap-2 px-4 py-2 bg-[#5f6FFF]/10 rounded-full">
-            <span className="w-2 h-2 bg-[#5f6FFF] rounded-full animate-pulse"></span>
-            <p className="text-[#5f6FFF] font-medium text-sm lg:text-base">Available for Consultation</p>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-6 sm:mb-10">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">
+            Doctor <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Profile</span>
+          </h1>
+          <div className="w-16 sm:w-20 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
+          <p className="mt-2 sm:mt-3 text-xs sm:text-sm md:text-base text-gray-600 max-w-2xl mx-auto">
+            Manage your professional information, update your availability, and connect with patients.
+          </p>
         </div>
 
-        {/* Right Section */}
-        <form onSubmit={handleSubmit} className="w-full lg:w-2/3 flex flex-col gap-4 lg:gap-6 sm:overflow-y-auto sm:pr-2">
-          <div className="grid md:grid-cols-2 gap-4 lg:gap-6">
-            {renderInput("Email", "email", "email")}
-            {renderInput("Speciality", "speciality", "text", [
-              "General Physician", "Gynecologist", "Dermatologist", "Pediatricians",
-              "Neurologist", "Gastroenterologist"
-            ])}
-            {renderInput("Education", "degree")}
-            {renderInput("Experience", "experience", "text", [
-              "1 year", "2 year", "3 year", "4 year", "5 year",
-              "6 year", "7 year", "8 year", "9 year", "10 year"
-            ])}
-            {renderInput("Fees", "fees", "number")}
-            {renderAddressInput("Address Line 1", "line1")}
-            {renderAddressInput("Address Line 2", "line2")}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
+          {/* Left Sidebar */}
+          <div className="lg:col-span-1 space-y-4 sm:space-y-6">
+            {/* Profile Card */}
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-600 to-purple-600 h-16 sm:h-20 md:h-24"></div>
+              <div className="px-3 sm:px-4 md:px-6 pb-4 sm:pb-6 -mt-10 sm:-mt-12 relative">
+                <div className="flex justify-center">
+                  <div className="relative group">
+                    <img
+                      className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full border-4 border-white object-cover shadow-lg"
+                      src={file ? URL.createObjectURL(file) : image || assets.profile_pic}
+                      alt={doctorInfo.name}
+                    />
+                    {isEdit && (
+                      <label className="absolute bottom-0 right-0 bg-white p-1 sm:p-1.5 rounded-full shadow-md cursor-pointer hover:bg-gray-100 transition-colors">
+                        <FiEdit2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600" />
+                        <input
+                          type="file"
+                          className="hidden"
+                          onChange={handleFileChange}
+                          accept="image/*"
+                        />
+                      </label>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="text-center mt-2 sm:mt-3">
+                  {isEdit ? (
+                    <input
+                      type="text"
+                      name="name"
+                      value={doctorData.name}
+                      onChange={handleChange}
+                      className="text-base sm:text-lg md:text-xl font-semibold text-center bg-gray-50 border border-gray-200 rounded-lg px-2 sm:px-3 py-1 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  ) : (
+                    <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900">{doctorInfo.name}</h2>
+                  )}
+                  <p className="text-blue-600 text-xs sm:text-sm mt-0.5">
+                    {doctorInfo.speciality || 'Medical Professional'}
+                  </p>
+                  
+                  <div className="mt-1.5 sm:mt-2 flex items-center justify-center">
+                    <span className={`inline-flex items-center px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-xs font-medium ${
+                      doctorInfo.available 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-red-100 text-red-800'
+                    }`}>
+                      {doctorInfo.available ? 'Available' : 'Not Available'}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mt-3 sm:mt-4 flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-2">
+                  {isEdit ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setDoctorData({
+                            ...doctorData,
+                            name: doctorInfo.name,
+                            email: doctorInfo.email,
+                            speciality: doctorInfo.speciality,
+                            degree: doctorInfo.degree,
+                            experience: doctorInfo.experience,
+                            about: doctorInfo.about,
+                            fees: doctorInfo.fees,
+                            available: doctorInfo.available,
+                            address: {
+                              line1: doctorInfo.address?.line1 || '',
+                              line2: doctorInfo.address?.line2 || ''
+                            }
+                          });
+                          setFile(null);
+                          setIsEdit(false);
+                        }}
+                        className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        form="doctor-profile-form"
+                        className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? 'Saving...' : 'Save Changes'}
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setIsEdit(true)}
+                      className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center space-x-1"
+                    >
+                      <FiEdit2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                      <span>Edit Profile</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Availability Card */}
+            <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
+              <div className="flex items-center mb-3 sm:mb-4">
+                <div className="p-1.5 sm:p-2 bg-blue-50 rounded-lg text-blue-600 mr-2 sm:mr-3">
+                  <FiCheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+                </div>
+                <h3 className="text-sm sm:text-base font-medium text-gray-700">Availability Status</h3>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">Currently {doctorInfo.available ? 'Available' : 'Not Available'}</span>
+                {isEdit && (
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      name="available"
+                      checked={doctorData.available}
+                      onChange={handleChange}
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  </label>
+                )}
+              </div>
+            </div>
           </div>
 
-          {/* About */}
-          <div className="flex flex-col gap-1">
-            <label className="font-medium text-gray-700">About</label>
-            {isEdit ? (
-              <textarea
-                name="about"
-                className="bg-gray-100 rounded-md p-3 outline-[#5f6FFF] focus:ring-2 focus:ring-[#5f6FFF]/20 transition-all duration-300 min-h-[100px] lg:min-h-[120px]"
-                value={doctorData.about}
-                onChange={handleChange}
-              />
-            ) : (
-              <p className="text-blue-500 bg-gray-50 rounded-md p-3 min-h-[100px] lg:min-h-[120px]">
-                {doctorInfo.about || 'No description'}
-              </p>
-            )}
-          </div>
+          {/* Right Content */}
+          <div className="lg:col-span-3 space-y-4 sm:space-y-6">
+            <form id="doctor-profile-form" onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+              {/* Personal Information */}
+              <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="flex items-center mb-4 sm:mb-6">
+                  <div className="p-1.5 sm:p-2 bg-blue-50 rounded-lg text-blue-600 mr-2 sm:mr-3">
+                    <FiUser className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </div>
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900">Personal Information</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                  <InfoCard
+                    icon={FiUser}
+                    label="Full Name"
+                    name="name"
+                    value={doctorData.name}
+                    isEdit={isEdit}
+                    onChange={handleChange}
+                  />
+                  
+                  <InfoCard
+                    icon={FiMail}
+                    label="Email Address"
+                    name="email"
+                    type="email"
+                    value={doctorData.email}
+                    isEdit={isEdit}
+                    onChange={handleChange}
+                  />
+                  
+                  <InfoCard
+                    icon={FiBriefcase}
+                    label="Speciality"
+                    name="speciality"
+                    value={doctorData.speciality}
+                    isEdit={isEdit}
+                    type="select"
+                    options={specialities}
+                    onChange={handleChange}
+                  />
+                  
+                  <InfoCard
+                    icon={FiAward}
+                    label="Degree"
+                    name="degree"
+                    value={doctorData.degree}
+                    isEdit={isEdit}
+                    onChange={handleChange}
+                  />
+                  
+                  <InfoCard
+                    icon={FiBriefcase}
+                    label="Experience (years)"
+                    name="experience"
+                    type="number"
+                    value={doctorData.experience}
+                    isEdit={isEdit}
+                    onChange={handleChange}
+                  />
+                  
+                  <InfoCard
+                    icon={FiDollarSign}
+                    label="Consultation Fee (₹)"
+                    name="fees"
+                    type="number"
+                    value={doctorData.fees}
+                    isEdit={isEdit}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
 
-          {/* Available */}
-          <div className="flex items-center gap-3">
-            <label className="font-medium">Available:</label>
-            {isEdit ? (
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input 
-                  type="checkbox" 
-                  name="available" 
-                  checked={doctorData.available} 
-                  onChange={handleChange}
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#5f6FFF]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#5f6FFF]"></div>
-              </label>
-            ) : (
-              <label className="relative inline-flex items-center">
-                <input 
-                  type="checkbox" 
-                  checked={doctorInfo.available} 
-                  readOnly
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#5f6FFF]"></div>
-              </label>
-            )}
-          </div>
+              {/* Address */}
+              <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="flex items-center mb-4 sm:mb-6">
+                  <div className="p-1.5 sm:p-2 bg-blue-50 rounded-lg text-blue-600 mr-2 sm:mr-3">
+                    <FiMapPin className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </div>
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900">Address</h3>
+                </div>
+                
+                <div className="space-y-4">
+                  <InfoCard
+                    icon={FiMapPin}
+                    label="Address Line 1"
+                    name="line1"
+                    value={doctorData.address.line1}
+                    isEdit={isEdit}
+                    onChange={handleChange}
+                  />
+                  
+                  <InfoCard
+                    icon={FiMapPin}
+                    label="Address Line 2"
+                    name="line2"
+                    value={doctorData.address.line2}
+                    isEdit={isEdit}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
 
-          {/* Buttons */}
-          <div className="flex justify-end gap-4 sm:sticky sm:bottom-0 bg-white py-2">
-            {isEdit ? (
-              <>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setDoctorData(initialData);
-                    setIsEdit(false);
-                    setFile(null);
-                  }}
-                  className="bg-gray-200 text-gray-700 px-4 lg:px-6 py-2 rounded-full hover:bg-gray-300 transition-all duration-300 hover:shadow-md text-sm lg:text-base"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="bg-[#5f6FFF] text-white px-4 lg:px-6 py-2 rounded-full hover:bg-[#4a5ae8] transition-all duration-300 hover:shadow-md text-sm lg:text-base"
-                >
-                  Save Changes
-                </button>
-              </>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setIsEdit(true)}
-                className="border-2 border-[#5f6FFF] text-[#5f6FFF] px-4 lg:px-6 py-2 rounded-full hover:bg-[#5f6FFF] hover:text-white transition-all duration-300 hover:shadow-md text-sm lg:text-base"
-              >
-                Edit Profile
-              </button>
-            )}
+              {/* About */}
+              <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="flex items-center mb-4 sm:mb-6">
+                  <div className="p-1.5 sm:p-2 bg-blue-50 rounded-lg text-blue-600 mr-2 sm:mr-3">
+                    <FiInfo className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </div>
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900">About</h3>
+                </div>
+                
+                <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                  <div className="flex items-center mb-2">
+                    <div className="p-1.5 bg-blue-50 rounded-lg text-blue-600 mr-2 sm:mr-3">
+                      <FiInfo className="w-4 h-4 sm:w-5 sm:h-5" />
+                    </div>
+                    <span className="text-xs sm:text-sm font-medium text-gray-500">About Me</span>
+                  </div>
+                  {isEdit ? (
+                    <textarea
+                      name="about"
+                      value={doctorData.about}
+                      onChange={handleChange}
+                      rows="4"
+                      className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
+                      placeholder="Tell patients about your experience, expertise, and approach..."
+                    ></textarea>
+                  ) : (
+                    <p className="text-gray-800 text-sm sm:text-base pl-10 sm:pl-11">
+                      {doctorData.about || "No information provided."}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );

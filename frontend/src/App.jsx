@@ -65,7 +65,7 @@ state === 'User' ?
     <div className='bg-[#F2F3FF] mx-0 sm:mx-8 h-[100vh] ' >
 
 <Nav/>
-<div className='flex items-start'>
+<div className='flex items-start '>
 <Sidebar/>
 <Routes>
 <Route path='/' element={<DoctorAppointment/>}></Route>
