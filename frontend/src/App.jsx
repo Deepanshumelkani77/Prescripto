@@ -76,11 +76,15 @@ const App = () => {
             </svg>
           </button>
           
-          {/* Sidebar - Hidden on mobile when menu is closed */}
+          {/* Sidebar - Fixed on desktop, collapsible on mobile */}
           <div 
-            className={`fixed inset-y-0 left-0 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-300 ease-in-out z-40 w-64 bg-white shadow-lg md:static md:w-auto`}
+            className={`fixed md:sticky top-0 left-0 h-screen transform ${
+              isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+            } md:translate-x-0 transition-transform duration-300 ease-in-out z-40 w-64 bg-white shadow-lg`}
           >
-            <Sidebar />
+            <div className="h-full overflow-y-auto">
+              <Sidebar />
+            </div>
           </div>
           
           {/* Overlay for mobile menu */}

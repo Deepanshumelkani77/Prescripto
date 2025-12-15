@@ -25,9 +25,9 @@ const Sidebar = () => {
       {/* Sidebar */}
       <div className={`
         sidebar bg-white border-r border-gray-200 shadow-lg transition-all duration-300
-        sm:static sm:translate-x-0 sm:h-[91vh] sm:w-[280px] sm:hover:shadow-xl
+        sm:static sm:translate-x-0 sm:h-[100vh] sm:w-[280px] sm:hover:shadow-xl
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-        fixed top-0 left-0 h-full w-[280px] z-50
+        fixed top-0 left-0  w-[280px] z-50
       `}>
         {/* Sidebar Header */}
         <div className='p-6 border-b border-gray-100'>
