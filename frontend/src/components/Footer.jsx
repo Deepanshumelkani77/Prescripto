@@ -17,10 +17,10 @@ const Footer = () => {
           {/* Company Info */}
           <div className="lg:col-span-2">
             <div className="flex items-center mb-6">
-              <img className="w-10 h-10 mr-3" src={assets.logo} alt="Prescripto Logo" />
-              <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Prescripto</span>
+              <img className="w-10 h-20 mr-3" src={assets.logo} alt="Prescripto Logo" />
+              <span className="text-2xl lg:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Prescripto</span>
             </div>
-            <p className="text-gray-600 leading-relaxed mb-6 max-w-lg">
+            <p className="text-gray-600 lg:text-lg leading-relaxed mb-6 max-w-lg">
               Your trusted partner in healthcare management. We're committed to providing seamless appointment booking and quality care for everyone.
             </p>
             
@@ -60,7 +60,7 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div className="group">
-            <h3 className="text-lg font-bold mb-6 flex items-center text-gray-800 relative">
+            <h3 className="text-lg lg:text-2xl font-bold mb-6 flex items-center text-gray-800 relative">
               <span className="w-1 h-6 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full mr-3"></span>
               Quick Links
             </h3>
@@ -75,9 +75,9 @@ const Footer = () => {
                 <li key={index}>
                   <a 
                     href={item.href} 
-                    className={`text-gray-600 hover:text-${item.color} transition-colors duration-300 flex items-center group/item`}
+                    className={`text-gray-600 lg:text-lg hover:text-${item.color} transition-colors duration-300 flex items-center group/item`}
                   >
-                    <span className={`w-1.5 h-1.5 bg-${item.color} rounded-full mr-3 group-hover/item:scale-150 transition-transform duration-300`}></span>
+                    <span className={`w-1.5 h-1.5 bg-${item.color}  rounded-full mr-3 group-hover/item:scale-150 transition-transform duration-300`}></span>
                     {item.text}
                   </a>
                 </li>
@@ -87,8 +87,8 @@ const Footer = () => {
 
           {/* Contact Info */}
           <div className="group">
-            <h3 className="text-lg font-bold mb-6 flex items-center text-gray-800 relative">
-              <span className="w-1 h-6 bg-gradient-to-b from-purple-500 to-pink-500 rounded-full mr-3"></span>
+            <h3 className="text-lg lg:text-2xl font-bold mb-6 flex items-center text-gray-800 relative">
+              <span className="w-1  h-6 bg-gradient-to-b from-purple-500 to-pink-500 rounded-full mr-3"></span>
               Contact Info
             </h3>
             <div className="space-y-4">
@@ -99,8 +99,8 @@ const Footer = () => {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Phone</p>
-                  <a href="tel:+7983458418" className="text-gray-800 hover:text-blue-600 transition-colors duration-300 font-medium text-sm">
+                  <p className="text-sm lg:text-lg text-gray-500">Phone</p>
+                  <a href="tel:+7983458418" className="text-gray-800 lg:text-lg hover:text-blue-600 transition-colors duration-300 font-medium text-sm">
                     +1 (798) 345-8418
                   </a>
                 </div>
@@ -113,8 +113,8 @@ const Footer = () => {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Email</p>
-                  <a href="mailto:deepumelkani123@gmail.com" className="text-gray-800 hover:text-purple-600 transition-colors duration-300 font-medium text-sm">
+                  <p className="text-sm lg:text-lg text-gray-500">Email</p>
+                  <a href="mailto:deepumelkani123@gmail.com" className="text-gray-800 lg:text-lg hover:text-purple-600 transition-colors duration-300 font-medium text-sm">
                     deepumelkani123@gmail.com
                   </a>
                 </div>
@@ -128,8 +128,8 @@ const Footer = () => {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Address</p>
-                  <p className="text-gray-800 font-medium text-sm">
+                  <p className="text-sm lg:text-lg text-gray-500">Address</p>
+                  <p className="text-gray-800 lg:text-lg font-medium text-sm">
                     54709 Willms Station<br />
                     Suite 350, Washington, USA
                   </p>
@@ -142,8 +142,8 @@ const Footer = () => {
         {/* Newsletter Section */}
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 mb-12 border border-gray-100 shadow-sm">
           <div className="max-w-2xl mx-auto text-center">
-            <h3 className="text-2xl font-bold mb-3 text-gray-800">Stay Updated</h3>
-            <p className="text-gray-600 mb-6">
+            <h3 className="text-3xl font-bold mb-3 text-gray-800">Stay Updated</h3>
+            <p className="text-gray-600 lg:text-lg mb-6">
               Subscribe to our newsletter for the latest healthcare tips and updates.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
