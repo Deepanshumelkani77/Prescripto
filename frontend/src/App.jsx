@@ -61,29 +61,14 @@ const App = () => {
         {showLogin2 && <DoctorLogin />}
         
         <div className="flex-1 flex flex-col md:flex-row min-h-0">
-          {/* Mobile menu button */}
-          <button 
-            onClick={toggleMobileMenu}
-            className="md:hidden fixed top-4 right-4 z-50 p-2 rounded-md bg-white shadow-md"
-            aria-label="Toggle menu"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {isMobileMenuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
-              )}
-            </svg>
-          </button>
-          
           {/* Sidebar - Fixed on desktop, collapsible on mobile */}
           <div 
-            className={`fixed md:sticky top-0 left-0 h-screen transform ${
+            className={`fixed inset-y-0 left-0 transform ${
               isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
             } md:translate-x-0 transition-transform duration-300 ease-in-out z-40 w-64 bg-white shadow-lg`}
           >
             <div className="h-full overflow-y-auto">
-              <Sidebar />
+              <Sidebar isMobileMenuOpen={isMobileMenuOpen} setIsMobileMenuOpen={setIsMobileMenuOpen} />
             </div>
           </div>
           
@@ -97,7 +82,7 @@ const App = () => {
           
           {/* Main content area */}
           <div className="flex-1 flex flex-col overflow-hidden">
-            <Nav />
+            <Nav onMenuClick={toggleMobileMenu} />
             <main className="flex-1 overflow-y-auto p-4 md:p-6">
               <Routes>
                 <Route path='/' element={<DoctorAppointment />} />
