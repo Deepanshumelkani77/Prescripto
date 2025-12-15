@@ -23,7 +23,7 @@ const Banner = () => {
           {/* Left Column - Content */}
           <div className="text-center lg:text-left">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6 border border-blue-100 shadow-sm">
+            <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm text-blue-700 px-4 py-2 rounded-full text-sm lg:text-lg font-medium mb-6 border border-blue-100 shadow-sm">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-600"></span>
@@ -32,7 +32,7 @@ const Banner = () => {
             </div>
 
             {/* Main Heading */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-gray-900 leading-tight mb-6">
               <span className="block">Your Health,</span>
               <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
                 Our Priority
@@ -40,7 +40,7 @@ const Banner = () => {
             </h1>
 
             {/* Description */}
-            <p className="text-lg text-gray-600 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+            <p className="text-lg lg:text-xl text-gray-600 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
               Connect with top healthcare professionals from the comfort of your home. 
               Experience seamless appointment booking and quality care at your fingertips.
             </p>
@@ -53,7 +53,7 @@ const Banner = () => {
                 { value: '24/7', label: 'Support', color: 'pink' }
               ].map((stat, index) => (
                 <div key={index} className="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-gray-100 shadow-sm">
-                  <div className={`text-2xl font-bold text-${stat.color}-600 mb-1`}>{stat.value}</div>
+                  <div className={`text-3xl font-bold text-${stat.color}-600 mb-1`}>{stat.value}</div>
                   <div className="text-sm text-gray-600">{stat.label}</div>
                 </div>
               ))}
@@ -93,7 +93,7 @@ const Banner = () => {
                     </div>
                   ))}
                 </div>
-                <span className="text-sm font-medium text-gray-700">Verified Doctors</span>
+                <span className="text-sm lg:text-xl font-medium text-gray-700">Verified Doctors</span>
               </div>
             </div>
           </div>
@@ -116,8 +116,8 @@ const Banner = () => {
                     </svg>
                   </div>
                   <div>
-                    <div className="text-sm font-medium text-gray-900">24/7</div>
-                    <div className="text-xs text-gray-500">Available</div>
+                    <div className="text-sm lg:text-xl font-medium text-gray-900">24/7</div>
+                    <div className="text-xs lg:text-lg text-gray-500">Available</div>
                   </div>
                 </div>
               </div>
@@ -132,8 +132,8 @@ const Banner = () => {
                       </svg>
                     </div>
                     <div>
-                      <div className="text-sm font-medium text-gray-900">Instant</div>
-                      <div className="text-xs text-gray-500">Appointment</div>
+                      <div className="text-sm lg:text-xl font-medium text-gray-900">Instant</div>
+                      <div className="text-xs lg:text-lg text-gray-500">Appointment</div>
                     </div>
                   </div>
                 </div>
