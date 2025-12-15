@@ -59,13 +59,13 @@ const Home = () => {
 
         {/* Additional Features Section */}
         <section className="relative py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-6">
+              <h2 className="text-3xl md:text-4xl lg:text-6xl font-bold text-gray-800 mb-6">
                 Why Choose <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">Prescripto</span>
               </h2>
               <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mb-6 rounded-full"></div>
-              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              <p className="text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto">
                 Experience healthcare reimagined with our comprehensive platform designed for your convenience and well-being.
               </p>
             </div>
@@ -80,8 +80,8 @@ const Home = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-800 mb-4">Quick Booking</h3>
-                  <p className="text-gray-600 leading-relaxed">
+                  <h3 className="text-2xl lg:text-3xl font-bold text-gray-800 mb-4">Quick Booking</h3>
+                  <p className="text-gray-600 leading-relaxed lg:text-lg">
                     Book appointments in seconds with our streamlined booking system. No more waiting on hold or complicated scheduling processes.
                   </p>
                 </div>
@@ -96,8 +96,8 @@ const Home = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-800 mb-4">Secure & Private</h3>
-                  <p className="text-gray-600 leading-relaxed">
+                  <h3 className="text-2xl lg:text-3xl font-bold text-gray-800 mb-4">Secure & Private</h3>
+                  <p className="text-gray-600 lg:text-lg leading-relaxed">
                     Your health information is protected with bank-level security. We prioritize your privacy and data protection.
                   </p>
                 </div>
@@ -112,8 +112,8 @@ const Home = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-800 mb-4">Personalized Care</h3>
-                  <p className="text-gray-600 leading-relaxed">
+                  <h3 className="text-2xl lg:text-3xl font-bold text-gray-800 mb-4">Personalized Care</h3>
+                  <p className="text-gray-600 lg:text-lg leading-relaxed">
                     Get personalized recommendations and care plans tailored to your specific health needs and preferences.
                   </p>
                 </div>
