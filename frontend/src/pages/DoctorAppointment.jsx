@@ -9,17 +9,19 @@ const DoctorAppointment = () => {
   const [doctors, setDoctors] = useState([]);
   const [myDoctor, setMyDoctor] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [appointmentsRes, doctorsRes] = await Promise.all([
-          axios.get('http://localhost:5000/appointment/doctor'),
+          axios.get(`http://localhost:5000/appointment/doctor/${doctor?.id}`),
           axios.get('http://localhost:5000/doctor')
         ]);
+      
         setAppointments(appointmentsRes.data);
         setDoctors(doctorsRes.data);
-        const found = doctorsRes.data.find(doc => doc._id === doctor?.id);
+        const found = doctorsRes.data.find(doc => doc.id === doctor?.id);
         setMyDoctor(found || {});
       } catch (err) {
         console.error("Error fetching data:", err);
