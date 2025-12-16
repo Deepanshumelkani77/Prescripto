@@ -15,10 +15,12 @@ const Doctor = () => {
   const [showFilter, setShowFilter] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [experienceFilter, setExperienceFilter] = useState('all');
+  const [cityFilter, setCityFilter] = useState('all');
   const [sortBy, setSortBy] = useState('recommended');
   const [doctor, setDoctor] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [cities, setCities] = useState([]);
 
   // Fetch doctors data
   useEffect(() => {
@@ -27,6 +29,8 @@ const Doctor = () => {
       try {
         const response = await axios.get('http://localhost:5000/doctor');
         setDoctor(response.data);
+        const uniqueCities = [...new Set(response.data.map(doc => doc.city).filter(Boolean))];
+        setCities(uniqueCities);
       } catch (error) {
         console.error("Error fetching doctor data:", error);
       } finally {
@@ -37,7 +41,7 @@ const Doctor = () => {
     fetchDoctors();
   }, []);
 
-  // Filter doctors based on speciality, search, and experience
+  // Filter doctors based on speciality, search, experience, and city
   useEffect(() => {
     let filtered = [...doctor];
     
@@ -54,7 +58,8 @@ const Doctor = () => {
       filtered = filtered.filter(doc => 
         (doc.name && doc.name.toLowerCase().includes(query)) || 
         (doc.speciality && doc.speciality.toLowerCase().includes(query)) ||
-        (doc.hospital && doc.hospital.toLowerCase().includes(query))
+        (doc.hospital && doc.hospital.toLowerCase().includes(query)) ||
+        (doc.city && doc.city.toLowerCase().includes(query))
       );
     }
     
@@ -62,6 +67,11 @@ const Doctor = () => {
     if (experienceFilter !== 'all') {
       const minExp = parseInt(experienceFilter);
       filtered = filtered.filter(doc => doc.experience && doc.experience >= minExp);
+    }
+
+    // Filter by city
+    if (cityFilter !== 'all') {
+      filtered = filtered.filter(doc => doc.city && doc.city.toLowerCase() === cityFilter.toLowerCase());
     }
     
     // Sort doctors with null checks
@@ -89,7 +99,7 @@ const Doctor = () => {
     });
     
     setFilterDoc(filtered);
-  }, [doctor, speciality, searchQuery, experienceFilter, sortBy]);
+  }, [doctor, speciality, searchQuery, experienceFilter, cityFilter, sortBy]);
 
   const handleSpecialityClick = (spec) => {
     if (spec === 'All' || (speciality && speciality.toLowerCase() === spec.toLowerCase())) {
@@ -312,17 +322,18 @@ const Doctor = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
                   <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
+                    value={cityFilter}
+                    onChange={(e) => setCityFilter(e.target.value)}
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
-                    <option value="recommended">Recommended</option>
-                    <option value="experience">Experience</option>
-                    <option value="fees_low">Price: Low to High</option>
-                    <option value="fees_high">Price: High to Low</option>
-                    <option value="rating">Highest Rated</option>
+                    <option value="all">All Cities</option>
+                    {cities.map((city) => (
+                      <option key={city} value={city}>
+                        {city}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
@@ -380,9 +391,32 @@ const Doctor = () => {
                 </div>
               </div>
               
+              <div className="mt-6 pt-4 border-t border-gray-100">
+                <h4 className="font-medium text-gray-900 mb-3">City</h4>
+                <div className="space-y-2">
+                  {[
+                    { value: 'all', label: 'All Cities' },
+                    ...cities.map((city) => ({ value: city, label: city })),
+                  ].map((option) => (
+                    <label key={option.value} className="flex items-center">
+                      <input
+                        type="radio"
+                        name="city"
+                        value={option.value}
+                        checked={cityFilter === option.value}
+                        onChange={() => setCityFilter(option.value)}
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                      />
+                      <span className="ml-2 text-sm text-gray-700">{option.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              
               <button 
                 onClick={() => {
                   setExperienceFilter('all');
+                  setCityFilter('all');
                   setSearchQuery('');
                   navigate('/doctor');
                 }}
@@ -481,6 +515,7 @@ const Doctor = () => {
                 <button
                   onClick={() => {
                     setExperienceFilter('all');
+                    setCityFilter('all');
                     setSearchQuery('');
                     setSpeciality(null);
                   }}
