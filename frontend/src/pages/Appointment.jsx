@@ -1,129 +1,174 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import { assets } from "../assets/assets";
-import RelatedDoctor from "../components/RelatedDoctor";
-import axios from 'axios'
+import axios from 'axios';
+import moment from 'moment';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Appointment = () => {
-  const { user } = useContext(AppContext)
+  const { user } = useContext(AppContext);
   const { docId } = useParams();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
+  const [isBooking, setIsBooking] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [availableSlots, setAvailableSlots] = useState([]);
+  const [bookedSlots, setBookedSlots] = useState([]);
+  const [selectedSlot, setSelectedSlot] = useState(null);
 
-  //state variable for appointment 
+  // State for appointment
   const [appointment, setAppointment] = useState({
     user_id: '',
     day: '',
     date: '',
     time: '',
-    doc_id: ''
+    doc_id: docId
   });
 
+  // Doctor info state
+  const [doctor, setDoctor] = useState(null);
+
+  // Fetch doctor details
   useEffect(() => {
-    if (user) {
-      setAppointment(prev => ({
-        ...prev,
-        user_id: user.id
-      }));
-    }
-  }, [user]);
-
-  const handleSubmit = async () => {
-    if (!appointment.user_id || !appointment.day || !appointment.date || !appointment.time) {
-      alert("Please select a date and time slot.");
-      return;
-    }
-
-    const payload = {
-      ...appointment,
-      doc_id: docId
+    const fetchDoctor = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/doctor/${docId}`);
+        setDoctor(response.data);
+      } catch (error) {
+        console.error('Error fetching doctor:', error);
+        toast.error('Failed to load doctor information');
+      } finally {
+        setIsLoading(false);
+      }
     };
 
+    if (docId) {
+      fetchDoctor();
+    }
+  }, [docId]);
+
+  // Generate dates for the next 7 days
+  const generateDateSlots = () => {
+    const dates = [];
+    const today = new Date();
+    
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() + i);
+      dates.push({
+        date: date,
+        day: date.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase(),
+        dateString: date.toISOString().split('T')[0]
+      });
+    }
+    
+    return dates;
+  };
+
+  const dateSlots = generateDateSlots();
+
+  // Fetch available slots when date is selected
+  const fetchAvailableSlots = async (date) => {
     try {
-      const res = await axios.post("http://localhost:5000/appointment", payload);
-      if (res.status === 200 || res.status === 201) {
-        alert("Appointment booked successfully!");
-      } else {
-        alert("Failed to book appointment.");
-      }
+      setIsLoading(true);
+      const response = await axios.get(
+        `http://localhost:5000/appointment/available-slots/${docId}/${date}`
+      );
+      
+      setAvailableSlots(response.data.availableSlots || []);
+      setBookedSlots(response.data.bookedSlots || []);
+      setSelectedDate(date);
+      setSelectedSlot(null);
+      
+      // Update appointment with selected date
+      const selectedDateObj = new Date(date);
+      setAppointment(prev => ({
+        ...prev,
+        day: selectedDateObj.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase(),
+        date: selectedDateObj.toDateString(),
+        time: ''
+      }));
+      
     } catch (error) {
-      console.error("Error booking appointment:", error);
-      alert("Something went wrong while booking.");
+      console.error('Error fetching available slots:', error);
+      toast.error('Failed to load available time slots');
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  // Handle slot selection
+  const handleSlotSelect = (time) => {
+    setSelectedSlot(time);
+    setAppointment(prev => ({
+      ...prev,
+      time: time
+    }));
+  };
 
-  const [doctors, setDoctors] = useState([]);
-  useEffect(() => {
-    setIsLoading(true);
-    axios.get('http://localhost:5000/doctor')
-      .then(response => {
-        setDoctors(response.data);
-        setIsLoading(false);
-      })
-      .catch(error => {
-        console.error("Error fetching doctor data:", error);
-        setIsLoading(false);
-      });
-  }, []);
-
-  const [docInfo, setDocInfo] = useState({});
-  useEffect(() => {
-    const found = doctors.find((doc) => doc._id === docId);
-    setDocInfo(found || {});
-  }, [doctors, docId]);
-
-  //state variable for days
-  const [docSlots, setDocSlots] = useState([]);
-  const [slotIndex, setSlotIndex] = useState(null);
-  const [slotTime, setSlotTime] = useState('')
-  const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
-
-  const getAvailableSlots = async () => {
-    setDocSlots([])
-    let today = new Date();
-    for (let i = 0; i < 7; ++i) {
-      let currentDate = new Date(today)
-      currentDate.setDate(today.getDate() + i);
-
-      let endTime = new Date()
-      endTime.setDate(today.getDate() + i);
-      endTime.setHours(21, 0, 0, 0);
-
-      if (today.getDate() === currentDate.getDate()) {
-        currentDate.setHours(currentDate.getHours() > 10 ? currentDate.getHours() + 1 : 10)
-        currentDate.setMinutes(currentDate.getMinutes() > 30 ? 30 : 0)
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!user) {
+      toast.error('Please login to book an appointment');
+      navigate('/login');
+      return;
+    }
+    
+    if (!appointment.date || !appointment.time) {
+      toast.error('Please select a date and time slot');
+      return;
+    }
+    
+    try {
+      setIsBooking(true);
+      const payload = {
+        ...appointment,
+        user_id: user.id,
+        doc_id: docId
+      };
+      
+      const response = await axios.post('http://localhost:5000/appointment', payload);
+      
+      if (response.status === 201) {
+        toast.success('Appointment booked successfully!');
+        // Reset form
+        setSelectedDate(null);
+        setSelectedSlot(null);
+        setAvailableSlots([]);
+      }
+    } catch (error) {
+      console.error('Error booking appointment:', error);
+      if (error.response && error.response.status === 409) {
+        toast.error('This time slot is no longer available. Please select another slot.');
+        // Refresh available slots
+        if (selectedDate) {
+          fetchAvailableSlots(selectedDate);
+        }
       } else {
-        currentDate.setHours(10)
-        currentDate.setMinutes(0)
+        toast.error('Failed to book appointment. Please try again.');
       }
-
-      let timeSlots = []
-
-      while (currentDate < endTime) {
-        let formattedTime = currentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        timeSlots.push({
-          datetime: new Date(currentDate),
-          time: formattedTime
-        })
-        currentDate.setMinutes(currentDate.getMinutes() + 30)
-      }
-
-      setDocSlots(prev => ([...prev, timeSlots]))
+    } finally {
+      setIsBooking(false);
     }
-  }
+  };
 
-  useEffect(() => {
-    if (docInfo && Object.keys(docInfo).length > 0) {
-      getAvailableSlots();
-    }
-  }, [docInfo]);
-
-  if (isLoading) {
+  if (isLoading && !doctor) {
     return (
       <div className='flex flex-col items-center justify-center min-h-screen'>
         <div className='w-16 h-16 border-4 border-[#5f6FFF] border-t-transparent rounded-full animate-spin'></div>
         <p className='mt-4 text-gray-600'>Loading doctor information...</p>
+      </div>
+    );
+  }
+
+  if (!doctor) {
+    return (
+      <div className='flex flex-col items-center justify-center min-h-screen'>
+        <p className='text-red-500 text-lg'>Doctor not found</p>
       </div>
     );
   }
@@ -137,40 +182,46 @@ const Appointment = () => {
             <div className='absolute inset-0 bg-gradient-to-br from-[#5f6FFF]/20 to-[#4a5ae8]/20 rounded-2xl transform transition-transform duration-500 group-hover:scale-105'></div>
             <img 
               className='w-full h-64 lg:h-full object-cover rounded-2xl transform transition-all duration-500 group-hover:scale-105 group-hover:shadow-xl' 
-              src={docInfo.image} 
-              alt={docInfo.name} 
+              src={doctor.image || 'https://via.placeholder.com/300'} 
+              alt={doctor.name} 
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = 'https://via.placeholder.com/300';
+              }}
             />
             <div className='absolute inset-0 bg-gradient-to-t from-black/50 to-transparent lg:hidden rounded-2xl'></div>
-            <div className='absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent rounded-b-2xl transform translate-y-full group-hover:translate-y-0 transition-transform duration-500'>
-              <p className='text-white text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500'>
-               Book your appointment with {docInfo.name} now
-              </p>
-            </div>
           </div>
 
           <div className='lg:w-2/3 p-6 lg:p-8 space-y-4'>
             <div className='flex items-center gap-3'>
-              <h1 className='text-2xl lg:text-3xl font-bold text-gray-900'>{docInfo.name}</h1>
+              <h1 className='text-2xl lg:text-3xl font-bold text-gray-900'>{doctor.name}</h1>
               <img className='w-6 h-6' src={assets.verified_icon} alt="Verified" />
             </div>
 
             <div className='flex flex-wrap items-center gap-3'>
-              <p className='text-gray-600'>{docInfo.degree} - {docInfo.speciality}</p>
+              <p className='text-gray-600'>{doctor.degree} - {doctor.speciality}</p>
               <span className='px-3 py-1 bg-[#5f6FFF]/10 text-[#5f6FFF] rounded-full text-sm'>
-                {docInfo.experience} Experience
+                {doctor.experience} Years Experience
               </span>
+              {doctor.city && (
+                <span className='px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm flex items-center'>
+                  <svg className='w-4 h-4 mr-1' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z' />
+                    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M15 11a3 3 0 11-6 0 3 3 0 016 0z' />
+                  </svg>
+                  {doctor.city}
+                </span>
+              )}
             </div>
 
             <div className='space-y-2'>
-              <h2 className='text-xl font-semibold text-gray-900 flex items-center gap-2'>
-                About <img src={assets.info_icon} alt="Info" className='w-5 h-5' />
-              </h2>
-              <p className='text-gray-600 leading-relaxed'>{docInfo.about}</p>
+              <h2 className='text-xl font-semibold text-gray-900'>About</h2>
+              <p className='text-gray-600 leading-relaxed'>{doctor.about || 'No description available.'}</p>
             </div>
 
             <div className='flex items-center gap-2 text-lg'>
               <span className='text-gray-600'>Appointment fee:</span>
-              <span className='font-semibold text-[#5f6FFF]'>₹{docInfo.fees}</span>
+              <span className='font-semibold text-[#5f6FFF]'>₹{doctor.fees || 'N/A'}</span>
             </div>
           </div>
         </div>
@@ -179,76 +230,85 @@ const Appointment = () => {
       {/* Booking Section */}
       <div className='bg-white rounded-2xl shadow-lg p-6 lg:p-8 mb-8'>
         <h2 className='text-2xl font-bold text-gray-900 mb-6'>Book Your Appointment</h2>
-
-        {/* Date Selection */}
-        <div className='mb-8'>
-          <h3 className='text-lg font-semibold text-gray-700 mb-4'>Select Date</h3>
-          <div className='flex gap-4 overflow-x-auto pb-4'>
-            {docSlots.length && docSlots.map((item, index) => (
-              <div
-                key={index}
-                onClick={() => {
-                  setSlotIndex(index);
-                  setAppointment(prev => ({
-                    ...prev,
-                    day: item[0] && daysOfWeek[item[0].datetime.getDay()],
-                    date: item[0] && item[0].datetime.toDateString(),
-                  }));
-                }}
-                className={`flex flex-col items-center justify-center min-w-[80px] h-[80px] rounded-xl cursor-pointer transition-all duration-300 ${
-                  slotIndex === index 
-                    ? 'bg-[#5f6FFF] text-white shadow-lg scale-105' 
-                    : 'bg-gray-50 hover:bg-gray-100'
-                }`}
-              >
-                <p className='text-sm font-medium'>{item[0] && daysOfWeek[item[0].datetime.getDay()]}</p>
-                <p className='text-2xl font-bold'>{item[0] && item[0].datetime.getDate()}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Time Selection */}
-        {slotIndex !== null && (
+        
+        <form onSubmit={handleSubmit}>
+          {/* Date Selection */}
           <div className='mb-8'>
-            <h3 className='text-lg font-semibold text-gray-700 mb-4'>Select Time</h3>
-            <div className='flex flex-wrap gap-3'>
-              {docSlots[slotIndex].map((item, index) => (
+            <h3 className='text-lg font-semibold text-gray-700 mb-4'>Select Date</h3>
+            <div className='flex gap-4 overflow-x-auto pb-4'>
+              {dateSlots.map((slot, index) => (
                 <button
                   key={index}
-                  onClick={() => {
-                    setSlotTime(item.time);
-                    setAppointment({ ...appointment, time: item.time.toLowerCase() });
-                  }}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                    item.time === slotTime
-                      ? 'bg-[#5f6FFF] text-white shadow-md'
-                      : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                  type="button"
+                  onClick={() => fetchAvailableSlots(slot.dateString)}
+                  className={`flex flex-col items-center justify-center min-w-[80px] h-[80px] rounded-xl cursor-pointer transition-all duration-300 ${
+                    selectedDate === slot.dateString 
+                      ? 'bg-[#5f6FFF] text-white shadow-lg scale-105' 
+                      : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
                   }`}
                 >
-                  {item.time.toLowerCase()}
+                  <span className='text-sm font-medium'>{slot.day}</span>
+                  <span className='text-xl font-bold mt-1'>{slot.date.getDate()}</span>
+                  <span className='text-xs'>{slot.date.toLocaleString('default', { month: 'short' })}</span>
                 </button>
               ))}
             </div>
           </div>
-        )}
 
-        {/* Book Button */}
-        <button
-          onClick={handleSubmit}
-          className='w-full lg:w-auto px-8 py-3 bg-gradient-to-r from-[#5f6FFF] to-[#4a5ae8] text-white rounded-lg font-medium hover:opacity-90 transform hover:scale-105 transition-all duration-300 shadow-lg'
-        >
-          Book Appointment
-        </button>
+          {/* Time Slots */}
+          {selectedDate && (
+            <div className='mb-8'>
+              <h3 className='text-lg font-semibold text-gray-700 mb-4'>
+                Available Time Slots for {new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+              </h3>
+              
+              {isLoading ? (
+                <div className='flex justify-center py-8'>
+                  <div className='w-8 h-8 border-4 border-[#5f6FFF] border-t-transparent rounded-full animate-spin'></div>
+                </div>
+              ) : availableSlots.length > 0 ? (
+                <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3'>
+                  {availableSlots.map((time, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => handleSlotSelect(time)}
+                      className={`py-3 px-4 rounded-lg text-center transition-all duration-200 ${
+                        selectedSlot === time
+                          ? 'bg-[#5f6FFF] text-white shadow-md'
+                          : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
+                      }`}
+                    >
+                      {time}
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div className='text-center py-8'>
+                  <p className='text-gray-500'>No available slots for the selected date. Please choose another date.</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Book Now Button */}
+          <div className='mt-8'>
+            <button
+              type="submit"
+              disabled={isBooking || !selectedSlot}
+              className={`w-full py-4 px-6 rounded-xl text-white font-semibold text-lg transition-all duration-300 ${
+                isBooking || !selectedSlot
+                  ? 'bg-gray-400 cursor-not-allowed'
+                  : 'bg-[#5f6FFF] hover:bg-[#4a5ae8] shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
+              }`}
+            >
+              {isBooking ? 'Booking...' : 'Book Appointment'}
+            </button>
+          </div>
+        </form>
       </div>
-
-      {/* Related Doctors */}
-      <RelatedDoctor docId={docId} speciality={docInfo.speciality} />
     </div>
   );
 };
 
 export default Appointment;
-
-
-/**  */

@@ -10,22 +10,31 @@ const MyAppointment = () => {
   const [activeTab, setActiveTab] = useState('upcoming');
   const [showCancelModal, setShowCancelModal] = useState({ show: false, id: null });
 
-  useEffect(() => {
-    const fetchAppointments = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get('http://localhost:5000/appointment');
-        console.log("Appointments from backend:", response.data);
-        setAppointment(response.data);
-      } catch (error) {
-        console.error("Error fetching appointment data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    fetchAppointments();
-  }, []);
+
+  useEffect(() => {
+    
+    const fetchAppointments = async () => {
+  setLoading(true);
+  try {
+    const response = await axios.get(`http://localhost:5000/appointment/user/${user?.id}`);
+    console.log("Appointments from backend:", response.data);
+    setAppointment(response.data);
+    console.log("Appointments set in state:", response.data[0]);
+  } catch (error) {
+    console.error("Error fetching appointment data:", error);
+  
+  } finally {
+    setLoading(false);
+  }
+};
+
+    if (user?.id) {
+      fetchAppointments();
+    } else {
+      setLoading(false);
+    }
+  }, [user?.id]); // Add user.id as a dependency
 
   const handleDelete = async (id) => {
     try {
@@ -88,11 +97,39 @@ const MyAppointment = () => {
     }
   };
 
-  const userAppointments = appointment.filter(item => item.user_id === user?.id);
-  const upcomingAppointments = userAppointments.filter(apt => new Date(apt.date) >= new Date());
-  const pastAppointments = userAppointments.filter(apt => new Date(apt.date) < new Date());
+  // Get appointments for the current user
+  const userAppointments = appointment.filter(item => {
+    const itemUserId = typeof item.user_id === 'object' ? item.user_id?._id : item.user_id;
+    return itemUserId === user?.id;
+  });
   
-  const currentAppointments = activeTab === 'upcoming' ? upcomingAppointments : pastAppointments;
+  // Filter upcoming and past appointments
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  const upcomingAppointments = userAppointments.filter(apt => {
+    const appointmentDate = new Date(apt.date);
+    return appointmentDate >= today;
+  });
+  
+  const pastAppointments = userAppointments.filter(apt => {
+    const appointmentDate = new Date(apt.date);
+    return appointmentDate < today;
+  });
+  
+  // Sort appointments by date and time
+  const sortAppointments = (appointments) => {
+    return [...appointments].sort((a, b) => {
+      const dateA = new Date(`${a.date}T${a.time}`);
+      const dateB = new Date(`${b.date}T${b.time}`);
+      return dateA - dateB;
+    });
+  };
+  
+  const sortedUpcoming = sortAppointments(upcomingAppointments);
+  const sortedPast = sortAppointments(pastAppointments);
+  
+  const currentAppointments = activeTab === 'upcoming' ? sortedUpcoming : sortedPast;
 
   const formatDate = (dateString) => {
     const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
@@ -126,7 +163,7 @@ const MyAppointment = () => {
               whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center`}
           >
             <FiCalendar className="mr-2" />
-            Upcoming ({upcomingAppointments.length})
+            Upcoming ({sortedUpcoming.length})
           </button>
           <button
             onClick={() => setActiveTab('past')}
@@ -136,7 +173,7 @@ const MyAppointment = () => {
               whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center`}
           >
             <FiCheckCircle className="mr-2" />
-            Past ({pastAppointments.length})
+            Past ({sortedPast.length})
           </button>
         </nav>
       </div>
