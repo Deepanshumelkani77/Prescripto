@@ -15,6 +15,7 @@ const EditDoctor = () => {
     experience: '',
     about: '',
     fees: '',
+    city: '',
     address: { line1: '', line2: '' }
   });
   const [file, setFile] = useState(null);
@@ -35,6 +36,7 @@ const EditDoctor = () => {
           experience: data.experience || '',
           about: data.about || '',
           fees: data.fees || '',
+          city: data.city || '',
           address: {
             line1: data.address?.line1 || '',
             line2: data.address?.line2 || ''
@@ -192,6 +194,19 @@ const EditDoctor = () => {
                     className='w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5f6FFF]/20 focus:border-[#5f6FFF] transition-all duration-300' 
                     type="email" 
                     placeholder="Enter email address" 
+                    required 
+                  />
+                </div>
+
+                <div className='space-y-2'>
+                  <label className='block text-sm font-medium text-gray-700'>City</label>
+                  <input 
+                    name='city' 
+                    value={formData.city}
+                    onChange={handleChange} 
+                    className='w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5f6FFF]/20 focus:border-[#5f6FFF] transition-all duration-300' 
+                    type="text" 
+                    placeholder="Enter city" 
                     required 
                   />
                 </div>
