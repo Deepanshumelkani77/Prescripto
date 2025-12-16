@@ -256,40 +256,56 @@ const Appointment = () => {
           </div>
 
           {/* Time Slots */}
-          {selectedDate && (
-            <div className='mb-8'>
-              <h3 className='text-lg font-semibold text-gray-700 mb-4'>
-                Available Time Slots for {new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
-              </h3>
-              
+          <div className="mt-6">
+            <h3 className="text-lg font-medium text-gray-900 mb-3">
+              {selectedDate ? `Available Time Slots for ${new Date(selectedDate).toLocaleDateString()}` : 'Select a date to see available slots'}
+            </h3>
+            
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
               {isLoading ? (
-                <div className='flex justify-center py-8'>
-                  <div className='w-8 h-8 border-4 border-[#5f6FFF] border-t-transparent rounded-full animate-spin'></div>
+                <div className="col-span-full flex justify-center py-4">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#5f6fff]"></div>
                 </div>
-              ) : availableSlots.length > 0 ? (
-                <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3'>
-                  {availableSlots.map((time, index) => (
+              ) : availableSlots && availableSlots.length > 0 ? (
+                availableSlots.map((slot, index) => {
+                  const isBooked = bookedSlots && bookedSlots.includes(slot);
+                  const isSelected = selectedSlot === slot;
+                  
+                  if (isBooked) {
+                    return (
+                      <div 
+                        key={index}
+                        className="py-3 px-4 rounded-lg text-center font-medium text-sm bg-red-100 text-red-600 cursor-not-allowed opacity-75"
+                        title="This slot is already booked"
+                      >
+                        {slot}
+                        <span className="block text-xs mt-1">Booked</span>
+                      </div>
+                    );
+                  }
+                  
+                  return (
                     <button
                       key={index}
                       type="button"
-                      onClick={() => handleSlotSelect(time)}
-                      className={`py-3 px-4 rounded-lg text-center transition-all duration-200 ${
-                        selectedSlot === time
-                          ? 'bg-[#5f6FFF] text-white shadow-md'
-                          : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
+                      onClick={() => handleSlotSelect(slot)}
+                      className={`py-3 px-4 rounded-lg text-center font-medium text-sm transition-all duration-200 ${
+                        isSelected 
+                          ? 'bg-[#5f6fff] text-white' 
+                          : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
                       }`}
                     >
-                      {time}
+                      {slot}
                     </button>
-                  ))}
+                  );
+                })
+              ) : selectedDate ? (
+                <div className="col-span-full text-center py-4 text-gray-500">
+                  No available time slots for this date. Please select another date.
                 </div>
-              ) : (
-                <div className='text-center py-8'>
-                  <p className='text-gray-500'>No available slots for the selected date. Please choose another date.</p>
-                </div>
-              )}
+              ) : null}
             </div>
-          )}
+          </div>
 
           {/* Book Now Button */}
           <div className='mt-8'>

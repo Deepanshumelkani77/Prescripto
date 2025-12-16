@@ -152,7 +152,7 @@ router.get("/doctor/:doctorId", async (req, res) => {
 router.get("/user/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
-    console.log(userId);
+    
     const appointments = await Appointment.find({ user_id: userId })
       .populate('doc_id')
       .sort({ date: 1, time: 1 });
