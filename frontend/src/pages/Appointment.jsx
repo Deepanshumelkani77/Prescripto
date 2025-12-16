@@ -73,27 +73,49 @@ const Appointment = () => {
   const fetchAvailableSlots = async (date) => {
     try {
       setIsLoading(true);
+      // Convert the selected date to YYYY-MM-DD format in local timezone
+      const localDate = new Date(date);
+      const formattedDate = localDate.toISOString().split('T')[0];
+      
       const response = await axios.get(
-        `http://localhost:5000/appointment/available-slots/${docId}/${date}`
+        `http://localhost:5000/appointment/available-slots/${docId}/${formattedDate}`
       );
       
-      setAvailableSlots(response.data.availableSlots || []);
-      setBookedSlots(response.data.bookedSlots || []);
-      setSelectedDate(date);
+      // Ensure we're working with time strings in consistent format (HH:MM)
+      const normalizeTime = (timeStr) => {
+        if (!timeStr) return '';
+        const [hours, minutes] = timeStr.split(':');
+        return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
+      };
+      
+      // Process available slots
+      const processedAvailableSlots = (response.data.availableSlots || []).map(normalizeTime);
+      const processedBookedSlots = (response.data.bookedSlots || []).map(normalizeTime);
+      
+      // Log for debugging
+      console.log('Fetched slots for date:', formattedDate, {
+        availableSlots: processedAvailableSlots,
+        bookedSlots: processedBookedSlots
+      });
+      
+      setAvailableSlots(processedAvailableSlots);
+      setBookedSlots(processedBookedSlots);
+      setSelectedDate(formattedDate);
       setSelectedSlot(null);
       
       // Update appointment with selected date
-      const selectedDateObj = new Date(date);
       setAppointment(prev => ({
         ...prev,
-        day: selectedDateObj.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase(),
-        date: selectedDateObj.toDateString(),
+        day: localDate.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase(),
+        date: formattedDate,
         time: ''
       }));
       
     } catch (error) {
       console.error('Error fetching available slots:', error);
       toast.error('Failed to load available time slots');
+      setAvailableSlots([]);
+      setBookedSlots([]);
     } finally {
       setIsLoading(false);
     }

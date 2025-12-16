@@ -88,10 +88,20 @@ router.get("/available-slots/:doctorId/:date", async (req, res) => {
   try {
     const { doctorId, date } = req.params;
     
+    // Create date range for the entire day in UTC
+    const startDate = new Date(date);
+    startDate.setUTCHours(0, 0, 0, 0);
+    
+    const endDate = new Date(date);
+    endDate.setUTCHours(23, 59, 59, 999);
+    
     // Get all appointments for the doctor on the selected date
     const appointments = await Appointment.find({
       doc_id: doctorId,
-      date: new Date(date),
+      date: {
+        $gte: startDate,
+        $lte: endDate
+      },
       status: { $ne: 'cancelled' }
     });
     
@@ -113,8 +123,13 @@ router.get("/available-slots/:doctorId/:date", async (req, res) => {
       startTime.add(workingHours.slotDuration, 'minutes');
     }
     
-    // Get booked slots
-    const bookedSlots = appointments.map(apt => apt.time);
+    // Get booked slots and normalize times
+    const bookedSlots = appointments.map(apt => {
+      // Convert stored time to HH:MM format
+      if (!apt.time) return null;
+      const [hours, minutes] = apt.time.split(':');
+      return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
+    }).filter(Boolean);
     
     // Filter out booked slots
     const availableSlots = allSlots.filter(slot => !bookedSlots.includes(slot));
