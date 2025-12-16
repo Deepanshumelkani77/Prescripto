@@ -87,21 +87,20 @@ router.post("/", async (req, res) => {
 router.get("/available-slots/:doctorId/:date", async (req, res) => {
   try {
     const { doctorId, date } = req.params;
+    const now = new Date();
+    const isToday = new Date(date).toDateString() === now.toDateString();
     
-    // Create date range for the entire day in UTC
+    // Create date range for the entire day in local time
     const startDate = new Date(date);
-    startDate.setUTCHours(0, 0, 0, 0);
+    startDate.setHours(0, 0, 0, 0);
     
     const endDate = new Date(date);
-    endDate.setUTCHours(23, 59, 59, 999);
+    endDate.setHours(23, 59, 59, 999);
     
     // Get all appointments for the doctor on the selected date
     const appointments = await Appointment.find({
       doc_id: doctorId,
-      date: {
-        $gte: startDate,
-        $lte: endDate
-      },
+      date: { $gte: startDate, $lte: endDate },
       status: { $ne: 'cancelled' }
     });
     
@@ -119,13 +118,18 @@ router.get("/available-slots/:doctorId/:date", async (req, res) => {
     
     while (startTime.isBefore(endTime)) {
       const slotTime = startTime.format('HH:mm');
-      allSlots.push(slotTime);
+      const slotDateTime = new Date(date + 'T' + slotTime);
+      
+      // If it's today, only include future time slots
+      if (!isToday || slotDateTime > now) {
+        allSlots.push(slotTime);
+      }
+      
       startTime.add(workingHours.slotDuration, 'minutes');
     }
     
     // Get booked slots and normalize times
     const bookedSlots = appointments.map(apt => {
-      // Convert stored time to HH:MM format
       if (!apt.time) return null;
       const [hours, minutes] = apt.time.split(':');
       return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
@@ -137,14 +141,17 @@ router.get("/available-slots/:doctorId/:date", async (req, res) => {
     res.status(200).json({
       date,
       availableSlots,
-      bookedSlots
+      bookedSlots,
+      isToday,
+      currentTime: now.toISOString()
     });
     
   } catch (error) {
-    console.error('Error fetching available slots:', error);
+    console.error('Error in /available-slots:', error);
     res.status(500).json({ 
       message: "Error fetching available time slots", 
-      error: error.message 
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
 });

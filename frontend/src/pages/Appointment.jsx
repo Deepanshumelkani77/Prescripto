@@ -53,14 +53,21 @@ const Appointment = () => {
   const generateDateSlots = () => {
     const dates = [];
     const today = new Date();
+    const currentHour = today.getHours();
+    const currentMinute = today.getMinutes();
     
     for (let i = 0; i < 7; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() + i);
+      
+      // Disable past dates and today's date if all slots are passed
+      const isPastDate = i === 0 && currentHour >= 17; // After 5 PM
+      
       dates.push({
         date: date,
         day: date.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase(),
-        dateString: date.toISOString().split('T')[0]
+        dateString: date.toISOString().split('T')[0],
+        disabled: isPastDate
       });
     }
     
@@ -262,16 +269,20 @@ const Appointment = () => {
                 <button
                   key={index}
                   type="button"
-                  onClick={() => fetchAvailableSlots(slot.dateString)}
-                  className={`flex flex-col items-center justify-center min-w-[80px] h-[80px] rounded-xl cursor-pointer transition-all duration-300 ${
-                    selectedDate === slot.dateString 
-                      ? 'bg-[#5f6FFF] text-white shadow-lg scale-105' 
-                      : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
+                  onClick={() => !slot.disabled && fetchAvailableSlots(slot.dateString)}
+                  disabled={slot.disabled}
+                  className={`flex flex-col items-center justify-center py-3 px-4 rounded-lg border ${
+                    selectedDate === slot.dateString
+                      ? 'border-[#5f6fff] bg-blue-50'
+                      : slot.disabled
+                      ? 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed'
+                      : 'border-gray-200 hover:border-[#5f6fff] hover:bg-blue-50'
                   }`}
                 >
                   <span className='text-sm font-medium'>{slot.day}</span>
                   <span className='text-xl font-bold mt-1'>{slot.date.getDate()}</span>
                   <span className='text-xs'>{slot.date.toLocaleString('default', { month: 'short' })}</span>
+                  {slot.disabled && <span className="text-xs text-red-500 mt-1">Closed</span>}
                 </button>
               ))}
             </div>
