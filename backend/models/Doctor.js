@@ -12,6 +12,7 @@ degree:{type:String},
 experience: {type:String},
 about:  {type:String},
 fees: {type:Number} ,
+city: {type: String, required: true},
 available: { type: Boolean, },
 address:{
     line1: {type:String} ,

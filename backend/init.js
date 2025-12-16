@@ -35,7 +35,7 @@ Doctor.insertMany( [
         address: {
             line1: '17th Cross, Richmond',
             line2: 'Circle, Ring Road, London'
-        }
+        },city:"Haldwani"
     },
     {
        
@@ -51,7 +51,7 @@ Doctor.insertMany( [
         address: {
             line1: '27th Cross, Richmond',
             line2: 'Circle, Ring Road, London'
-        }
+        },city:"Haldwani"
     },
     {
     
@@ -67,7 +67,7 @@ Doctor.insertMany( [
         address: {
             line1: '37th Cross, Richmond',
             line2: 'Circle, Ring Road, London'
-        }
+        },city:"Haldwani"
     },
     {
     
@@ -83,7 +83,7 @@ Doctor.insertMany( [
         address: {
             line1: '47th Cross, Richmond',
             line2: 'Circle, Ring Road, London'
-        }
+        },city:"Haldwani"
     },
     {
 
@@ -99,7 +99,7 @@ Doctor.insertMany( [
         address: {
             line1: '57th Cross, Richmond',
             line2: 'Circle, Ring Road, London'
-        }
+        },city:"Haldwani"
     },
     {
       
@@ -115,7 +115,7 @@ Doctor.insertMany( [
         address: {
             line1: '57th Cross, Richmond',
             line2: 'Circle, Ring Road, London'
-        }
+        },city:"Haldwani"
     },
     {
      
@@ -131,7 +131,7 @@ Doctor.insertMany( [
         address: {
             line1: '17th Cross, Richmond',
             line2: 'Circle, Ring Road, London'
-        }
+        },city:"Haldwani"
     },
     {
     
@@ -147,7 +147,7 @@ Doctor.insertMany( [
         address: {
             line1: '27th Cross, Richmond',
             line2: 'Circle, Ring Road, London'
-        }
+        },city:"Haldwani"
     },
     {
 
@@ -163,7 +163,7 @@ Doctor.insertMany( [
         address: {
             line1: '37th Cross, Richmond',
             line2: 'Circle, Ring Road, London'
-        }
+        },city:"Haldwani"
     },
     {
        
@@ -179,7 +179,7 @@ Doctor.insertMany( [
         address: {
             line1: '47th Cross, Richmond',
             line2: 'Circle, Ring Road, London'
-        }
+        },city:"Delhi"
     },
     {
        
@@ -195,7 +195,7 @@ Doctor.insertMany( [
         address: {
             line1: '57th Cross, Richmond',
             line2: 'Circle, Ring Road, London'
-        }
+        },city:"Delhi"
     },
     {
        
@@ -211,7 +211,7 @@ Doctor.insertMany( [
         address: {
             line1: '57th Cross, Richmond',
             line2: 'Circle, Ring Road, London'
-        }
+        },city:"Delhi"
     },
     {
      
@@ -227,7 +227,7 @@ Doctor.insertMany( [
         address: {
             line1: '17th Cross, Richmond',
             line2: 'Circle, Ring Road, London'
-        }
+        },city:"Delhi"
     },
     {
     
@@ -243,7 +243,7 @@ Doctor.insertMany( [
         address: {
             line1: '27th Cross, Richmond',
             line2: 'Circle, Ring Road, London'
-        }
+        },city:"Delhi"
     },
     {
        
@@ -259,7 +259,7 @@ Doctor.insertMany( [
         address: {
             line1: '37th Cross, Richmond',
             line2: 'Circle, Ring Road, London'
-        }
+        },city:"Delhi"
     },
 ]
 ).then((res)=>{
