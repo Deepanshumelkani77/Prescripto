@@ -62,7 +62,7 @@ const Banner = () => {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <button 
-                onClick={() => { setShowLogin(true); window.scrollTo(0, 0) }} 
+                onClick={() => { navigate('/doctor') }} 
                 className="group relative overflow-hidden bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-3"
               >
                 <span className="relative z-10">Book Appointment</span>
