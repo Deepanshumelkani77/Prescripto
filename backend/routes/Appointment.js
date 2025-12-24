@@ -47,14 +47,19 @@ router.post("/", async (req, res) => {
       });
     }
 
-    // Create new appointment
+    // Parse the date in local timezone (YYYY-MM-DD format)
+    const [year, month, dayOfMonth] = date.split('-');
+    const appointmentDate = new Date(year, month - 1, dayOfMonth);
+    
+    // Create new appointment with consistent date handling
     const appointment = new Appointment({
       user_id,
       day,
-      date: new Date(date),
+      date: appointmentDate,
       time,
       doc_id,
-      status: 'pending'
+      status: 'pending',
+      timezone: req.body.timezone || 'UTC' // Store timezone for reference
     });
 
     await appointment.save({ session });

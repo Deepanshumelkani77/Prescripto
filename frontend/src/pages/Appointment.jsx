@@ -60,13 +60,19 @@ const Appointment = () => {
       const date = new Date(today);
       date.setDate(today.getDate() + i);
       
+      // Format date as YYYY-MM-DD without timezone conversion
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const dateString = `${year}-${month}-${day}`;
+      
       // Disable past dates and today's date if all slots are passed
       const isPastDate = i === 0 && currentHour >= 17; // After 5 PM
       
       dates.push({
         date: date,
         day: date.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase(),
-        dateString: date.toISOString().split('T')[0],
+        dateString: dateString, // Use the manually formatted date string
         disabled: isPastDate
       });
     }
@@ -77,12 +83,16 @@ const Appointment = () => {
   const dateSlots = generateDateSlots();
 
   // Fetch available slots when date is selected
-  const fetchAvailableSlots = async (date) => {
+  const fetchAvailableSlots = async (dateString) => {
     try {
       setIsLoading(true);
-      // Convert the selected date to YYYY-MM-DD format in local timezone
-      const localDate = new Date(date);
-      const formattedDate = localDate.toISOString().split('T')[0];
+      // Parse the date string directly (format: YYYY-MM-DD)
+      const [year, month, day] = dateString.split('-');
+      const localDate = new Date(year, month - 1, day);
+      const formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+      
+      // Store the display date without timezone conversion
+      const displayDate = new Date(localDate);
       
       const response = await axios.get(
         `http://localhost:5000/appointment/available-slots/${docId}/${formattedDate}`
@@ -154,12 +164,20 @@ const Appointment = () => {
     
     try {
       setIsBooking(true);
+      // Ensure we're using the correct date format for the backend
+      const [year, month, day] = appointment.date.split('-');
+      const formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+      
       const payload = {
         ...appointment,
+        date: formattedDate, // Use the properly formatted date
         user_id: user.id,
-        doc_id: docId
+        doc_id: docId,
+        // Add timezone information
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
       };
       
+      console.log('Sending appointment data:', payload);
       const response = await axios.post('http://localhost:5000/appointment', payload);
       
       if (response.status === 201) {
@@ -291,7 +309,31 @@ const Appointment = () => {
           {/* Time Slots */}
           <div className="mt-6">
             <h3 className="text-lg font-medium text-gray-900 mb-3">
-              {selectedDate ? `Available Time Slots for ${new Date(selectedDate).toLocaleDateString()}` : 'Select a date to see available slots'}
+              {selectedDate ? (() => {
+                // Get the selected date object from the dateSlots array
+                const selectedSlot = dateSlots.find(slot => 
+                  slot.dateString === selectedDate
+                );
+                
+                if (selectedSlot) {
+                  const date = selectedSlot.date;
+                  return `Available Time Slots for ${date.toLocaleDateString('en-US', { 
+                    month: 'long', 
+                    day: 'numeric', 
+                    year: 'numeric' 
+                  })}`;
+                }
+                
+                // Fallback in case selectedSlot is not found
+                const [year, month, day] = selectedDate.split('-');
+                const date = new Date(year, month - 1, day);
+                return `Available Time Slots for ${date.toLocaleDateString('en-US', { 
+                  month: 'long', 
+                  day: 'numeric', 
+                  year: 'numeric' 
+                })}`;
+                
+              })() : 'Select a date to see available slots'}
             </h3>
             
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
