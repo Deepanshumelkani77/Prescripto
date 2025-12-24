@@ -312,11 +312,17 @@ const MyAppointment = () => {
                               <div className="ml-3">
                                 <p className="text-sm font-medium text-gray-500">Status</p>
                                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                  isUpcoming 
-                                    ? 'bg-green-100 text-green-800' 
-                                    : 'bg-gray-100 text-gray-800'
+                                  item.status === 'completed' 
+                                    ? 'bg-gray-100 text-gray-800' 
+                                    : item.status === 'cancelled'
+                                    ? 'bg-red-100 text-red-800'
+                                    : 'bg-yellow-100 text-yellow-800'
                                 }`}>
-                                  {isUpcoming ? 'Upcoming' : 'Completed'}
+                                  {item.status === 'completed' 
+                                    ? 'Completed' 
+                                    : item.status === 'cancelled'
+                                    ? 'Cancelled'
+                                    : 'Pending'}
                                 </span>
                               </div>
                             </div>
@@ -325,7 +331,7 @@ const MyAppointment = () => {
                       </div>
                       
                       {/* Action Buttons */}
-                      {isUpcoming && (
+                      {(item.status === 'pending' || isUpcoming) && (
                         <div className="mt-6 pt-6 border-t border-gray-100 flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3">
                           {!item.paid ? (
                             <button
