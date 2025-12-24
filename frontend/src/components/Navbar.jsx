@@ -110,17 +110,7 @@ const Navbar = () => {
                   </div>
                   <span className="hidden lg:inline">{user.name?.split(' ')[0] || 'Profile'}</span>
                 </button>
-                <div className="hidden group-hover:block absolute right-0  w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                  <button
-                    onClick={() => {
-                      logout();
-                      navigate('/');
-                    }}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    Sign out
-                  </button>
-                </div>
+             
               </div>
             ) : (
               <div className="flex items-center space-x-3">
