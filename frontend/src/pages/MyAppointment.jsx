@@ -36,6 +36,49 @@ const MyAppointment = () => {
     }
   }, [user?.id]); // Add user.id as a dependency
 
+  const updateAppointmentStatus = async (id, status) => {
+    try {
+      const response = await fetch(`http://localhost:5000/appointment/${id}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status })
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        // Update the appointment in the local state
+        setAppointment(prev => 
+          prev.map(appt => 
+            appt._id === id ? { ...appt, status } : appt
+          )
+        );
+        
+        setShowCancelModal({ show: false, id: null });
+        toast.success(`Appointment ${status} successfully`);
+        return true;
+      } else {
+        throw new Error(data.message || 'Failed to update status');
+      }
+    } catch (error) {
+      console.error('Error updating appointment status:', error);
+      toast.error(error.message || 'Failed to update appointment status');
+      return false;
+    }
+  };
+
+  const handleCancel = async (id) => {
+    const confirm = window.confirm('Are you sure you want to cancel this appointment?');
+    if (!confirm) return;
+    
+    const success = await updateAppointmentStatus(id, 'cancelled');
+    if (success) {
+      setShowCancelModal({ show: false, id: null });
+    }
+  };
+
   const handleDelete = async (id) => {
     try {
       const response = await fetch(`http://localhost:5000/appointment/delete/${id}`, {
@@ -331,30 +374,47 @@ const MyAppointment = () => {
                       </div>
                       
                       {/* Action Buttons */}
-                      {(item.status === 'pending' || isUpcoming) && (
+                      {(item.status === 'pending' || item.status === 'confirmed') && (
                         <div className="mt-6 pt-6 border-t border-gray-100 flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3">
                           {!item.paid ? (
                             <button
                               onClick={() => handlePayment(item.doc_id?.fees || 500, item._id)}
                               className="inline-flex items-center justify-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                              disabled={item.status !== 'confirmed'}
                             >
                               <FiCreditCard className="mr-2 h-4 w-4" />
-                              Pay Now
+                              {item.status === 'confirmed' ? 'Pay Now' : 'Awaiting Confirmation'}
                             </button>
                           ) : (
-                            <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                              <FiCheckCircle className="mr-1.5 h-4 w-4" />
-                              Payment Completed
-                            </span>
+                            <div className="flex flex-col space-y-2">
+                              <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                <FiCheckCircle className="mr-1.5 h-4 w-4" />
+                                Payment Completed
+                              </span>
+                              {item.status === 'completed' && (
+                                <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                  <FiCheckCircle className="mr-1.5 h-4 w-4" />
+                                  Appointment Completed
+                                </span>
+                              )}
+                              {item.status === 'cancelled' && (
+                                <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                  <FiX className="mr-1.5 h-4 w-4" />
+                                  Appointment Cancelled
+                                </span>
+                              )}
+                            </div>
                           )}
                           
-                          <button
-                            onClick={() => setShowCancelModal({ show: true, id: item._id })}
-                            className="inline-flex items-center justify-center px-5 py-2.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                          >
-                            <FiX className="mr-2 h-4 w-4" />
-                            Cancel Appointment
-                          </button>
+                          {item.status !== 'cancelled' && item.status !== 'completed' && (
+                            <button
+                              onClick={() => setShowCancelModal({ show: true, id: item._id })}
+                              className="inline-flex items-center justify-center px-5 py-2.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                            >
+                              <FiX className="mr-2 h-4 w-4" />
+                              {item.status === 'pending' ? 'Cancel Request' : 'Cancel Appointment'}
+                            </button>
+                          )}
                         </div>
                       )}
                     </div>

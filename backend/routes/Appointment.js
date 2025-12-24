@@ -272,4 +272,37 @@ router.post('/update-payment/:id', async (req, res) => {
   }
 });
 
+// Update appointment status
+router.patch('/:id/status', async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  
+  if (!['pending', 'confirmed', 'cancelled', 'completed'].includes(status)) {
+    return res.status(400).json({ message: 'Invalid status' });
+  }
+
+  try {
+    const appointment = await Appointment.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+    
+    if (!appointment) {
+      return res.status(404).json({ message: 'Appointment not found' });
+    }
+    
+    res.json({
+      message: `Appointment ${status} successfully`,
+      appointment
+    });
+  } catch (error) {
+    console.error('Error updating appointment status:', error);
+    res.status(500).json({ 
+      message: 'Failed to update appointment status',
+      error: error.message 
+    });
+  }
+});
+
 module.exports = router;
