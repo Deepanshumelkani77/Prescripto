@@ -2,11 +2,13 @@ import React, { useState, useContext, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { assets } from "../assets/assets";
 import { AppContext } from '../context/AppContext';
+import { StoreContext } from '../context/StoreContext';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { setShowLogin, user, logout } = useContext(AppContext);
+  const { setShowLogin, user, logout, setState } = useContext(AppContext);
+  const { setShowLogin2 } = useContext(StoreContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -121,12 +123,12 @@ const Navbar = () => {
                 </div>
               </div>
             ) : (
-              <>
+              <div className="flex items-center space-x-3">
                 <button
-                  onClick={() => setShowLogin(true)}
-                  className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors duration-200"
+                onClick={() => { setState("Doctor"); setShowLogin2(true); window.scrollTo(0, 0) }} 
+                  className="px-4 py-2 border border-blue-600 text-blue-600 text-sm font-medium rounded-lg hover:bg-blue-50 transition-all duration-200"
                 >
-                  Log in
+                  Doctor Sign Up
                 </button>
                 <button
                   onClick={() => setShowLogin(true)}
@@ -134,7 +136,7 @@ const Navbar = () => {
                 >
                   Sign up
                 </button>
-              </>
+              </div>
             )}
           </div>
 
