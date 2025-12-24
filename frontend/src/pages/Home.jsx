@@ -3,8 +3,11 @@ import Header from '../components/Header'
 import SpecialityMenu from '../components/SpecialityMenu'
 import TopDoctors from '../components/TopDoctors'
 import Banner from '../components/Banner'
+import { useNavigate } from 'react-router-dom'
 
-const Home = () => {
+const Home = () => { 
+
+  const navigate = useNavigate()
   useEffect(() => {
     // Smooth scroll to top when component mounts
     window.scrollTo(0, 0)
@@ -168,7 +171,7 @@ const Home = () => {
                 Join thousands of patients who trust Prescripto for their healthcare needs. 
                 Book your first appointment today and experience the difference.
               </p>
-              <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:shadow-lg transform hover:scale-105 transition-all duration-300">
+              <button onClick={()=>{navigate("/doctor")}} className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:shadow-lg transform hover:scale-105 transition-all duration-300">
                 Book Appointment Now
               </button>
             </div>
