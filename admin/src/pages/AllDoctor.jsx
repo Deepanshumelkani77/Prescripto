@@ -87,7 +87,7 @@ const AllDoctor = () => {
   };
 
   return (
-    <div className="p-6 max-h-[calc(100vh-80px)] overflow-y-auto w-full">
+    <div className="max-h-[85vh] overflow-y-auto w-full">
       <div className="w-full">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
