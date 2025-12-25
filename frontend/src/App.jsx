@@ -18,6 +18,7 @@ import Sidebar from './components/Sidebar.jsx'
 import DoctorAppointment from './pages/DoctorAppointment.jsx'
 import DoctorProfile from './pages/DoctorProfile.jsx'
 import DoctorLogin from './pages/DoctorLogin.jsx'
+import ScrollToTop from './components/ScrollToTop'
 
 const App = () => {
   const { state, showLogin } = useContext(AppContext)
@@ -37,6 +38,7 @@ const App = () => {
   return (
     state === 'User' ? (
       <div className="min-h-screen flex flex-col">
+        <ScrollToTop />
         {showLogin && <Login />}
         
         <div className="flex-1 flex flex-col">
