@@ -1,40 +1,84 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { AppContext } from '../context/AppContext';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 import { FiCalendar, FiClock, FiMapPin, FiDollarSign, FiCheckCircle, FiX, FiCreditCard, FiTrash2, FiUser, FiAlertCircle } from 'react-icons/fi';
 
 const MyAppointment = () => {
   const { doctors, user } = useContext(AppContext);
-  const [appointment, setAppointment] = useState([]);
+  const [appointments, setAppointments] = useState([]);
+  const [upcomingAppointments, setUpcomingAppointments] = useState([]);
+  const [pastAppointments, setPastAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('upcoming');
   const [showCancelModal, setShowCancelModal] = useState({ show: false, id: null });
 
+  // Function to categorize appointments
+  const categorizeAppointments = (appointmentsList) => {
+    const now = new Date();
+    const currentDate = now.toISOString().split('T')[0];
+    const currentTime = now.toTimeString().substring(0, 5);
+    console.log('Current date/time:', currentDate, currentTime);
 
+    return appointmentsList.reduce((acc, appointment) => {
+      console.log('Processing appointment:', {
+        id: appointment._id,
+        date: appointment.date,
+        time: appointment.time,
+        status: appointment.status
+      });
+
+      // Parse the appointment date and time
+      const [year, month, day] = appointment.date.split('-').map(Number);
+      const [hours, minutes] = appointment.time.split(':').map(Number);
+      
+      // Create date objects in local timezone
+      const apptDate = new Date(year, month - 1, day, hours, minutes);
+      const currentDateObj = new Date();
+      
+      console.log('Appointment datetime:', apptDate.toString());
+      console.log('Current datetime:', currentDateObj.toString());
+      
+      // Check if appointment is in the past or has a completed/cancelled status
+      const isPast = apptDate < currentDateObj;
+      console.log('Is past?', isPast);
+      
+      if (isPast || appointment.status === 'completed' || appointment.status === 'cancelled') {
+        console.log('Adding to past appointments');
+        acc.past.push(appointment);
+      } else {
+        console.log('Adding to upcoming appointments');
+        acc.upcoming.push(appointment);
+      }
+      
+      return acc;
+    }, { upcoming: [], past: [] });
+  };
 
   useEffect(() => {
-    
     const fetchAppointments = async () => {
-  setLoading(true);
-  try {
-    const response = await axios.get(`http://localhost:5000/appointment/user/${user?.id}`);
-    console.log("Appointments from backend:", response.data);
-    setAppointment(response.data);
-    console.log("Appointments set in state:", response.data[0]);
-  } catch (error) {
-    console.error("Error fetching appointment data:", error);
-  
-  } finally {
-    setLoading(false);
-  }
-};
+      setLoading(true);
+      try {
+        const response = await axios.get(`http://localhost:5000/appointment/user/${user?.id}`);
+        console.log('Raw API response:', response.data);
+        const { upcoming, past } = categorizeAppointments(response.data);
+        setAppointments(response.data);
+        setUpcomingAppointments(upcoming);
+        setPastAppointments(past);
+      } catch (error) {
+        console.error("Error fetching appointment data:", error);
+        toast.error("Failed to load appointments. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
     if (user?.id) {
       fetchAppointments();
     } else {
       setLoading(false);
     }
-  }, [user?.id]); // Add user.id as a dependency
+  }, [user?.id]);
 
   const updateAppointmentStatus = async (id, status) => {
     try {
@@ -49,12 +93,16 @@ const MyAppointment = () => {
       const data = await response.json();
       
       if (response.ok) {
-        // Update the appointment in the local state
-        setAppointment(prev => 
-          prev.map(appt => 
+        // Update the appointment in the local state and recategorize
+        setAppointments(prev => {
+          const updated = prev.map(appt => 
             appt._id === id ? { ...appt, status } : appt
-          )
-        );
+          );
+          const { upcoming, past } = categorizeAppointments(updated);
+          setUpcomingAppointments(upcoming);
+          setPastAppointments(past);
+          return updated;
+        });
         
         setShowCancelModal({ show: false, id: null });
         toast.success(`Appointment ${status} successfully`);
@@ -86,14 +134,21 @@ const MyAppointment = () => {
       });
 
       if (response.ok) {
-        setAppointment(prev => prev.filter(doc => doc._id !== id));
+        setAppointments(prev => {
+          const updated = prev.filter(doc => doc._id !== id);
+          const { upcoming, past } = categorizeAppointments(updated);
+          setUpcomingAppointments(upcoming);
+          setPastAppointments(past);
+          return updated;
+        });
         setShowCancelModal({ show: false, id: null });
+        toast.success('Appointment deleted successfully');
       } else {
-        alert('Failed to cancel appointment.');
+        throw new Error('Failed to delete appointment');
       }
     } catch (error) {
-      console.error('Error canceling appointment:', error);
-      alert('An error occurred while canceling the appointment.');
+      console.error('Error deleting appointment:', error);
+      toast.error(error.message || 'An error occurred while deleting the appointment.');
     }
   };
 
@@ -115,12 +170,13 @@ const MyAppointment = () => {
               payment_id: response.razorpay_payment_id,
             });
             // Update local state to reflect payment
-            setAppointment(prev => prev.map(apt => 
+            setAppointments(prev => prev.map(apt => 
               apt._id === appointmentId ? { ...apt, paid: true } : apt
             ));
+            toast.success('Payment successful!');
           } catch (error) {
             console.error("Error updating payment status:", error);
-            alert("Payment succeeded, but failed to update appointment status.");
+            toast.error("Payment succeeded, but failed to update appointment status.");
           }
         },
         prefill: {
@@ -136,52 +192,222 @@ const MyAppointment = () => {
       razor.open();
     } catch (error) {
       console.error("Error creating payment order:", error);
-      alert("Failed to initiate payment. Please try again.");
+      toast.error("Failed to initiate payment. Please try again.");
     }
   };
 
-  // Get appointments for the current user
-  const userAppointments = appointment.filter(item => {
-    const itemUserId = typeof item.user_id === 'object' ? item.user_id?._id : item.user_id;
-    return itemUserId === user?.id;
-  });
-  
-  // Filter upcoming and past appointments
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  
-  const upcomingAppointments = userAppointments.filter(apt => {
-    const appointmentDate = new Date(apt.date);
-    return appointmentDate >= today;
-  });
-  
-  const pastAppointments = userAppointments.filter(apt => {
-    const appointmentDate = new Date(apt.date);
-    return appointmentDate < today;
-  });
-  
-  // Sort appointments by status (pending > confirmed > completed > cancelled) and then by date and time
-  const sortAppointments = (appointments) => {
-    return [...appointments].sort((a, b) => {
-      // First sort by status
-      const statusOrder = { 'pending': 1, 'confirmed': 2, 'completed': 3, 'cancelled': 4 };
-      const statusComparison = statusOrder[a.status] - statusOrder[b.status];
-      
-      // If status is the same, sort by date and time
-      if (statusComparison === 0) {
-        const dateA = new Date(`${a.date}T${a.time}`);
-        const dateB = new Date(`${b.date}T${b.time}`);
-        return dateA - dateB;
-      }
-      
-      return statusComparison;
-    });
+  const renderAppointments = () => {
+    if (loading) {
+      return <div className="text-center py-8">Loading appointments...</div>;
+    }
+
+    const displayAppointments = activeTab === 'upcoming' ? upcomingAppointments : pastAppointments;
+    
+    if (displayAppointments.length === 0) {
+      return (
+        <div className="text-center py-8">
+          <p className="text-gray-600 mb-4">No {activeTab} appointments found.</p>
+          <button
+            onClick={() => window.location.href = '/doctors'}
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            <FiUser className="mr-2" /> Find a Doctor
+          </button>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-6">
+        {displayAppointments.map((item) => {
+          const appointmentDate = new Date(item.date);
+          const isUpcoming = appointmentDate >= new Date();
+          
+          return (
+            <div 
+              key={item._id}
+              className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md"
+            >
+              <div className="p-6">
+                <div className="flex flex-col md:flex-row gap-6">
+                  {/* Doctor Image and Basic Info */}
+                  <div className="md:w-48 flex-shrink-0">
+                    <div className="relative">
+                      <img 
+                        className="w-full h-48 object-cover rounded-lg shadow-sm"
+                        src={item.doc_id?.image || 'https://via.placeholder.com/150'} 
+                        alt={item.doc_id?.name}
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = 'https://via.placeholder.com/150';
+                        }}
+                      />
+                      {item.paid && (
+                        <div className="absolute -top-2 -right-2 bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full flex items-center">
+                          <FiCheckCircle className="mr-1" /> Paid
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="mt-4 text-center">
+                      <h3 className="font-medium text-gray-900">Dr. {item.doc_id?.name}</h3>
+                      <p className="text-sm text-blue-600">{item.doc_id?.speciality}</p>
+                      <div className="mt-2">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          {item.doc_id?.experience || '5+'} years experience
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Appointment Details */}
+                  <div className="flex-1">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Appointment Details</h3>
+                        
+                        <div className="space-y-4">
+                          <div className="flex items-start">
+                            <div className="flex-shrink-0 h-5 w-5 text-gray-400">
+                              <FiCalendar className="h-5 w-5" />
+                            </div>
+                            <div className="ml-3">
+                              <p className="text-sm font-medium text-gray-500">Date</p>
+                              <p className="text-sm text-gray-900">{formatDate(item.date)}</p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-start">
+                            <div className="flex-shrink-0 h-5 w-5 text-gray-400">
+                              <FiClock className="h-5 w-5" />
+                            </div>
+                            <div className="ml-3">
+                              <p className="text-sm font-medium text-gray-500">Time</p>
+                              <p className="text-sm text-gray-900">{item.time}</p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-start">
+                            <div className="flex-shrink-0 h-5 w-5 text-gray-400">
+                              <FiDollarSign className="h-5 w-5" />
+                            </div>
+                            <div className="ml-3">
+                              <p className="text-sm font-medium text-gray-500">Consultation Fee</p>
+                              <p className="text-sm text-gray-900">₹{item.doc_id?.fees || '500'}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Doctor's Information</h3>
+                        
+                        <div className="space-y-4">
+                          <div className="flex items-start">
+                            <div className="flex-shrink-0 h-5 w-5 text-gray-400">
+                              <FiUser className="h-5 w-5" />
+                            </div>
+                            <div className="ml-3">
+                              <p className="text-sm font-medium text-gray-500">Name</p>
+                              <p className="text-sm text-gray-900">Dr. {item.doc_id?.name}</p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-start">
+                            <div className="flex-shrink-0 h-5 w-5 text-gray-400">
+                              <FiMapPin className="h-5 w-5" />
+                            </div>
+                            <div className="ml-3">
+                              <p className="text-sm font-medium text-gray-500">Location</p>
+                              <p className="text-sm text-gray-900">
+                                {item.doc_id?.address?.line1 || '123 Medical Center'}
+                                {item.doc_id?.address?.line2 && `, ${item.doc_id.address.line2}`}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-start">
+                            <div className="flex-shrink-0 h-5 w-5 text-gray-400">
+                              <FiAlertCircle className="h-5 w-5" />
+                            </div>
+                            <div className="ml-3">
+                              <p className="text-sm font-medium text-gray-500">Status</p>
+                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                item.status === 'completed' 
+                                  ? 'bg-gray-100 text-gray-800' 
+                                  : item.status === 'cancelled'
+                                  ? 'bg-red-100 text-red-800'
+                                  : item.status === 'confirmed'
+                                  ? 'bg-green-100 text-green-800'
+                                  : 'bg-yellow-100 text-yellow-800'
+                              }`}>
+                                {item.status === 'completed' 
+                                  ? 'Completed' 
+                                  : item.status === 'cancelled'
+                                  ? 'Cancelled'
+                                  : item.status === 'confirmed'
+                                  ? 'Confirmed'
+                                  : 'Pending'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Action Buttons */}
+                    {(item.status === 'pending' || item.status === 'confirmed') && (
+                      <div className="mt-6 pt-6 border-t border-gray-100 flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3">
+                        {!item.paid ? (
+                          <button
+                            onClick={() => handlePayment(item.doc_id?.fees || 500, item._id)}
+                            className="inline-flex items-center justify-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            disabled={item.status !== 'confirmed'}
+                          >
+                            <FiCreditCard className="mr-2 h-4 w-4" />
+                            {item.status === 'confirmed' ? 'Pay Now' : 'Awaiting Confirmation'}
+                          </button>
+                        ) : (
+                          <div className="flex flex-col space-y-2">
+                            <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                              <FiCheckCircle className="mr-1.5 h-4 w-4" />
+                              Payment Completed
+                            </span>
+                            {item.status === 'completed' && (
+                              <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                <FiCheckCircle className="mr-1.5 h-4 w-4" />
+                                Appointment Completed
+                              </span>
+                            )}
+                            {item.status === 'cancelled' && (
+                              <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                <FiX className="mr-1.5 h-4 w-4" />
+                                Appointment Cancelled
+                              </span>
+                            )}
+                          </div>
+                        )}
+                        
+                        {item.status !== 'cancelled' && item.status !== 'completed' && (
+                          <button
+                            onClick={() => setShowCancelModal({ show: true, id: item._id })}
+                            className="inline-flex items-center justify-center px-5 py-2.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                          >
+                            <FiX className="mr-2 h-4 w-4" />
+                            {item.status === 'pending' ? 'Cancel Request' : 'Cancel Appointment'}
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
   };
-  
-  const sortedUpcoming = sortAppointments(upcomingAppointments);
-  const sortedPast = sortAppointments(pastAppointments);
-  
-  const currentAppointments = activeTab === 'upcoming' ? sortedUpcoming : sortedPast;
 
   const formatDate = (dateString) => {
     const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
@@ -198,242 +424,47 @@ const MyAppointment = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">My Appointments</h1>
-        <p className="text-gray-500 mt-2">Manage and view your upcoming and past appointments</p>
-      </div>
-
-      {/* Tabs */}
-      <div className="border-b border-gray-200 mb-8">
-        <nav className="-mb-px flex space-x-8">
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6">My Appointments</h1>
+      
+      <div className="mb-6 border-b border-gray-200">
+        <nav className="flex -mb-px">
           <button
             onClick={() => setActiveTab('upcoming')}
-            className={`${activeTab === 'upcoming' 
-              ? 'border-blue-500 text-blue-600' 
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} 
-              whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center`}
+            className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${
+              activeTab === 'upcoming'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
           >
-            <FiCalendar className="mr-2" />
-            Upcoming ({sortedUpcoming.length})
+            Upcoming
+            {upcomingAppointments.length > 0 && (
+              <span className="ml-2 bg-blue-100 text-blue-600 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                {upcomingAppointments.length}
+              </span>
+            )}
           </button>
           <button
             onClick={() => setActiveTab('past')}
-            className={`${activeTab === 'past' 
-              ? 'border-blue-500 text-blue-600' 
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} 
-              whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center`}
+            className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${
+              activeTab === 'past'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
           >
-            <FiCheckCircle className="mr-2" />
-            Past ({sortedPast.length})
+            Past
+            {pastAppointments.length > 0 && (
+              <span className="ml-2 bg-gray-100 text-gray-600 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                {pastAppointments.length}
+              </span>
+            )}
           </button>
         </nav>
       </div>
-
-      {userAppointments.length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-xl shadow-sm border border-gray-100">
-          <div className="mx-auto flex items-center justify-center h-24 w-24 rounded-full bg-blue-50 mb-4">
-            <FiCalendar className="h-12 w-12 text-blue-600" />
-          </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No appointments yet</h3>
-          <p className="text-gray-500 max-w-md mx-auto">
-            You don't have any {activeTab} appointments. Book an appointment to get started.
-          </p>
-          <div className="mt-6">
-            <button
-              onClick={() => navigate('/doctors')}
-              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              Find a Doctor
-            </button>
-          </div>
-        </div>
-      ) : (
-        <div className="space-y-6">
-          {currentAppointments.map((item) => {
-            const appointmentDate = new Date(item.date);
-            const isUpcoming = appointmentDate >= new Date();
-            
-            return (
-              <div 
-                key={item._id}
-                className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md"
-              >
-                <div className="p-6">
-                  <div className="flex flex-col md:flex-row gap-6">
-                    {/* Doctor Image and Basic Info */}
-                    <div className="md:w-48 flex-shrink-0">
-                      <div className="relative">
-                        <img 
-                          className="w-full h-48 object-cover rounded-lg shadow-sm"
-                          src={item.doc_id?.image || 'https://via.placeholder.com/150'} 
-                          alt={item.doc_id?.name}
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = 'https://via.placeholder.com/150';
-                          }}
-                        />
-                        {item.paid && (
-                          <div className="absolute -top-2 -right-2 bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full flex items-center">
-                            <FiCheckCircle className="mr-1" /> Paid
-                          </div>
-                        )}
-                      </div>
-                      
-                      <div className="mt-4 text-center">
-                        <h3 className="font-medium text-gray-900">Dr. {item.doc_id?.name}</h3>
-                        <p className="text-sm text-blue-600">{item.doc_id?.speciality}</p>
-                        <div className="mt-2">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                            {item.doc_id?.experience || '5+'} years experience
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Appointment Details */}
-                    <div className="flex-1">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                          <h3 className="text-lg font-semibold text-gray-900 mb-4">Appointment Details</h3>
-                          
-                          <div className="space-y-4">
-                            <div className="flex items-start">
-                              <div className="flex-shrink-0 h-5 w-5 text-gray-400">
-                                <FiCalendar className="h-5 w-5" />
-                              </div>
-                              <div className="ml-3">
-                                <p className="text-sm font-medium text-gray-500">Date</p>
-                                <p className="text-sm text-gray-900">{formatDate(item.date)}</p>
-                              </div>
-                            </div>
-                            
-                            <div className="flex items-start">
-                              <div className="flex-shrink-0 h-5 w-5 text-gray-400">
-                                <FiClock className="h-5 w-5" />
-                              </div>
-                              <div className="ml-3">
-                                <p className="text-sm font-medium text-gray-500">Time</p>
-                                <p className="text-sm text-gray-900">{item.time}</p>
-                              </div>
-                            </div>
-                            
-                            <div className="flex items-start">
-                              <div className="flex-shrink-0 h-5 w-5 text-gray-400">
-                                <FiDollarSign className="h-5 w-5" />
-                              </div>
-                              <div className="ml-3">
-                                <p className="text-sm font-medium text-gray-500">Consultation Fee</p>
-                                <p className="text-sm text-gray-900">₹{item.doc_id?.fees || '500'}</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <h3 className="text-lg font-semibold text-gray-900 mb-4">Doctor's Information</h3>
-                          
-                          <div className="space-y-4">
-                            <div className="flex items-start">
-                              <div className="flex-shrink-0 h-5 w-5 text-gray-400">
-                                <FiUser className="h-5 w-5" />
-                              </div>
-                              <div className="ml-3">
-                                <p className="text-sm font-medium text-gray-500">Name</p>
-                                <p className="text-sm text-gray-900">Dr. {item.doc_id?.name}</p>
-                              </div>
-                            </div>
-                            
-                            <div className="flex items-start">
-                              <div className="flex-shrink-0 h-5 w-5 text-gray-400">
-                                <FiMapPin className="h-5 w-5" />
-                              </div>
-                              <div className="ml-3">
-                                <p className="text-sm font-medium text-gray-500">Location</p>
-                                <p className="text-sm text-gray-900">
-                                  {item.doc_id?.address?.line1 || '123 Medical Center'}
-                                  {item.doc_id?.address?.line2 && `, ${item.doc_id.address.line2}`}
-                                </p>
-                              </div>
-                            </div>
-                            
-                            <div className="flex items-start">
-                              <div className="flex-shrink-0 h-5 w-5 text-gray-400">
-                                <FiAlertCircle className="h-5 w-5" />
-                              </div>
-                              <div className="ml-3">
-                                <p className="text-sm font-medium text-gray-500">Status</p>
-                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                  item.status === 'completed' 
-                                    ? 'bg-gray-100 text-gray-800' 
-                                    : item.status === 'cancelled'
-                                    ? 'bg-red-100 text-red-800'
-                                    : 'bg-yellow-100 text-yellow-800'
-                                }`}>
-                                  {item.status === 'completed' 
-                                    ? 'Completed' 
-                                    : item.status === 'cancelled'
-                                    ? 'Cancelled'
-                                    : 'Pending'}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      {/* Action Buttons */}
-                      {(item.status === 'pending' || item.status === 'confirmed') && (
-                        <div className="mt-6 pt-6 border-t border-gray-100 flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3">
-                          {!item.paid ? (
-                            <button
-                              onClick={() => handlePayment(item.doc_id?.fees || 500, item._id)}
-                              className="inline-flex items-center justify-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                              disabled={item.status !== 'confirmed'}
-                            >
-                              <FiCreditCard className="mr-2 h-4 w-4" />
-                              {item.status === 'confirmed' ? 'Pay Now' : 'Awaiting Confirmation'}
-                            </button>
-                          ) : (
-                            <div className="flex flex-col space-y-2">
-                              <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                <FiCheckCircle className="mr-1.5 h-4 w-4" />
-                                Payment Completed
-                              </span>
-                              {item.status === 'completed' && (
-                                <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                  <FiCheckCircle className="mr-1.5 h-4 w-4" />
-                                  Appointment Completed
-                                </span>
-                              )}
-                              {item.status === 'cancelled' && (
-                                <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                  <FiX className="mr-1.5 h-4 w-4" />
-                                  Appointment Cancelled
-                                </span>
-                              )}
-                            </div>
-                          )}
-                          
-                          {item.status !== 'cancelled' && item.status !== 'completed' && (
-                            <button
-                              onClick={() => setShowCancelModal({ show: true, id: item._id })}
-                              className="inline-flex items-center justify-center px-5 py-2.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                            >
-                              <FiX className="mr-2 h-4 w-4" />
-                              {item.status === 'pending' ? 'Cancel Request' : 'Cancel Appointment'}
-                            </button>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+      
+      <div className="bg-white rounded-lg shadow-md p-6">
+        {renderAppointments()}
+      </div>
 
       {/* Cancel Confirmation Modal */}
       {showCancelModal.show && (
