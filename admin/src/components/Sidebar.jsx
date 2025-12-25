@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { assets } from '../assets/assets'
 import { AppContext } from '../context/AppContext'
+import { FiCalendar, FiHome, FiPlusCircle, FiUsers, FiSettings, FiLogOut } from 'react-icons/fi'
 
 const Sidebar = () => {
   const { user, setShowLogin, logout } = useContext(AppContext);
@@ -17,13 +18,21 @@ const Sidebar = () => {
   const menuItems = [
     {
       path: '/',
-      icon: assets.home_icon,
+      icon: <FiHome className="w-5 h-5" />,
       label: 'Dashboard',
       description: 'View admin overview'
     },
     {
+      path: 'appointments',
+      icon: <FiCalendar className="w-5 h-5" />,
+      label: 'Appointments',
+      description: 'Manage all appointments',
+      requiresAuth: true
+    },
+   
+    {
       path: 'add-doctor',
-      icon: assets.add_icon,
+      icon: <FiPlusCircle className="w-5 h-5" />,
       label: 'Add Doctor',
       description: 'Register new doctors',
       requiresAuth: true
@@ -91,8 +100,8 @@ const Sidebar = () => {
                     onClick={() => setShowLogin(true)}
                     className="flex items-center gap-3 py-3 px-4 rounded-lg cursor-pointer hover:bg-gray-50 transition-all duration-300"
                   >
-                    <div className='w-6 h-6 flex items-center justify-center'>
-                      <img src={item.icon} alt={item.label} className='w-5 h-5' />
+                    <div className='w-6 h-6 flex items-center justify-center text-gray-500'>
+                      {item.icon}
                     </div>
                     <div>
                       <p className='font-medium'>{item.label}</p>
@@ -115,13 +124,17 @@ const Sidebar = () => {
                   `}
                   onClick={() => setIsOpen(false)}
                 >
-                  <div className='w-6 h-6 flex items-center justify-center'>
-                    <img src={item.icon} alt={item.label} className='w-5 h-5' />
-                  </div>
-                  <div>
-                    <p className='font-medium'>{item.label}</p>
-                    <p className='text-xs text-gray-500'>{item.description}</p>
-                  </div>
+                  {({ isActive }) => (
+                    <>
+                      <div className={`w-6 h-6 flex items-center justify-center ${isActive ? 'text-[#5f6FFF]' : 'text-gray-500'}`}>
+                        {React.cloneElement(item.icon, { className: 'w-5 h-5' })}
+                      </div>
+                      <div>
+                        <p className='font-medium'>{item.label}</p>
+                        <p className='text-xs text-gray-500'>{item.description}</p>
+                      </div>
+                    </>
+                  )}
                 </NavLink>
               );
             })}

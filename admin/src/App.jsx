@@ -1,12 +1,13 @@
-import React, { useContext, useState } from 'react'
-import Login from './pages/Login'
-import Navbar from './components/Navbar'
-import Sidebar from './components/Sidebar'
-import AddDcotor from './pages/AddDoctor'
-import AllDoctor from './pages/AllDoctor'
-import { Route, Routes } from 'react-router-dom'
-import EditDoctor from './pages/EditDoctor'
-import {AppContext} from './context/AppContext'
+import React, { useContext } from 'react';
+import { Route, Routes } from 'react-router-dom';
+import { AppContext } from './context/AppContext';
+import Login from './pages/Login';
+import Navbar from './components/Navbar';
+import Sidebar from './components/Sidebar';
+import AddDoctor from './pages/AddDoctor';
+import AllDoctor from './pages/AllDoctor';
+import EditDoctor from './pages/EditDoctor';
+import Appointments from './pages/Appointments';
 
 
 const App = () => {
@@ -14,36 +15,25 @@ const App = () => {
 const {showLogin}=useContext(AppContext);
 
 
+  if (showLogin) {
+    return <Login />;
+  }
+
   return (
-
-    <div className='[h-100vh]'>
-
-{
-  showLogin===true?
-  <Login/>:<></>
-}
-
-
-<div className='bg-[#F2F3FF] mx-8 sm:mx[10%] h-[100vh] relative'  >
-
-
-<Navbar/>
-<div className='flex items-start'>
-  <Sidebar/>
-  <Routes>
-  <Route path='/' element={<AllDoctor/>}></Route>
-
-    <Route path='/add-doctor' element={<AddDcotor/>}></Route>
-    <Route path='/edit-doctor/:id' element={<EditDoctor/>}></Route>
-   
-  </Routes>
-</div>
-
-
-
-    </div>
-
-
+    <div className="min-h-screen bg-[#F2F3FF] flex flex-col">
+      <Navbar />
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar />
+        <main className="flex-1 overflow-y-auto p-6 bg-[#F2F3FF]">
+          <Routes>
+            <Route path="/" element={<AllDoctor />} />
+            <Route path="/appointments" element={<Appointments />} />
+            <Route path="/all-doctors" element={<AllDoctor />} />
+            <Route path="/add-doctor" element={<AddDoctor />} />
+            <Route path="/edit-doctor/:id" element={<EditDoctor />} />
+          </Routes>
+        </main>
+      </div>
     </div>
 
    
