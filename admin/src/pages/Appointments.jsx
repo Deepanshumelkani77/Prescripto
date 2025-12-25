@@ -27,23 +27,41 @@ const Appointments = () => {
     fetchAppointments();
   }, []);
 
-  // Filter appointments based on search and filters
-  const filteredAppointments = appointments.filter(appointment => {
-    if (!appointment) return false;
-    
-    const searchTermLower = searchTerm?.toLowerCase() || '';
-    const patientName = appointment.user_id?.name?.toLowerCase() || '';
-    const doctorName = appointment.doc_id?.name?.toLowerCase() || '';
-    
-    const matchesSearch = 
-      patientName.includes(searchTermLower) ||
-      doctorName.includes(searchTermLower);
-    
-    const matchesStatus = statusFilter === 'all' || appointment.status === statusFilter;
-    const matchesDate = !dateFilter || new Date(appointment.date).toISOString().split('T')[0] === dateFilter;
-    
-    return matchesSearch && matchesStatus && matchesDate;
-  });
+  // Filter and sort appointments
+  const filteredAppointments = appointments
+    .filter(appointment => {
+      if (!appointment) return false;
+      
+      const searchTermLower = searchTerm?.toLowerCase() || '';
+      const patientName = appointment.user_id?.name?.toLowerCase() || '';
+      const doctorName = appointment.doc_id?.name?.toLowerCase() || '';
+      
+      const matchesSearch = 
+        patientName.includes(searchTermLower) ||
+        doctorName.includes(searchTermLower) ||
+        appointment.service?.toLowerCase().includes(searchTermLower) ||
+        appointment.status?.toLowerCase().includes(searchTermLower);
+
+      const matchesStatus = statusFilter === 'all' || appointment.status === statusFilter;
+      const matchesDate = !dateFilter || new Date(appointment.date).toISOString().split('T')[0] === dateFilter;
+
+      return matchesSearch && matchesStatus && matchesDate;
+    })
+    .sort((a, b) => {
+      // Sort by status: pending > confirmed > completed/cancelled
+      const statusOrder = { 'pending': 1, 'confirmed': 2, 'completed': 3, 'cancelled': 3 };
+      const statusA = statusOrder[a.status] || 4;
+      const statusB = statusOrder[b.status] || 4;
+      
+      // If same status, sort by date and time
+      if (statusA === statusB) {
+        const dateA = new Date(`${a.date}T${a.time}`);
+        const dateB = new Date(`${b.date}T${b.time}`);
+        return dateA - dateB;
+      }
+      
+      return statusA - statusB;
+    });
 
   // Handle status update
   const updateAppointmentStatus = async (id, newStatus) => {
