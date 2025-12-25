@@ -14,9 +14,9 @@ const Appointments = () => {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        // Replace with your actual API endpoint
-        const response = await axios.get('http://localhost:5000/api/appointments');
-        setAppointments(response.data);
+        const response = await axios.get('http://localhost:5000/appointment');
+        console.log('API Response:', response.data);
+        setAppointments(response.data || []);
       } catch (error) {
         console.error('Error fetching appointments:', error);
       } finally {
@@ -29,12 +29,18 @@ const Appointments = () => {
 
   // Filter appointments based on search and filters
   const filteredAppointments = appointments.filter(appointment => {
+    if (!appointment) return false;
+    
+    const searchTermLower = searchTerm?.toLowerCase() || '';
+    const patientName = appointment.user_id?.name?.toLowerCase() || '';
+    const doctorName = appointment.doc_id?.name?.toLowerCase() || '';
+    
     const matchesSearch = 
-      appointment.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      appointment.doctorName.toLowerCase().includes(searchTerm.toLowerCase());
+      patientName.includes(searchTermLower) ||
+      doctorName.includes(searchTermLower);
     
     const matchesStatus = statusFilter === 'all' || appointment.status === statusFilter;
-    const matchesDate = !dateFilter || appointment.date === dateFilter;
+    const matchesDate = !dateFilter || new Date(appointment.date).toISOString().split('T')[0] === dateFilter;
     
     return matchesSearch && matchesStatus && matchesDate;
   });
@@ -42,7 +48,7 @@ const Appointments = () => {
   // Handle status update
   const updateAppointmentStatus = async (id, newStatus) => {
     try {
-      await axios.put(`http://localhost:5000/api/appointments/${id}`, { status: newStatus });
+      await axios.patch(`http://localhost:5000/appointment/${id}/status`, { status: newStatus });
       setAppointments(appointments.map(apt => 
         apt._id === id ? { ...apt, status: newStatus } : apt
       ));
@@ -240,18 +246,19 @@ const Appointments = () => {
                   <tr key={appointment._id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                          {appointment.patientName.charAt(0)}
-                        </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">{appointment.patientName}</div>
-                          <div className="text-sm text-gray-500">{appointment.patientPhone}</div>
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">
+                            {appointment.user_id?.name || 'N/A'}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            ID: {appointment.user_id?._id || 'N/A'}
+                          </div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">Dr. {appointment.doctorName}</div>
-                      <div className="text-sm text-gray-500">{appointment.specialty}</div>
+                      <div className="text-sm text-gray-900">Dr. {appointment.doc_id?.name || 'N/A'}</div>
+                      <div className="text-sm text-gray-500">{appointment.doc_id?.speciality || 'N/A'}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">{formatDate(appointment.date)}</div>
@@ -261,7 +268,13 @@ const Appointments = () => {
                       {appointment.service || 'General Checkup'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <StatusBadge status={appointment.status} />
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        appointment.status === 'confirmed' ? 'bg-green-100 text-green-800' :
+                        appointment.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-red-100 text-red-800'
+                      }`}>
+                        {appointment.status?.charAt(0).toUpperCase() + appointment.status?.slice(1)}
+                      </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex justify-end space-x-2">
