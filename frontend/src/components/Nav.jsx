@@ -8,6 +8,7 @@ function Nav({ onMenuClick }) {
   const { doctor, logout, setShowLogin2 } = useContext(StoreContext)
   const { state, setState } = useContext(AppContext)
   const navigate = useNavigate();
+  
 
   return (
     <div className='flex justify-between items-center border-b border-gray-200 py-3 bg-white h-[9vh] px-4'>

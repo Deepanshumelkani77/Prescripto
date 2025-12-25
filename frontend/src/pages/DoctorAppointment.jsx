@@ -14,23 +14,31 @@ const DoctorAppointment = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [appointmentsRes, doctorsRes] = await Promise.all([
-          axios.get(`http://localhost:5000/appointment/doctor/${doctor?.id}`),
-          axios.get('http://localhost:5000/doctor')
-        ]);
-      
+        // First, fetch the doctor's data using their ID from the context
+        const doctorRes = await axios.get(`http://localhost:5000/doctor/${doctor?.id}`);
+        setMyDoctor(doctorRes.data || {});
+        
+        // Then fetch appointments and other data
+        const appointmentsRes = await axios.get(`http://localhost:5000/appointment/doctor/${doctor?.id}`);
         setAppointments(appointmentsRes.data);
+        
+        // Fetch all doctors if needed for other purposes
+        const doctorsRes = await axios.get('http://localhost:5000/doctor');
         setDoctors(doctorsRes.data);
-        const found = doctorsRes.data.find(doc => doc.id === doctor?.id);
-        setMyDoctor(found || {});
+        
       } catch (err) {
         console.error("Error fetching data:", err);
       } finally {
         setIsLoading(false);
       }
     };
-    fetchData();
-  }, [doctor]);
+    
+    if (doctor?.id) {
+      fetchData();
+    } else {
+      setIsLoading(false);
+    }
+  }, [doctor?.id]);
 
   const calculateAge = (dob) => {
     if (!dob) return '-';
@@ -176,7 +184,23 @@ const DoctorAppointment = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {appointments.filter(a => a.doc_id?._id === myDoctor?._id).map((item, idx) => (
+              {appointments
+                .filter(a => {
+                  // Handle both string and object doc_id formats
+                  const docId = typeof a.doc_id === 'string' ? a.doc_id : a.doc_id?._id;
+                  return docId === doctor?.id;
+                })
+                .sort((a, b) => {
+                  // Define priority order: pending > confirmed > completed > cancelled
+                  const priority = {
+                    'pending': 1,
+                    'confirmed': 2,
+                    'completed': 3,
+                    'cancelled': 4
+                  };
+                  return priority[a.status] - priority[b.status];
+                })
+                .map((item, idx) => (
                 <tr key={item._id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-4 py-3 hidden md:table-cell">{idx + 1}</td>
                   <td className="px-4 py-3">

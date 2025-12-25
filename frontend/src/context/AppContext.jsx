@@ -8,10 +8,14 @@ export const AppContext=createContext()
 
 const AppContextProvider=(props)=>{
 
-const [state,setState]=useState('User')
+// Get initial state from localStorage or default to 'User'
+const [state, setState] = useState(() => {
+  const savedState = localStorage.getItem('appState');
+  return savedState ? savedState : 'User';
+})
 const [showLogin,setShowLogin]=useState(false)
 
-
+console.log("Hello",state);
 
 
 
@@ -51,7 +55,9 @@ const [user, setUser] = useState(initialUser);
     const logout = () => {
       Cookies.remove("token");
       Cookies.remove("user");
+      localStorage.removeItem('appState');
       setUser(null);
+      setState('User');
       navigate('/')
     };
   
@@ -62,7 +68,10 @@ const value={
 
 
 state,
-setState,
+setState: (newState) => {
+  setState(newState);
+  localStorage.setItem('appState', newState);
+},
 showLogin,
 setShowLogin,
 user,

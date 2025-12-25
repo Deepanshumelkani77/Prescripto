@@ -160,12 +160,21 @@ const MyAppointment = () => {
     return appointmentDate < today;
   });
   
-  // Sort appointments by date and time
+  // Sort appointments by status (pending > confirmed > completed > cancelled) and then by date and time
   const sortAppointments = (appointments) => {
     return [...appointments].sort((a, b) => {
-      const dateA = new Date(`${a.date}T${a.time}`);
-      const dateB = new Date(`${b.date}T${b.time}`);
-      return dateA - dateB;
+      // First sort by status
+      const statusOrder = { 'pending': 1, 'confirmed': 2, 'completed': 3, 'cancelled': 4 };
+      const statusComparison = statusOrder[a.status] - statusOrder[b.status];
+      
+      // If status is the same, sort by date and time
+      if (statusComparison === 0) {
+        const dateA = new Date(`${a.date}T${a.time}`);
+        const dateB = new Date(`${b.date}T${b.time}`);
+        return dateA - dateB;
+      }
+      
+      return statusComparison;
     });
   };
   
