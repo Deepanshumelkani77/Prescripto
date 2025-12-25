@@ -206,17 +206,39 @@ router.patch("/:id/status", async (req, res) => {
       return res.status(400).json({ message: "Invalid status" });
     }
     
-    const appointment = await Appointment.findByIdAndUpdate(
-      id,
-      { status },
-      { new: true, session }
-    );
+    const appointment = await Appointment.findById(id).populate('doc_id');
     
     if (!appointment) {
       await session.abortTransaction();
       session.endSession();
       return res.status(404).json({ message: "Appointment not found" });
     }
+    
+    // If status is being changed to completed, update doctor's earnings
+    if (status === 'completed' && appointment.status !== 'completed') {
+      const Doctor = mongoose.model('Doctor');
+      const doctor = await Doctor.findById(appointment.doc_id._id).session(session);
+      
+      if (doctor) {
+        const earnings = (doctor.earning || 0) + (doctor.fees || 0);
+        const completedAppointments = (doctor.completed_appointment || 0) + 1;
+        
+        await Doctor.findByIdAndUpdate(
+          doctor._id,
+          { 
+            $set: { 
+              earning: earnings,
+              completed_appointment: completedAppointments 
+            } 
+          },
+          { session }
+        );
+      }
+    }
+    
+    // Update appointment status
+    appointment.status = status;
+    await appointment.save({ session });
     
     await session.commitTransaction();
     session.endSession();

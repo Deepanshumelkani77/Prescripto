@@ -68,19 +68,18 @@ const DoctorAppointment = () => {
           )
         );
         
-        // Update earnings if status is 'completed'
+        // If status is completed, fetch updated doctor data
         if (status === 'completed') {
-          const newEarning = (myDoctor?.earning || 0) + (myDoctor?.fees || 0);
-          const newCompleted = (myDoctor?.completed_appointment || 0) + 1;
-          setEarning({
-            earnings: myDoctor?.fees || 0,
-            completed_appointment: 1
-          });
-          setMyDoctor(prev => ({
-            ...prev,
-            earning: newEarning,
-            completed_appointment: newCompleted
-          }));
+          try {
+            const doctorRes = await axios.get(`http://localhost:5000/doctor/${doctor?.id}`);
+            setMyDoctor(prev => ({
+              ...prev,
+              earning: doctorRes.data.earning,
+              completed_appointment: doctorRes.data.completed_appointment
+            }));
+          } catch (err) {
+            console.error('Error fetching updated doctor data:', err);
+          }
         }
         
         alert(`Appointment ${status} successfully`);
@@ -177,7 +176,7 @@ const DoctorAppointment = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {appointments.filter(a => a.doc_id?._id === myDoctor._id).map((item, idx) => (
+              {appointments.filter(a => a.doc_id?._id === myDoctor?._id).map((item, idx) => (
                 <tr key={item._id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-4 py-3 hidden md:table-cell">{idx + 1}</td>
                   <td className="px-4 py-3">
@@ -271,7 +270,7 @@ const DoctorAppointment = () => {
                 </tr>
               ))}
 
-              {appointments.filter(a => a.doc_id?._id === myDoctor._id).length === 0 && (
+              {appointments.filter(a => a.doc_id?._id === myDoctor?._id).length === 0 && (
                 <tr>
                   <td colSpan="6" className="px-4 py-8 text-center text-gray-500">
                     <div className="flex flex-col items-center gap-2">
