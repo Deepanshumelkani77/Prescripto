@@ -15,7 +15,7 @@ const [state, setState] = useState(() => {
 })
 const [showLogin,setShowLogin]=useState(false)
 
-console.log("Hello",state);
+
 
 
 

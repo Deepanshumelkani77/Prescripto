@@ -327,4 +327,82 @@ router.patch('/:id/status', async (req, res) => {
   }
 });
 
+// Function to check and update appointment statuses
+const updateAppointmentStatuses = async () => {
+  try {
+    const now = new Date();
+    const currentTime = moment(now).format('HH:mm');
+    const currentDate = moment(now).format('YYYY-MM-DD');
+    
+    // Make sure the date is in the correct format for comparison
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Find appointments that need to be updated
+    const appointmentsToUpdate = await Appointment.find({
+      $or: [
+        {
+          // For appointments that are confirmed but their time has passed
+          status: 'confirmed',
+date: { $lte: today },
+          time: { $lte: currentTime }
+        },
+        {
+          // For appointments that are still pending but their time has passed
+          status: 'pending',
+date: { $lt: today }
+        },
+        {
+          // For appointments that are today but time has passed
+          status: 'pending',
+date: today,
+          time: { $lte: currentTime }
+        }
+      ]
+    });
+
+    // Update statuses
+    const bulkOps = appointmentsToUpdate.map(appointment => {
+      const isConfirmed = appointment.status === 'confirmed';
+      return {
+        updateOne: {
+          filter: { _id: appointment._id },
+          update: {
+            $set: {
+              status: isConfirmed ? 'completed' : 'cancelled',
+              updatedAt: new Date()
+            }
+          }
+        }
+      };
+    });
+
+    if (bulkOps.length > 0) {
+      await Appointment.bulkWrite(bulkOps);
+      console.log(`Updated ${bulkOps.length} appointment(s) status`);
+    }
+
+    return { updated: bulkOps.length };
+  } catch (error) {
+    console.error('Error updating appointment statuses:', error);
+    throw error;
+  }
+};
+
+// Endpoint to manually trigger status updates (can be called from frontend)
+router.patch('/update-statuses', async (req, res) => {
+  try {
+    const result = await updateAppointmentStatuses();
+    res.status(200).json({ message: 'Appointment statuses updated', ...result });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating appointment statuses', error: error.message });
+  }
+});
+
+// Set up interval to check and update statuses every 5 minutes
+setInterval(updateAppointmentStatuses, 5 * 60 * 1000);
+
+// Initial check on server start
+updateAppointmentStatuses().catch(console.error);
+
 module.exports = router;

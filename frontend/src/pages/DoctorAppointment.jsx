@@ -11,14 +11,30 @@ const DoctorAppointment = () => {
   const [isLoading, setIsLoading] = useState(true);
   
 
+  const checkAndUpdateStatuses = async () => {
+    try {
+      await axios.patch('http://localhost:5000/appointment/update-statuses');
+      // Refresh appointments after updating statuses
+      if (doctor?.id) {
+        const appointmentsRes = await axios.get(`http://localhost:5000/appointment/doctor/${doctor.id}`);
+        setAppointments(appointmentsRes.data);
+      }
+    } catch (error) {
+      console.error('Error updating appointment statuses:', error);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // First, fetch the doctor's data using their ID from the context
+        // First, check and update appointment statuses
+        await checkAndUpdateStatuses();
+        
+        // Then fetch the doctor's data using their ID from the context
         const doctorRes = await axios.get(`http://localhost:5000/doctor/${doctor?.id}`);
         setMyDoctor(doctorRes.data || {});
         
-        // Then fetch appointments and other data
+        // Then fetch appointments
         const appointmentsRes = await axios.get(`http://localhost:5000/appointment/doctor/${doctor?.id}`);
         setAppointments(appointmentsRes.data);
         
@@ -35,6 +51,9 @@ const DoctorAppointment = () => {
     
     if (doctor?.id) {
       fetchData();
+      // Set up interval to check statuses every 5 minutes
+      const intervalId = setInterval(checkAndUpdateStatuses, 5 * 60 * 1000);
+      return () => clearInterval(intervalId);
     } else {
       setIsLoading(false);
     }
