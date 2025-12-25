@@ -8,7 +8,7 @@ import AddDoctor from './pages/AddDoctor';
 import AllDoctor from './pages/AllDoctor';
 import EditDoctor from './pages/EditDoctor';
 import Appointments from './pages/Appointments';
-
+import Feedback from './pages/Feedback';
 
 const App = () => {
 
@@ -31,6 +31,7 @@ const {showLogin}=useContext(AppContext);
             <Route path="/all-doctors" element={<AllDoctor />} />
             <Route path="/add-doctor" element={<AddDoctor />} />
             <Route path="/edit-doctor/:id" element={<EditDoctor />} />
+            <Route path="/feedback" element={<Feedback />} />
           </Routes>
         </main>
       </div>

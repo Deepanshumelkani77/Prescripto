@@ -71,4 +71,7 @@ app.use("/user",user);
 const appointment=require("./routes/Appointment.js");
 app.use("/appointment",appointment)
 const paymentRoute = require("./routes/Payment.js");
+const feedbackRoute = require("./routes/Feedback.js");
+
 app.use("/payment", paymentRoute);
+app.use("/api/feedback", feedbackRoute);

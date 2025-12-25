@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { assets } from '../assets/assets'
 import { AppContext } from '../context/AppContext'
-import { FiCalendar, FiHome, FiPlusCircle, FiUsers, FiSettings, FiLogOut } from 'react-icons/fi'
+import { FiCalendar, FiHome, FiPlusCircle, FiUsers, FiSettings, FiLogOut, FiMessageSquare } from 'react-icons/fi'
 
 const Sidebar = () => {
   const { user, setShowLogin, logout } = useContext(AppContext);
@@ -27,6 +27,13 @@ const Sidebar = () => {
       icon: <FiCalendar className="w-5 h-5" />,
       label: 'Appointments',
       description: 'Manage all appointments',
+      requiresAuth: true
+    },
+    {
+      path: 'feedback',
+      icon: <FiMessageSquare className="w-5 h-5" />,
+      label: 'Feedback',
+      description: 'View customer feedback',
       requiresAuth: true
     },
    
