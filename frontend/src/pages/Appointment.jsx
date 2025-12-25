@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Appointment = () => {
-  const { user } = useContext(AppContext);
+  const { user,setShowLogin } = useContext(AppContext);
   const { docId } = useParams();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
@@ -153,7 +153,7 @@ const Appointment = () => {
     
     if (!user) {
       toast.error('Please login to book an appointment');
-      navigate('/login');
+    setShowLogin(true);
       return;
     }
     
