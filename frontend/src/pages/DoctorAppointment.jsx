@@ -164,53 +164,177 @@ const DoctorAppointment = () => {
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 py-4 sm:py-6">
       {/* Stats Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8">
-        <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 flex items-center gap-4">
-          <img src={assets1.earning_icon} alt="earning" className="w-10 h-10 sm:w-12 sm:h-12" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 mb-6">
+        <div className="bg-white rounded-xl shadow-sm p-3 sm:p-4 md:p-6 flex items-center gap-3">
+          <div className="bg-green-50 p-2 sm:p-3 rounded-lg">
+            <img src={assets1.earning_icon} alt="earning" className="w-8 h-8 sm:w-10 sm:h-10" />
+          </div>
           <div>
-            <h4 className="text-gray-600 text-sm sm:text-base">Total Earnings</h4>
-            <p className="text-xl sm:text-2xl font-semibold text-green-600">₹{myDoctor?.earning || 0}</p>
+            <h4 className="text-xs sm:text-sm text-gray-500">Total Earnings</h4>
+            <p className="text-lg sm:text-xl md:text-2xl font-semibold text-green-600">₹{myDoctor?.earning?.toLocaleString() || 0}</p>
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 flex items-center gap-4">
-          <img src={assets1.appointment_icon} alt="appointments" className="w-10 h-10 sm:w-12 sm:h-12" />
+        <div className="bg-white rounded-xl shadow-sm p-3 sm:p-4 md:p-6 flex items-center gap-3">
+          <div className="bg-blue-50 p-2 sm:p-3 rounded-lg">
+            <img src={assets1.appointment_icon} alt="appointments" className="w-8 h-8 sm:w-10 sm:h-10" />
+          </div>
           <div>
-            <h4 className="text-gray-600 text-sm sm:text-base">Appointments Done</h4>
-            <p className="text-xl sm:text-2xl font-semibold text-blue-600">{myDoctor?.completed_appointment || 0}</p>
+            <h4 className="text-xs sm:text-sm text-gray-500">Appointments Done</h4>
+            <p className="text-lg sm:text-xl md:text-2xl font-semibold text-blue-600">{myDoctor?.completed_appointment || 0}</p>
           </div>
         </div>
       </div>
 
       {/* Appointments Section */}
-      <div className="bg-white rounded-xl shadow-md overflow-hidden">
-        <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
-          <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">My Appointments</h2>
+      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div className="px-3 sm:px-6 py-3 border-b border-gray-200 flex justify-between items-center">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-800">My Appointments</h2>
+          <div className="text-xs text-gray-500 sm:hidden">
+            {appointments.filter(a => a.doc_id?._id === myDoctor?._id).length} total
+          </div>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* Mobile View - Card Layout */}
+        <div className="md:hidden">
+          {appointments
+            .filter(a => {
+              const docId = typeof a.doc_id === 'string' ? a.doc_id : a.doc_id?._id;
+              return docId === doctor?.id;
+            })
+            .sort((a, b) => {
+              const priority = {
+                'pending': 1,
+                'confirmed': 2,
+                'completed': 3,
+                'cancelled': 4
+              };
+              return priority[a.status] - priority[b.status];
+            })
+            .map((item, idx) => (
+              <div key={item._id} className="border-b border-gray-100 p-4">
+                <div className="flex justify-between items-start mb-2">
+                  <div className="flex items-center gap-3">
+                    <img 
+                      src={item.user_id?.image} 
+                      className="w-10 h-10 rounded-full object-cover" 
+                      alt="patient" 
+                    />
+                    <div>
+                      <p className="font-medium text-gray-900">{item.user_id?.username || 'Unknown'}</p>
+                      <p className="text-xs text-gray-500">{formatDateTime(`${item.date} ${item.time}`)}</p>
+                    </div>
+                  </div>
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                    item.status === 'completed' 
+                      ? 'bg-green-100 text-green-800' 
+                      : item.status === 'cancelled'
+                      ? 'bg-red-100 text-red-800'
+                      : item.status === 'confirmed'
+                      ? 'bg-blue-100 text-blue-800'
+                      : 'bg-yellow-100 text-yellow-800'
+                  }`}>
+                    {item.status === 'completed' 
+                      ? 'Completed' 
+                      : item.status === 'cancelled'
+                      ? 'Cancelled'
+                      : item.status === 'confirmed'
+                      ? 'Confirmed'
+                      : 'Pending'}
+                  </span>
+                </div>
+
+                <div className="flex justify-between items-center mt-3 text-xs text-gray-500">
+                  <div className="flex items-center gap-2">
+                    <span>Age: {calculateAge(item.user_id?.dob)}</span>
+                    <span className="text-gray-300">•</span>
+                    <span className={`${item.paid ? 'text-green-600' : 'text-yellow-600'}`}>
+                      {item.paid ? 'Paid' : 'Cash'}
+                    </span>
+                  </div>
+                  <div className="flex gap-1">
+                    {item.status === 'pending' && (
+                      <>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleConfirm(item._id);
+                          }}
+                          className="p-1.5 hover:bg-blue-50 rounded-full transition-colors text-blue-600"
+                          title="Confirm"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCancel(item._id);
+                          }}
+                          className="p-1.5 hover:bg-red-50 rounded-full transition-colors text-red-600"
+                          title="Cancel"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                          </svg>
+                        </button>
+                      </>
+                    )}
+                    
+                    {item.status === 'confirmed' && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleComplete(item._id);
+                        }}
+                        className="p-1.5 hover:bg-green-50 rounded-full transition-colors text-green-600"
+                        title="Complete"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+
+          {appointments.filter(a => a.doc_id?._id === myDoctor?._id).length === 0 && (
+            <div className="p-8 text-center">
+              <div className="flex flex-col items-center gap-3">
+                <svg className="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <p className="text-gray-500">No appointments found</p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Desktop View - Table Layout */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-sm text-left">
             <thead className="bg-gray-50 text-gray-700">
               <tr>
-                <th className="px-4 py-3 font-medium hidden md:table-cell">#</th>
+                <th className="px-4 py-3 font-medium">#</th>
                 <th className="px-4 py-3 font-medium">Patient</th>
-                <th className="px-4 py-3 font-medium hidden md:table-cell">Payment</th>
-                <th className="px-4 py-3 font-medium hidden md:table-cell">Age</th>
+                <th className="px-4 py-3 font-medium">Payment</th>
+                <th className="px-4 py-3 font-medium">Age</th>
                 <th className="px-4 py-3 font-medium">Date & Time</th>
                 <th className="px-4 py-3 font-medium">Status</th>
-                <th className="px-4 py-3 font-medium text-center">Action</th>
+                <th className="px-4 py-3 font-medium text-center">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
               {appointments
                 .filter(a => {
-                  // Handle both string and object doc_id formats
                   const docId = typeof a.doc_id === 'string' ? a.doc_id : a.doc_id?._id;
                   return docId === doctor?.id;
                 })
                 .sort((a, b) => {
-                  // Define priority order: pending > confirmed > completed > cancelled
                   const priority = {
                     'pending': 1,
                     'confirmed': 2,
@@ -221,28 +345,31 @@ const DoctorAppointment = () => {
                 })
                 .map((item, idx) => (
                 <tr key={item._id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-4 py-3 hidden md:table-cell">{idx + 1}</td>
+                  <td className="px-4 py-3">{idx + 1}</td>
                   <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                       <img 
                         src={item.user_id?.image} 
-                        className="w-8 h-8 rounded-full object-cover" 
+                        className="w-9 h-9 rounded-full object-cover" 
                         alt="patient" 
                       />
-                      <span className="hidden md:inline">{item.user_id?.username || 'Unknown'}</span>
+                      <span className="font-medium text-gray-900">{item.user_id?.username || 'Unknown'}</span>
                     </div>
                   </td>
-                  <td className="px-4 py-3 hidden md:table-cell">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  <td className="px-4 py-3">
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                       item.paid ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
                     }`}>
                       {item.paid ? 'Paid' : 'Cash'}
                     </span>
                   </td>
-                  <td className="px-4 py-3 hidden md:table-cell">{calculateAge(item.user_id?.dob)}</td>
+                  <td className="px-4 py-3 text-gray-700">{calculateAge(item.user_id?.dob)}</td>
                   <td className="px-4 py-3">
-                    <div className="flex flex-col">
-                      <span className="font-medium">{formatDateTime(`${item.date} ${item.time}`)}</span>
+                    <div className="text-sm text-gray-900">
+                      {new Date(`${item.date} ${item.time}`).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {new Date(`${item.date} ${item.time}`).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                     </div>
                   </td>
                   <td className="px-4 py-3">
@@ -265,7 +392,7 @@ const DoctorAppointment = () => {
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <div className="flex justify-center gap-2">
+                    <div className="flex justify-center gap-1">
                       {item.status === 'pending' && (
                         <>
                           <button
@@ -313,14 +440,14 @@ const DoctorAppointment = () => {
                 </tr>
               ))}
 
-              {appointments.filter(a => a.doc_id?._id === myDoctor?._id).length === 0 && (
+              {appointments.length === 0 && (
                 <tr>
-                  <td colSpan="6" className="px-4 py-8 text-center text-gray-500">
-                    <div className="flex flex-col items-center gap-2">
-                      <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  <td colSpan="7" className="px-4 py-8 text-center">
+                    <div className="flex flex-col items-center gap-3">
+                      <svg className="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
-                      <p>No appointments found</p>
+                      <p className="text-gray-500">No appointments found</p>
                     </div>
                   </td>
                 </tr>
