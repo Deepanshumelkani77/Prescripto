@@ -49,6 +49,15 @@ const AllDoctor = () => {
     fetchDoctors();
   }, []);
 
+  // Navigate to add doctor page
+  const handleAddDoctor = () => {
+    if (!user) {
+      setShowLogin(true);
+    } else {
+      navigate('/add-doctor');
+    }
+  };
+
   // Filter and sort doctors
   const filteredDoctors = useMemo(() => {
     return doctor
@@ -68,16 +77,34 @@ const AllDoctor = () => {
       });
   }, [doctor, searchQuery, statusFilter, sortBy]);
 
-  const handleDelete = async (id, name) => {
-    if (window.confirm(`Are you sure you want to delete Dr. ${name}?`)) {
+  // Handle delete doctor
+  const handleDelete = async (id) => {
+    if (!user) {
+      setShowLogin(true);
+      return;
+    }
+    
+    if (window.confirm('Are you sure you want to delete this doctor?')) {
       try {
-        await axios.delete(`http://localhost:5000/doctor/delete/${id}`);
-        setDoctor(prev => prev.filter(doc => doc._id !== id));
-        toast.success('Doctor deleted successfully');
+        await axios.delete(`http://localhost:5000/doctor/delete/${id}`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
+        setDoctor(doctor.filter(item => item._id !== id));
       } catch (error) {
         console.error('Error deleting doctor:', error);
-        toast.error('Failed to delete doctor');
+        if (error.response?.status === 401) {
+          setShowLogin(true);
+        }
       }
+    }
+  };
+
+  // Navigate to edit doctor page
+  const handleEdit = (id) => {
+    if (!user) {
+      setShowLogin(true);
+    } else {
+      navigate(`/edit-doctor/${id}`);
     }
   };
 
@@ -96,7 +123,7 @@ const AllDoctor = () => {
             <p className="text-gray-600 mt-1">Manage and monitor all registered doctors</p>
           </div>
           <button
-            onClick={() => navigate('/add-doctor')}
+            onClick={handleAddDoctor}
             className="inline-flex items-center px-4 py-2.5 bg-[#5f6FFF] hover:bg-[#4a5ae8] text-white rounded-lg font-medium transition-colors duration-200 shadow-sm"
           >
             <FiPlus className="mr-2" />
@@ -254,14 +281,14 @@ const AllDoctor = () => {
 
                   <div className="flex gap-2 pt-3 border-t border-gray-100">
                     <button
-                      onClick={() => navigate(`/edit-doctor/${item._id}`)}
+                      onClick={() => handleEdit(item._id)}
                       className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-colors"
                     >
                       <FiEdit2 className="w-4 h-4" />
                       Edit
                     </button>
                     <button
-                      onClick={() => handleDelete(item._id, item.name)}
+                      onClick={() => handleDelete(item._id)}
                       className="flex items-center justify-center gap-2 px-3 py-2 bg-red-50 border border-red-100 rounded-lg text-red-600 hover:bg-red-100 transition-colors"
                     >
                       <FiTrash2 className="w-4 h-4" />
