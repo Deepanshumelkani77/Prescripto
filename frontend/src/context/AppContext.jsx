@@ -3,6 +3,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import {doctors} from '../assets/assets'
+import { showSuccess, showError } from '../utils/toast'
 
 export const AppContext=createContext()
 
@@ -36,17 +37,23 @@ const [user, setUser] = useState(initialUser);
         Cookies.set("token", response.data.token, { expires: 1 });
         Cookies.set("user", JSON.stringify(response.data.user), { expires: 1 });
         setUser(response.data.user);
+        showSuccess('Logged in successfully!');
+        return response.data.user;
       } catch (error) {
-        alert(error.response?.data?.message || "Login failed");
+        const errorMessage = error.response?.data?.message || "Login failed";
+        showError(errorMessage);
+        throw new Error(errorMessage);
       }
     }
   
     const signup = async (username, email, password) => {
       try {
         await axios.post("http://localhost:5000/user/signup", { username, email, password });
-        alert("Signup successful! Please login.");
+        showSuccess('Signup successful! Please login.');
       } catch (error) {
-        alert(error.response?.data?.message || "Signup failed");
+        const errorMessage = error.response?.data?.message || "Signup failed";
+        showError(errorMessage);
+        throw new Error(errorMessage);
       }
     };
   
@@ -58,7 +65,8 @@ const [user, setUser] = useState(initialUser);
       localStorage.removeItem('appState');
       setUser(null);
       setState('User');
-      navigate('/')
+      showSuccess('Logged out successfully!');
+      navigate('/');
     };
   
 

@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { AppContext } from '../context/AppContext'
 import { useNavigate } from 'react-router-dom'
 import { assets } from '../assets/assets'
+import { showSuccess, showError } from '../utils/toast'
 
 const Login = () => {
   const { setShowLogin } = useContext(AppContext)
@@ -16,16 +17,27 @@ const Login = () => {
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value })
   const handleChange2 = (e) => setFormData2({ ...formData2, [e.target.name]: e.target.value })
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    signup(formData.username, formData.email, formData.password)
+    try {
+      await signup(formData.username, formData.email, formData.password)
+      showSuccess('Account created successfully! Please log in.')
+      setState('login')
+    } catch (error) {
+      showError(error.message || 'Failed to create account. Please try again.')
+    }
   }
 
   const handleSubmit2 = async (e) => {
     e.preventDefault()
-    await login(formData2.email, formData2.password)
-    setShowLogin(false)
-    navigate("/")
+    try {
+      await login(formData2.email, formData2.password)
+      showSuccess('Logged in successfully!')
+      setShowLogin(false)
+      navigate("/")
+    } catch (error) {
+      showError(error.message || 'Invalid email or password. Please try again.')
+    }
   }
 
   return (

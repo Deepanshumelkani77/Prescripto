@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import Home from './pages/Home.jsx'
 import Doctor from './pages/Doctor.jsx'
 import About from './pages/About.jsx'
@@ -39,6 +41,18 @@ const App = () => {
     state === 'User' ? (
       <div className="min-h-screen flex flex-col">
         <ScrollToTop />
+        <ToastContainer 
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
         {showLogin && <Login />}
         
         <div className="flex-1 flex flex-col">
@@ -59,7 +73,20 @@ const App = () => {
         </div>
       </div>
     ) : (
-      <div className="min-h-screen bg-[#F2F3FF] flex flex-col">
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <ScrollToTop />
+        <ToastContainer 
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
         {showLogin2 && <DoctorLogin />}
         
         <div className="flex-1 flex flex-col md:flex-row min-h-0">
