@@ -1,217 +1,141 @@
 import React, { useState, useEffect } from 'react';
-import { FiMail, FiUser, FiMessageSquare, FiClock, FiCheck, FiArchive, FiRefreshCw } from 'react-icons/fi';
+import { FiMessageSquare, FiSearch, FiRefreshCw } from 'react-icons/fi';
+import { showToast } from '../components/Toast';
 import axios from 'axios';
 
 const Feedback = () => {
   const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [selectedFeedback, setSelectedFeedback] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Fetch feedbacks
+  // Fetch feedback data
+  const fetchFeedbacks = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('http://localhost:5000/api/feedback');
+      setFeedbacks(response.data.data || []);
+    } catch (error) {
+      console.error('Error fetching feedbacks:', error);
+      showToast('Failed to load feedbacks', 'error');
+      setFeedbacks([]); // Set empty array to prevent errors
+    } finally {
+      setLoading(false);
+      setIsRefreshing(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchFeedbacks = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/feedback');
-        setFeedbacks(response.data.data || []);
-      } catch (error) {
-        console.error('Error fetching feedbacks:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchFeedbacks();
   }, []);
 
-  // Update feedback status
-  const updateStatus = async (id, status) => {
-    try {
-      await axios.patch(`http://localhost:5000/api/feedback/${id}/status`, { status });
-      setFeedbacks(feedbacks.map(fb => 
-        fb._id === id ? { ...fb, status } : fb
-      ));
-      if (selectedFeedback?._id === id) {
-        setSelectedFeedback({ ...selectedFeedback, status });
-      }
-    } catch (error) {
-      console.error('Error updating status:', error);
-    }
-  };
-
-  // Filter feedbacks based on status
-  const filteredFeedbacks = statusFilter === 'all' 
-    ? feedbacks 
-    : feedbacks.filter(fb => fb.status === statusFilter);
+  // Filter feedbacks based on search
+  const filteredFeedbacks = feedbacks.filter(feedback => {
+    return (
+      feedback.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      feedback.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      feedback.message?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
 
   // Format date
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-    return new Date(dateString).toLocaleDateString('en-US', options);
-  };
-
-  // Get status badge class
-  const getStatusBadgeClass = (status) => {
-    switch (status) {
-      case 'new':
-        return 'bg-blue-100 text-blue-800';
-      case 'read':
-        return 'bg-green-100 text-green-800';
-      case 'replied':
-        return 'bg-purple-100 text-purple-800';
-      case 'archived':
-        return 'bg-gray-100 text-gray-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
 
   return (
     <div className="w-full md:pl-[280px] pt-16 bg-gray-50 min-h-screen">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Patient Feedback</h1>
-            <p className="text-gray-600 mt-1">View and manage patient feedback and reviews</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">User Feedback</h1>
+            <p className="text-gray-600 mt-1">Manage and respond to user feedback</p>
           </div>
           <div className="mt-4 md:mt-0">
-            <select
-              className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
+            <button
+              onClick={() => {
+                setIsRefreshing(true);
+                fetchFeedbacks();
+              }}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+              disabled={isRefreshing}
             >
-              <option value="all">All Feedback</option>
-              <option value="new">New</option>
-              <option value="read">Read</option>
-              <option value="replied">Replied</option>
-              <option value="archived">Archived</option>
-            </select>
+              <FiRefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              {isRefreshing ? 'Refreshing...' : 'Refresh'}
+            </button>
           </div>
         </div>
 
-      {/* Feedback List */}
-      <div className="bg-white shadow overflow-hidden sm:rounded-md">
-        {loading ? (
-          <div className="flex justify-center items-center p-8">
-            <FiRefreshCw className="animate-spin h-8 w-8 text-blue-500" />
+        {/* Filters */}
+        <div className="bg-white rounded-xl shadow-sm p-4 mb-6 border border-gray-100">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <FiSearch className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                type="text"
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#5f6fff] focus:border-transparent"
+                placeholder="Search feedback..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
           </div>
-        ) : filteredFeedbacks.length === 0 ? (
-          <div className="text-center p-8 text-gray-500">
-            No feedback found.
+        </div>
+
+        {/* Feedback List */}
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#5f6fff]"></div>
           </div>
         ) : (
-          <ul className="divide-y divide-gray-200">
-            {filteredFeedbacks.map((feedback) => (
-              <li key={feedback._id} className="hover:bg-gray-50">
-                <div 
-                  className="px-4 py-4 sm:px-6 cursor-pointer"
-                  onClick={() => {
-                    setSelectedFeedback(feedback);
-                    setIsModalOpen(true);
-                    if (feedback.status === 'new') {
-                      updateStatus(feedback._id, 'read');
-                    }
-                  }}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-                        <FiUser className="h-5 w-5" />
+          <div className="space-y-4">
+            {filteredFeedbacks.length === 0 ? (
+              <div className="text-center py-12">
+                <FiMessageSquare className="mx-auto h-12 w-12 text-gray-400" />
+                <h3 className="mt-2 text-sm font-medium text-gray-900">No feedback found</h3>
+                <p className="mt-1 text-sm text-gray-500">
+                  {statusFilter !== 'all' 
+                    ? `No ${statusFilter} feedback available.` 
+                    : 'No feedback has been submitted yet.'}
+                </p>
+              </div>
+            ) : (
+              filteredFeedbacks.map((feedback) => (
+                <div key={feedback._id} className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 hover:shadow-md transition-shadow duration-200">
+                  <div className="p-5">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-lg font-medium text-gray-900">{feedback.name || 'Anonymous'}</h3>
+                        <p className="mt-1 text-sm text-gray-500">{feedback.email}</p>
+                        <p className="mt-3 text-gray-700">{feedback.message}</p>
                       </div>
-                      <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">
-                          {feedback.name}
-                          <span className="ml-2 text-xs font-normal text-gray-500">
-                            {feedback.email}
-                          </span>
-                        </div>
-                        <div className="text-sm text-gray-500">{feedback.subject}</div>
+                      <div className="ml-4 flex-shrink-0">
+                        <p className="text-xs text-gray-500">{formatDate(feedback.createdAt)}</p>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClass(feedback.status)}`}>
-                        {feedback.status}
-                      </span>
-                      <span className="text-xs text-gray-500">
-                        {formatDate(feedback.createdAt)}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="mt-2 text-sm text-gray-600 line-clamp-2">
-                    {feedback.message}
+                    
+                    {feedback.response && (
+                      <div className="mt-4 p-3 bg-gray-50 rounded-lg border-l-4 border-[#5f6fff]">
+                        <p className="text-sm font-medium text-gray-900">Admin Response:</p>
+                        <p className="mt-1 text-sm text-gray-600">{feedback.response}</p>
+                      </div>
+                    )}
                   </div>
                 </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
-      {/* Feedback Detail Modal */}
-      {isModalOpen && selectedFeedback && (
-        <div className="fixed z-10 inset-0 overflow-y-auto">
-          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-            </div>
-            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-              <div>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      {selectedFeedback.subject}
-                    </h3>
-                    <p className="mt-1 text-sm text-gray-500">
-                      From: {selectedFeedback.name} &lt;{selectedFeedback.email}&gt;
-                    </p>
-                    <p className="mt-1 text-xs text-gray-400">
-                      {formatDate(selectedFeedback.createdAt)}
-                    </p>
-                  </div>
-                  <span className={`ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClass(selectedFeedback.status)}`}>
-                    {selectedFeedback.status}
-                  </span>
-                </div>
-                <div className="mt-4">
-                  <p className="text-sm text-gray-700 whitespace-pre-line">
-                    {selectedFeedback.message}
-                  </p>
-                </div>
-              </div>
-              <div className="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
-                <div className="flex space-x-2">
-                  {selectedFeedback.status !== 'replied' && (
-                    <button
-                      type="button"
-                      onClick={() => updateStatus(selectedFeedback._id, 'replied')}
-                      className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-purple-600 text-base font-medium text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:col-start-2 sm:text-sm"
-                    >
-                      Mark as Replied
-                    </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => updateStatus(selectedFeedback._id, 'archived')}
-                    className="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:col-start-1 sm:text-sm"
-                  >
-                    {selectedFeedback.status === 'archived' ? 'Unarchive' : 'Archive'}
-                  </button>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:col-span-2 sm:text-sm"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
+              ))
+            )}
           </div>
-        </div>
-      )}
+        )}
       </div>
     </div>
   );

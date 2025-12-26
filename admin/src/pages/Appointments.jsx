@@ -246,15 +246,7 @@ const Appointments = () => {
                             </button>
                           )}
                           <div className="relative">
-                            <button 
-                              className="p-1.5 text-gray-400 hover:text-gray-500 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                // Toggle dropdown or show options
-                              }}
-                            >
-                              <FiMoreVertical className="h-4 w-4" />
-                            </button>
+                          
                             {/* Dropdown menu would go here */}
                           </div>
                         </div>
