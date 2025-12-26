@@ -27,7 +27,22 @@ const Navbar = () => {
   // Close dropdown when navigating
   useEffect(() => {
     setShowDropdown(false);
+    // Close sidebar when navigating on mobile
+    if (window.innerWidth < 768) {
+      document.dispatchEvent(new CustomEvent('closeSidebar'));
+    }
   }, [location]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (showDropdown && !e.target.closest('.user-menu')) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showDropdown]);
 
   return (
     <header 
@@ -45,6 +60,7 @@ const Navbar = () => {
               onClick={() => document.dispatchEvent(new CustomEvent('toggleSidebar'))}
               className='md:hidden p-2 -ml-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors duration-200'
               aria-label='Toggle menu'
+              aria-expanded={false}
             >
               <FiMenu className='w-5 h-5' />
             </button>

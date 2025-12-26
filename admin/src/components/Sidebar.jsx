@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink, useNavigate, useLocation } from 'react-router-dom'
 import { assets } from '../assets/assets'
 import { AppContext } from '../context/AppContext'
 import { FiCalendar, FiHome, FiPlusCircle, FiLogOut, FiMessageSquare } from 'react-icons/fi'
@@ -9,11 +9,27 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
+  // Toggle sidebar from other components
   useEffect(() => {
     const handleToggleSidebar = () => setIsOpen(prev => !prev);
+    const handleCloseSidebar = () => setIsOpen(false);
+    
     document.addEventListener('toggleSidebar', handleToggleSidebar);
-    return () => document.removeEventListener('toggleSidebar', handleToggleSidebar);
+    document.addEventListener('closeSidebar', handleCloseSidebar);
+    
+    return () => {
+      document.removeEventListener('toggleSidebar', handleToggleSidebar);
+      document.removeEventListener('closeSidebar', handleCloseSidebar);
+    };
   }, []);
+
+  // Close sidebar when route changes
+  const location = useLocation();
+  useEffect(() => {
+    if (isOpen) {
+      setIsOpen(false);
+    }
+  }, [location]);
 
   const menuItems = [
     {
@@ -55,10 +71,10 @@ const Sidebar = () => {
       />
 
       <div 
-        className={`fixed top-0 left-0 h-full md:mt-[8vh] lg:mt-[8vh] lg:h-[92vh] md:h-[92vh] w-72 bg-white shadow-xl transition-transform duration-300 z-40 ${
+        className={`fixed top-0 left-0 h-full w-72 bg-white shadow-xl transition-all duration-300 z-50 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
-        } md:translate-x-0 flex flex-col`}
-      >  
+        } md:translate-x-0 md:mt-[8vh] md:h-[92vh] flex flex-col`}
+      >
         {/* Sidebar Content */}
         <div className='flex-1 overflow-y-auto'>
           {/* Close Button - Only visible on mobile */}
@@ -136,7 +152,10 @@ const Sidebar = () => {
             </button>
           ) : (
             <button 
-              onClick={() => setShowLogin(true)}
+              onClick={() => {
+                setShowLogin(true);
+                setIsOpen(false);
+              }}
               className='w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-[#5f6fff] hover:bg-[#4a5ae8] rounded-lg transition-colors duration-300'
             >
               <span>Login</span>

@@ -9,14 +9,20 @@ const Appointments = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState('');
-
+ 
   // Fetch appointments data
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
         const response = await axios.get('http://localhost:5000/appointment');
         console.log('API Response:', response.data);
-        setAppointments(response.data || []);
+        // Ensure each appointment has user_id populated
+        const appointmentsWithUser = response.data.map(appt => ({
+          ...appt,
+          user_id: appt.user_id || { name: 'Guest User' },
+          doc_id: appt.doc_id || { name: 'Unknown Doctor' }
+        }));
+        setAppointments(appointmentsWithUser);
       } catch (error) {
         console.error('Error fetching appointments:', error);
       } finally {
@@ -180,13 +186,13 @@ const Appointments = () => {
                       <div className="flex items-start space-x-3 sm:space-x-4">
                         <div className="flex-shrink-0">
                           <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-lg font-semibold">
-                            {appointment.user_id?.name?.charAt(0)?.toUpperCase() || 'U'}
+                            {appointment.user_id?.username?.charAt(0)?.toUpperCase() || 'U'}
                           </div>
                         </div>
                         <div>
                           <div className="flex flex-col sm:flex-row sm:items-baseline sm:space-x-2">
                             <h3 className="text-base sm:text-lg font-semibold text-gray-900">
-                              {appointment.user_id?.name || 'Unknown User'}
+                              {appointment.user_id?.username || 'Guest User'}
                             </h3>
                             <span className="text-xs text-gray-500">
                               ID: {appointment.user_id?._id?.substring(0, 8) || 'N/A'}
