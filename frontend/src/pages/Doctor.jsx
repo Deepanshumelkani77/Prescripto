@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
+import { API_BASE_URL } from '../config';
 import axios from 'axios';
 import { 
   FiSearch, FiFilter, FiStar, FiClock, FiMapPin, 
@@ -27,7 +28,7 @@ const Doctor = () => {
     const fetchDoctors = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get('http://localhost:5000/doctor');
+        const response = await axios.get(`${API_BASE_URL}/doctor`);
         setDoctor(response.data);
         const uniqueCities = [...new Set(response.data.map(doc => doc.city).filter(Boolean))];
         setCities(uniqueCities);
