@@ -190,9 +190,10 @@ const Navbar = () => {
           
           {user ? (
             <>
-              <div className="pt-4 pb-3 border-t border-gray-200">
-                <div className="flex items-center px-5">
-                  <div className="flex-shrink-0">
+              <div className="pt-4 pb-3  border-t border-gray-200">
+
+<a href="myprofile"> <div   className="flex items-center px-5 ">
+                  <div className="flex-shrink-0 ">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold">
                       {user.name?.charAt(0).toUpperCase() || 'U'}
                     </div>
@@ -201,7 +202,9 @@ const Navbar = () => {
                     <div className="text-base font-medium text-gray-800">{user.name || 'User'}</div>
                     <div className="text-sm font-medium text-gray-500">View Profile</div>
                   </div>
-                </div>
+                </div></a>
+               
+
                 <div className="mt-3 px-2 space-y-1">
                   <button
                     onClick={() => {
@@ -218,15 +221,18 @@ const Navbar = () => {
             </>
           ) : (
             <div className="pt-4 pb-3 border-t border-gray-200 px-2 space-y-2">
+
               <button
                 onClick={() => {
-                  setShowLogin(true);
+                  setShowLogin2(true);
                   setIsMenuOpen(false);
+                  setState("Doctor");
                 }}
                 className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-blue-700 bg-blue-100 hover:bg-blue-200"
               >
-                Log in
+                Doctor Sign Up
               </button>
+
               <button
                 onClick={() => {
                   setShowLogin(true);
@@ -234,7 +240,7 @@ const Navbar = () => {
                 }}
                 className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
               >
-                Sign up
+                User Sign up
               </button>
             </div>
           )}
