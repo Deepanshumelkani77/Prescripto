@@ -3,10 +3,17 @@ const express = require("express");
 const Razorpay = require("razorpay");
 const router = express.Router();
 
+// Initialize Razorpay with environment variables
 const razorpay = new Razorpay({
-  key_id: "rzp_test_PuXf2SZhGaKEGd",
-  key_secret: "3cg1g3rUN5z4PXYtnv87gJCQ",
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
+
+// Validate Razorpay credentials on startup
+if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+  console.error('❌ Razorpay credentials are not set in environment variables');
+  process.exit(1);
+}
 
 router.post("/create-order", async (req, res) => {
     const { amount } = req.body;

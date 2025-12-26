@@ -1,23 +1,38 @@
-const express=require("express")
-const cors=require("cors")  //it is use for fetch data from database in frontend 
+require('dotenv').config();
+const express = require("express");
+const cors = require("cors");
+const path = require('path');
 
+// Load environment variables
+const MONGODB_URI = process.env.MONGODB_URI;
+const PORT = process.env.PORT || 5000;
 
-//app config
-const app=express();
-const port=5000;
-app.listen(port,()=>{
-    console.log("server is running",port);
-})
+// Initialize express app
+const app = express();
+
+// Middleware
+app.use(express.json());
+app.use(cors());
+
+// Start server
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+});
 
 
 //database connection
 const mongoose = require("mongoose");
  const connectDB = async () => {
     try {
-      await mongoose.connect(
-"mongodb+srv://deepumelkani123_db_user:Prescripto@cluster0.dp2e1h4.mongodb.net/?appName=Cluster0"
-      );
-      console.log("database connected successfully");
+      if (!MONGODB_URI) {
+      throw new Error('MongoDB connection string is not defined in environment variables');
+    }
+    await mongoose.connect(MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('Database connected successfully');
     } catch (error) {
       console.error("Error connecting to database:", error);
     }
@@ -75,3 +90,5 @@ const feedbackRoute = require("./routes/Feedback.js");
 
 app.use("/payment", paymentRoute);
 app.use("/api/feedback", feedbackRoute);
+
+
