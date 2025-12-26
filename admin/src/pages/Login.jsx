@@ -27,8 +27,8 @@ const Login = () => {
   };
 
   return (
-    <div className='min-h-screen w-full flex items-center justify-center fixed z-[999] bg-black/60 backdrop-blur-sm'>
-      <div className='bg-white flex flex-col gap-4 m-4 p-6 sm:p-8 w-full max-w-md rounded-2xl text-gray-700 shadow-2xl transform transition-all duration-300 hover:shadow-[#5f6FFF]/20'>
+    <div className='min-h-screen w-full flex items-center justify-center fixed inset-0 z-[9999] bg-black/70 backdrop-blur-md transition-all duration-300'>
+      <div className='bg-white/95 flex flex-col gap-4 m-4 p-6 sm:p-8 w-full max-w-md rounded-2xl text-gray-700 shadow-2xl transform transition-all duration-300 hover:shadow-[#5f6FFF]/20 backdrop-blur-sm border border-white/20'>
         <div className='flex justify-between items-center w-full'>
           <h1 className='text-2xl font-bold bg-gradient-to-r from-[#5f6FFF] to-[#4a5ae8] bg-clip-text text-transparent'>
             {state === 'signup' ? 'Create Account' : 'Welcome Back'}
