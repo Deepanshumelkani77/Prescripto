@@ -425,7 +425,7 @@ const MyAppointment = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">My Appointments</h1>
+      <h1 className="text-3xl lg:text-4xl font-bold mb-6">My Appointments</h1>
       
       <div className="mb-6 border-b border-gray-200">
         <nav className="flex -mb-px">
