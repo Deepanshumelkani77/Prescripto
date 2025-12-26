@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { assets1 } from '../assets/assets';
 import { StoreContext } from '../context/StoreContext';
 import axios from 'axios';
+import { showSuccess, showError } from '../utils/toast';
 
 const DoctorAppointment = () => {
   const { doctor } = useContext(StoreContext);
@@ -82,58 +83,80 @@ const DoctorAppointment = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ status })
+        body: JSON.stringify({ status }),
       });
 
       const data = await response.json();
-      
-      if (response.ok) {
-        // Update the appointment in the local state
-        setAppointments(prev => 
-          prev.map(appt => 
-            appt._id === id ? { ...appt, status } : appt
-          )
-        );
-        
-        // If status is completed, fetch updated doctor data
-        if (status === 'completed') {
-          try {
-            const doctorRes = await axios.get(`http://localhost:5000/doctor/${doctor?.id}`);
-            setMyDoctor(prev => ({
-              ...prev,
-              earning: doctorRes.data.earning,
-              completed_appointment: doctorRes.data.completed_appointment
-            }));
-          } catch (err) {
-            console.error('Error fetching updated doctor data:', err);
-          }
-        }
-        
-        alert(`Appointment ${status} successfully`);
-      } else {
-        throw new Error(data.message || 'Failed to update status');
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to update appointment status');
       }
+
+      // Update the appointments list
+      setAppointments(prevAppointments => 
+        prevAppointments.map(apt => 
+          apt._id === id ? { ...apt, status } : apt
+        )
+      );
+
+      // Update doctor data if appointment was completed
+      if (status === 'completed') {
+        try {
+          const doctorRes = await axios.get(`http://localhost:5000/doctor/${doctor?.id}`);
+          setMyDoctor(prev => ({
+            ...prev,
+            earning: doctorRes.data.earning,
+            completed_appointment: doctorRes.data.completed_appointment
+          }));
+        } catch (err) {
+          console.error('Error fetching updated doctor data:', err);
+        }
+      }
+
+      // Show success message
+      const statusMessages = {
+        'confirmed': 'Appointment confirmed successfully!',
+        'completed': 'Appointment marked as completed!',
+        'cancelled': 'Appointment has been cancelled.',
+        'pending': 'Appointment status updated to pending.'
+      };
+      
+      showSuccess(statusMessages[status] || 'Appointment updated successfully!');
+      return data;
     } catch (error) {
       console.error('Error updating appointment status:', error);
-      alert(error.message || 'Failed to update appointment status');
+      showError(error.message || 'Failed to update appointment. Please try again.');
+      throw error;
     }
   };
 
   const handleConfirm = async (id) => {
     if (window.confirm('Are you sure you want to confirm this appointment?')) {
-      await updateAppointmentStatus(id, 'confirmed');
+      try {
+        await updateAppointmentStatus(id, 'confirmed');
+      } catch (error) {
+        // Error is already handled in updateAppointmentStatus
+      }
     }
   };
 
   const handleComplete = async (id) => {
     if (window.confirm('Mark this appointment as completed?')) {
-      await updateAppointmentStatus(id, 'completed');
+      try {
+        await updateAppointmentStatus(id, 'completed');
+      } catch (error) {
+        // Error is already handled in updateAppointmentStatus
+      }
     }
   };
 
   const handleCancel = async (id) => {
     if (window.confirm('Are you sure you want to cancel this appointment?')) {
-      await updateAppointmentStatus(id, 'cancelled');
+      try {
+        await updateAppointmentStatus(id, 'cancelled');
+      } catch (error) {
+        // Error is already handled in updateAppointmentStatus
+      }
     }
   };
 

@@ -4,6 +4,7 @@ import { StoreContext } from "../context/StoreContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FiEdit2, FiSave, FiUser, FiPhone, FiMail, FiMapPin, FiBriefcase, FiAward, FiDollarSign, FiInfo, FiCheckCircle } from "react-icons/fi";
+import { showSuccess, showError } from '../utils/toast';
 
 const DoctorProfile = () => {
   const { doctor } = useContext(StoreContext);
@@ -125,11 +126,11 @@ const DoctorProfile = () => {
         setImage(imageUrl);
         setIsEdit(false);
         setFile(null);
-        alert("Profile updated successfully!");
+        showSuccess("Profile updated successfully!");
       }
     } catch (err) {
       console.error("Update error:", err);
-      alert("Failed to update profile. Please try again.");
+      showError('Failed to update profile. Please try again.');
     } finally {
       setIsLoading(false);
     }

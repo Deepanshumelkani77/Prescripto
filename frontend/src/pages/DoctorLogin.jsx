@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import { useState } from 'react'
 import { StoreContext } from '../context/StoreContext'
 import { useNavigate } from 'react-router-dom'
+import { showSuccess, showError } from '../utils/toast'
 
 const DoctorLogin = () => {
   const { doctor, setShowLogin2 } = useContext(StoreContext)
@@ -15,16 +16,36 @@ const DoctorLogin = () => {
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value })
   const handleChange2 = (e) => setFormData2({ ...formData2, [e.target.name]: e.target.value })
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    signup(formData.name, formData.email, formData.password)
+    try {
+      if (!formData.name || !formData.email || !formData.password) {
+        showError('Please fill in all fields')
+        return
+      }
+      await signup(formData.name, formData.email, formData.password)
+      showSuccess('Account created successfully! Please login.')
+      setState('login')
+      setFormData({ name: "", email: "", password: "" })
+    } catch (error) {
+      showError(error.message || 'Failed to create account')
+    }
   }
 
   const handleSubmit2 = async (e) => {
     e.preventDefault()
-    await login(formData2.email, formData2.password)
-    setShowLogin2(false)
-    navigate("/")
+    try {
+      if (!formData2.email || !formData2.password) {
+        showError('Please enter both email and password')
+        return
+      }
+      await login(formData2.email, formData2.password)
+      showSuccess('Login successful! Welcome back.')
+      setShowLogin2(false)
+      navigate("/")
+    } catch (error) {
+      showError(error.message || 'Login failed. Please check your credentials.')
+    }
   }
 
   return (
@@ -39,7 +60,7 @@ const DoctorLogin = () => {
                 if (doctor) {
                   setShowLogin2(false)
                 } else {
-                  alert("Please login first")
+                  showError("Please login first")
                 }
               }} 
               className='text-white hover:text-gray-200 transition-colors'
