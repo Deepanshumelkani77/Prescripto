@@ -4,6 +4,7 @@ import { AppContext } from './context/AppContext';
 import Login from './pages/Login';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
+import Toast from './components/Toast';
 import AddDoctor from './pages/AddDoctor';
 import AllDoctor from './pages/AllDoctor';
 import EditDoctor from './pages/EditDoctor';
@@ -21,10 +22,11 @@ const {showLogin}=useContext(AppContext);
 
   return (
     <div className="min-h-screen bg-[#F2F3FF] flex flex-col">
+      <Toast />
       <Navbar />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
-        <main className="flex-1 overflow-y-auto p-6 bg-[#F2F3FF]">
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 bg-[#F2F3FF]">
           <Routes>
             <Route path="/" element={<AllDoctor />} />
             <Route path="/appointments" element={<Appointments />} />

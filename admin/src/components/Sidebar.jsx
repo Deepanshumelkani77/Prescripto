@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react'
 import { NavLink, useNavigate, useLocation } from 'react-router-dom'
 import { assets } from '../assets/assets'
 import { AppContext } from '../context/AppContext'
-import { FiCalendar, FiHome, FiPlusCircle, FiLogOut, FiMessageSquare } from 'react-icons/fi'
+import { FiCalendar, FiHome, FiPlusCircle, FiLogOut, FiMessageSquare, FiUser } from 'react-icons/fi'
 
 const Sidebar = () => {
   const { user, setShowLogin, logout } = useContext(AppContext);
@@ -163,17 +163,38 @@ const Sidebar = () => {
           )}
         </div>
 
-        {/* Admin Portal Footer */}
-        <div className='p-6 border-t border-gray-100 mt-auto'>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-[#5f6FFF] flex items-center justify-center">
-              <span className="text-white font-semibold text-lg">AD</span>
+        {/* User Profile & Logout Section */}
+        <div className='mt-auto border-t border-gray-100'>
+          {user ? (
+            <div className='p-4'>
+              <div className='flex items-center gap-3 mb-4'>
+                <div className='w-10 h-10 rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 flex items-center justify-center text-blue-600'>
+                  <FiUser className='w-5 h-5' />
+                </div>
+                <div className='flex-1 min-w-0'>
+                  <p className='text-sm font-medium text-gray-900 truncate'>{user.name || 'Admin'}</p>
+                  <p className='text-xs text-gray-500 truncate'>{user.email || 'admin@example.com'}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  logout();
+                  setIsOpen(false);
+                }}
+                className='w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200 border border-red-100'
+              >
+                <FiLogOut className='w-4 h-4' />
+                <span>Sign Out</span>
+              </button>
             </div>
-            <div>
-              <h2 className='text-base font-semibold text-gray-800'>Admin Portal</h2>
-              <p className='text-xs text-gray-500 mt-0.5'>Manage your platform</p>
+          ) : (
+            <div className='p-4'>
+              <div className='w-10 h-10 rounded-lg bg-[#5f6FFF] flex items-center justify-center mx-auto mb-3'>
+                <span className='text-white font-semibold text-lg'>AD</span>
+              </div>
+              <p className='text-sm text-center text-gray-500'>Admin Portal</p>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

@@ -1,17 +1,13 @@
-import { createContext, useState } from "react"
+import { createContext, useState, useCallback } from "react"
 import axios from "axios";
 import Cookies from "js-cookie";
-
+import { showToast } from "../components/Toast";
 
 export const AppContext=createContext()
 
 const AppContextProvider=(props)=>{
 
 const [showLogin,setShowLogin]=useState(false)
-
-
-
-
 
   //store current user in cookie than we use currentuser anywhere
   const adminCookie = Cookies.get("admin");
@@ -30,17 +26,24 @@ console.log(user)
         Cookies.set("token", response.data.token, { expires: 1 });
         Cookies.set("admin", JSON.stringify(response.data.admin), { expires: 1 });
         setUser(response.data.admin);
+        showToast('Logged in successfully!', 'success');
+        return true;
       } catch (error) {
-        alert(error.response?.data?.message || "Login failed");
+        const errorMessage = error.response?.data?.message || "Login failed";
+        showToast(errorMessage, 'error');
+        return false;
       }
     }
   
     const signup = async (username, email, password) => {
       try {
         await axios.post("http://localhost:5000/admin/signup", { username, email, password });
-        alert("Signup successful! Please login.");
+        showToast("Signup successful! Please login.", 'success');
+        return true;
       } catch (error) {
-        alert(error.response?.data?.message || "Signup failed");
+        const errorMessage = error.response?.data?.message || "Signup failed";
+        showToast(errorMessage, 'error');
+        return false;
       }
     };
   
@@ -48,6 +51,7 @@ console.log(user)
       Cookies.remove("token");
       Cookies.remove("admin");
       setUser(null);
+      showToast('Logged out successfully', 'info');
     };
   
 
