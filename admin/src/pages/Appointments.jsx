@@ -98,20 +98,21 @@ const Appointments = () => {
   };
 
   return (
-    <div className=" max-h-[85vh] overflow-y-auto w-full">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Appointments</h1>
-          <p className="text-gray-600">Manage and track all appointments</p>
+    <div className="w-full md:pl-[280px] pt-16 bg-gray-50 min-h-screen">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Appointments</h1>
+            <p className="text-gray-600 mt-1">Manage and monitor all appointments</p>
+          </div>
+          <div className="mt-4 md:mt-0">
+            <button className="bg-[#5f6FFF] hover:bg-[#4a5ae8] text-white px-4 py-2 rounded-lg flex items-center transition-colors duration-200">
+              <FiCalendar className="mr-2" />
+              New Appointment
+            </button>
+          </div>
         </div>
-        <div className="mt-4 md:mt-0">
-          <button className="bg-[#5f6FFF] hover:bg-[#4a5ae8] text-white px-4 py-2 rounded-lg flex items-center">
-            <FiCalendar className="mr-2" />
-            New Appointment
-          </button>
-        </div>
-      </div>
 
       {/* Filters */}
       <div className="bg-white rounded-xl shadow-sm p-4 mb-6 border border-gray-100">
@@ -355,6 +356,7 @@ const Appointments = () => {
           )}
         </>
       )}
+      </div>
     </div>
   );
 };

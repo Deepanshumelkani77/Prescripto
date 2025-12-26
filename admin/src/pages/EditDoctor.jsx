@@ -126,15 +126,15 @@ const EditDoctor = () => {
   }
 
   return (
-    <div className='h-[85vh] bg-[#F2F3FF] w-[100%]'>
-      <div className='max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8'>
-        <div className='bg-white h-[82vh] overflow-y-auto rounded-2xl shadow-xl overflow-hidden'>
-          {/* Header */}
-          <div className='bg-gradient-to-r from-[#5f6FFF] to-[#4a5ae8] px-8 py-6 sticky top-0 z-10'>
-            <h1 className='text-2xl font-bold text-white'>Edit Doctor Profile</h1>
-            <p className='text-white/80 mt-1'>Update the doctor's information</p>
+    <div className="w-full md:pl-[280px] pt-16 bg-gray-50 min-h-screen">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Edit Doctor</h1>
+            <p className="text-gray-600 mt-1">Update doctor's information</p>
           </div>
-
+        </div>
+        <div className='max-w-4xl mx-auto py-4'>
           <form onSubmit={handleSubmit} className='p-8'>
             {/* Image Upload Section */}
             <div className='mb-8'>

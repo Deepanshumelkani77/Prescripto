@@ -1,63 +1,136 @@
-import React from 'react'
-import { assets } from '../assets/assets'
-import { useNavigate } from 'react-router-dom'
-import { useContext } from 'react'
-import { AppContext } from '../context/AppContext'
+import React, { useState, useEffect, useContext } from 'react';
+import { assets } from '../assets/assets';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { AppContext } from '../context/AppContext';
+import { FiMenu, FiX, FiLogIn, FiLogOut, FiChevronDown, FiUser } from 'react-icons/fi';
 
 const Navbar = () => {
   const { user, logout, setShowLogin } = useContext(AppContext);
+  const [scrolled, setScrolled] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Add scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 10;
+      if (isScrolled !== scrolled) {
+        setScrolled(isScrolled);
+      }
+    };
+
+    document.addEventListener('scroll', handleScroll, { passive: true });
+    return () => document.removeEventListener('scroll', handleScroll);
+  }, [scrolled]);
+
+  // Close dropdown when navigating
+  useEffect(() => {
+    setShowDropdown(false);
+  }, [location]);
 
   return (
-    <div className='flex justify-between items-center border-b border-gray-200 py-3 bg-white h-[9vh] px-4'>
-      <div className='flex items-center gap-2 text-xs'>
-        <img 
-          onClick={() => navigate('/')} 
-          className='w-36 sm:w-40 cursor-pointer' 
-          src={assets.admin_logo} 
-          alt="Admin Logo" 
-        />
-        <p className='border px-2.5 py-0.5 rounded-full border-gray-500 text-gray-600'>Admin</p>
+    <header 
+      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 lg:h-[8vh] md:h-[8vh] ${
+        scrolled 
+          ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100' 
+          : 'bg-white/90 backdrop-blur-sm border-b border-gray-100'
+      }`}
+    >
+      <div className='max-w-8xl mx-auto px-4 sm:px-6 lg:px-8'>
+        <div className='flex justify-between items-center h-16'>
+          {/* Logo and Brand */}
+          <div className='flex items-center space-x-4'>
+            <button 
+              onClick={() => document.dispatchEvent(new CustomEvent('toggleSidebar'))}
+              className='md:hidden p-2 -ml-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors duration-200'
+              aria-label='Toggle menu'
+            >
+              <FiMenu className='w-5 h-5' />
+            </button>
+            
+            <div 
+              onClick={() => navigate('/')} 
+              className='flex items-center space-x-2 cursor-pointer group'
+            >
+              <img 
+                className='h-8 w-auto transition-transform duration-300 group-hover:scale-105' 
+                src={assets.admin_logo} 
+                alt="Admin Logo" 
+              />
+              <span className='hidden sm:inline-block px-2.5 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-600 border border-blue-100'>
+                Admin Panel
+              </span>
+            </div>
+          </div>
+
+          {/* Desktop Navigation */}
+          <div className='hidden md:flex items-center space-x-1'>
+            {!user ? (
+              <button
+                onClick={() => setShowLogin(true)}
+                className='group relative flex items-center space-x-2 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-sm hover:shadow-md'
+              >
+                <FiLogIn className='w-4 h-4' />
+                <span>Sign In</span>
+                <span className='absolute -bottom-1 left-0 w-full h-0.5 bg-white/30 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left'></span>
+              </button>
+            ) : (
+              <div className='relative'>
+                <button
+                  onClick={() => setShowDropdown(!showDropdown)}
+                  className='flex items-center space-x-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 rounded-lg hover:bg-gray-50 transition-colors duration-200 group'
+                >
+                  <div className='w-8 h-8 rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 flex items-center justify-center text-blue-600'>
+                    <FiUser className='w-4 h-4' />
+                  </div>
+                  <span className='hidden lg:inline-block'>{user.name || 'Admin'}</span>
+                  <FiChevronDown className={`w-4 h-4 transition-transform duration-200 ${showDropdown ? 'transform rotate-180' : ''}`} />
+                </button>
+                
+                {showDropdown && (
+                  <div className='absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 py-1 z-50'>
+                    <div className='px-4 py-2 border-b border-gray-100'>
+                      <p className='text-sm font-medium text-gray-900'>{user.name || 'Admin'}</p>
+                      <p className='text-xs text-gray-500'>{user.email || 'admin@example.com'}</p>
+                    </div>
+                    <button
+                      onClick={logout}
+                      className='w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150 flex items-center space-x-2'
+                    >
+                      <FiLogOut className='w-4 h-4' />
+                      <span>Sign out</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Mobile Menu Button - Only shown on mobile */}
+          <div className='md:hidden flex items-center'>
+            {user ? (
+              <button
+                onClick={logout}
+                className='p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors duration-200'
+                aria-label='Logout'
+              >
+                <FiLogOut className='w-5 h-5' />
+              </button>
+            ) : (
+              <button
+                onClick={() => setShowLogin(true)}
+                className='p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors duration-200'
+                aria-label='Login'
+              >
+                <FiLogIn className='w-5 h-5' />
+              </button>
+            )}
+          </div>
+        </div>
       </div>
+    </header>
+  );
+};
 
-      {/* Desktop Login/Logout Button */}
-      <div className="hidden md:block">
-        {!user ? (
-          <button 
-            onClick={() => setShowLogin(true)} 
-            className='bg-[#5f6FFF] text-white  text-sm px-10 py-2 rounded-full hover:bg-[#4a5ae8] transition-colors duration-300'
-          >
-            Login
-          </button>
-        ) : (
-          <button 
-            onClick={() => logout()} 
-            className='bg-[#5f6FFF] text-white text-sm px-10 py-2 rounded-full hover:bg-[#4a5ae8] transition-colors duration-300'
-          >
-            Logout
-          </button>
-        )}
-      </div>
-
-      {/* Mobile Menu Button */}
-      <button 
-        onClick={() => document.dispatchEvent(new CustomEvent('toggleSidebar'))}
-        className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors duration-300"
-      >
-        <svg
-          className="w-6 h-6 text-gray-600"
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
-    </div>
-  )
-}
-
-export default Navbar
+export default Navbar;

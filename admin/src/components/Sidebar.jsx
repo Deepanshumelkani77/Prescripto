@@ -48,22 +48,17 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Overlay */}
+      {/* Mobile Overlay */}
       <div 
-        className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-300 md:hidden ${
-          isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}
+        className={`fixed inset-0 bg-black/50 z-999 md:hidden transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
         onClick={() => setIsOpen(false)}
       />
 
-      {/* Sidebar */}
-      <div className={`
-        bg-white border-r border-gray-200 shadow-lg transition-all duration-300
-        md:static md:translate-x-0 md:h-[91vh] md:min-w-[280px] md:w-[280px]
-        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-        fixed top-0 left-0 h-full w-[280px] z-50
-        flex flex-col
-      `}>
+      <div 
+        className={`fixed top-0 left-0 h-full md:mt-[8vh]  lg:mt-[8vh] lg:h-[92vh] md:h-[92vh] w-72 bg-white shadow-xl transition-transform duration-300 z-30 ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        } md:translate-x-0`}
+      >  
         {/* Sidebar Header */}
         <div className='p-6 border-b border-gray-100'>
           <div className="flex items-center justify-between">

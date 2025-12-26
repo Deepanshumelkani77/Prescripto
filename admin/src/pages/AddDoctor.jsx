@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { assets } from "../assets/assets";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -15,10 +15,12 @@ const AddDoctor = () => {
     experience: '',
     about: '',
     fees: '',
+    city: '',
     address: { line1: '', line2: '' }
   });
   const [file, setFile] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -88,30 +90,25 @@ const AddDoctor = () => {
     }
   };
 
-  return (
-    <div className='h-[85vh]  bg-[#F2F3FF]  w-[100%]'>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
-      <div className='max-w-4xl   mx-auto py-8 px-4 sm:px-6 lg:px-8'>
-        <div className='bg-white h-[82vh] overflow-y-auto rounded-2xl shadow-xl overflow-hidden'>
-          {/* Header */}
-          <div className='bg-gradient-to-r from-[#5f6FFF] to-[#4a5ae8] px-8 py-6 sticky top-0 z-10'>
-            <h1 className='text-2xl font-bold text-white'>Add New Doctor</h1>
-            <p className='text-white/80 mt-1'>Fill in the details to add a new doctor to the system</p>
-          </div>
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[80vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#5f6FFF]"></div>
+      </div>
+    );
+  }
 
-          <form onSubmit={handleSubmit} className='p-8'>
-            {/* Image Upload Section */}
+  return (
+    <div className="w-full md:pl-[280px] pt-16 bg-gray-50 min-h-screen">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Add New Doctor</h1>
+            <p className="text-gray-600 mt-1">Add a new doctor to the system</p>
+          </div>
+        </div>
+        <div className='max-w-4xl mx-auto py-4'>
+          <form onSubmit={handleSubmit} className='p-8 bg-white rounded-2xl shadow-xl'>
             <div className='mb-8'>
               <div className='flex items-center gap-6 p-6 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 hover:border-[#5f6FFF] transition-colors duration-300'>
                 <label htmlFor="doc-img" className='cursor-pointer'>
@@ -137,15 +134,13 @@ const AddDoctor = () => {
                   className='hidden' 
                 />
                 <div>
-                  <p className='text-gray-700 font-medium'>Upload Doctor's Photo</p>
-                  <p className='text-gray-500 text-sm mt-1'>Click to upload or drag and drop</p>
+                  <p className='text-gray-700 font-medium'>Doctor's Photo</p>
+                  <p className='text-gray-500 text-sm mt-1'>Click to upload a photo (JPG, PNG, max 5MB)</p>
                 </div>
               </div>
             </div>
 
-            {/* Form Grid */}
             <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
-              {/* Left Column */}
               <div className='space-y-6'>
                 <div className='space-y-2'>
                   <label className='block text-sm font-medium text-gray-700'>Doctor Name</label>
@@ -204,7 +199,6 @@ const AddDoctor = () => {
                 </div>
               </div>
 
-              {/* Right Column */}
               <div className='space-y-6'>
                 <div className='space-y-2'>
                   <label className='block text-sm font-medium text-gray-700'>Speciality</label>
@@ -258,7 +252,6 @@ const AddDoctor = () => {
               </div>
             </div>
 
-            {/* About Section */}
             <div className='mt-8 space-y-2'>
               <label className='block text-sm font-medium text-gray-700'>About Doctor</label>
               <textarea 
@@ -271,7 +264,6 @@ const AddDoctor = () => {
               />
             </div>
 
-            {/* Submit Button */}
             <div className='mt-8 flex justify-end'>
               <button 
                 type='submit'
@@ -299,6 +291,18 @@ const AddDoctor = () => {
           </form>
         </div>
       </div>
+      <ToastContainer 
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 };

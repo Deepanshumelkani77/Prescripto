@@ -114,8 +114,8 @@ const AllDoctor = () => {
   };
 
   return (
-    <div className="max-h-[85vh] overflow-y-auto w-full">
-      <div className="w-full">
+    <div className="w-full md:pl-[280px] pt-16">
+      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
           <div>
@@ -224,7 +224,7 @@ const AllDoctor = () => {
             ))}
           </div>
         ) : filteredDoctors.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-6 py-4">
             {filteredDoctors.map((item) => (
               <div 
                 key={item._id}

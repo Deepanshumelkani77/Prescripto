@@ -68,27 +68,28 @@ const Feedback = () => {
   };
 
   return (
-    <div className="p-6 max-h-[85vh] overflow-y-auto">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Customer Feedback</h1>
-          <p className="text-gray-600">View and manage customer feedback</p>
+    <div className="w-full md:pl-[280px] pt-16 bg-gray-50 min-h-screen">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Patient Feedback</h1>
+            <p className="text-gray-600 mt-1">View and manage patient feedback and reviews</p>
+          </div>
+          <div className="mt-4 md:mt-0">
+            <select
+              className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <option value="all">All Feedback</option>
+              <option value="new">New</option>
+              <option value="read">Read</option>
+              <option value="replied">Replied</option>
+              <option value="archived">Archived</option>
+            </select>
+          </div>
         </div>
-        <div className="mt-4 md:mt-0">
-          <select
-            className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
-            <option value="all">All Feedback</option>
-            <option value="new">New</option>
-            <option value="read">Read</option>
-            <option value="replied">Replied</option>
-            <option value="archived">Archived</option>
-          </select>
-        </div>
-      </div>
 
       {/* Feedback List */}
       <div className="bg-white shadow overflow-hidden sm:rounded-md">
@@ -211,6 +212,7 @@ const Feedback = () => {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 };
