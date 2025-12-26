@@ -4,6 +4,7 @@ import { AppContext } from "../context/AppContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FiEdit2, FiSave, FiUser, FiPhone, FiMail, FiMapPin, FiCalendar, FiUserCheck } from "react-icons/fi";
+import { showSuccess, showError } from '../utils/toast';
 
 const MyProfile = () => {
   const { user, logout } = useContext(AppContext);
@@ -70,7 +71,7 @@ const MyProfile = () => {
         imageUrl = res.data.secure_url;
       } catch (err) {
         console.error("Image upload failed:", err);
-        alert("Image upload failed");
+        showError("Image upload failed");
         setIsLoading(false);
         return;
       }
@@ -84,14 +85,48 @@ const MyProfile = () => {
         setUserInfo(updatedData);
         setImage(imageUrl);
         setIsEdit(false);
-        // Show success notification
-        alert("Profile updated successfully!");
+        showSuccess("Profile updated successfully!");
       }
     } catch (err) {
       console.error("Update error:", err);
-      alert("Failed to update profile. Please try again.");
+      showError(err.response?.data?.message || 'Failed to update profile');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+      try {
+        await axios.delete(`http://localhost:5000/user/delete/${user.id}`);
+        showSuccess('Your account has been deleted successfully');
+        logout();
+        navigate("/");
+      } catch (err) {
+        console.error("Error deleting account:", err);
+        showError(err.response?.data?.message || 'Failed to delete account');
+      }
+    }
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.put(`http://localhost:5000/user/update/${user.id}`, {
+        username: userData.name,
+        email: userData.email,
+        phone_no: userData.phone_no,
+        address: userData.address,
+        gender: userData.gender,
+        dob: userData.dob,
+        image,
+      });
+      setUserInfo(res.data);
+      setIsEdit(false);
+      showSuccess('Profile updated successfully!');
+    } catch (err) {
+      console.error("Error updating profile:", err);
+      showError(err.response?.data?.message || 'Failed to update profile');
     }
   };
 

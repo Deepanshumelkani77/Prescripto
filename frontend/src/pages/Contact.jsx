@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { assets } from '../assets/assets'
+import { showSuccess, showError } from '../utils/toast'
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -19,6 +20,19 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    // Basic form validation
+    if (!formData.name || !formData.email || !formData.message) {
+      showError('Please fill in all required fields');
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      showError('Please enter a valid email address');
+      return;
+    }
+    
     try {
       const response = await fetch('http://localhost:5000/api/feedback', {
         method: 'POST',
@@ -36,14 +50,14 @@ const Contact = () => {
       console.log('Feedback submitted successfully:', result);
       
       // Show success message to user
-      alert('Thank you for your feedback! We will get back to you soon.');
+      showSuccess('Thank you for your feedback! We will get back to you soon.');
       
       // Reset form
       setFormData({ name: '', email: '', subject: '', message: '' });
       
     } catch (error) {
       console.error('Error submitting feedback:', error);
-      alert('Failed to submit feedback. Please try again later.');
+      showError(error.response?.data?.message || 'Failed to submit feedback. Please try again later.');
     }
   }
 
