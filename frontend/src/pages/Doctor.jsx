@@ -252,14 +252,14 @@ const Doctor = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8">
+    <div className="min-h-screen lg:mb-10 bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8">
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="text-center mb-10">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+          <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold text-gray-900 mb-3">
             Find the <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Right Doctor</span>
           </h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-gray-600 lg:text-lg max-w-2xl mx-auto">
             Connect with experienced doctors for in-person or virtual consultations. Book appointments instantly.
           </p>
         </div>
