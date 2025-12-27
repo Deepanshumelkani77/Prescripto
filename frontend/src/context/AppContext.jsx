@@ -16,7 +16,7 @@ const [state, setState] = useState(() => {
 })
 const [showLogin,setShowLogin]=useState(false)
 
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
 
 
 
@@ -32,7 +32,7 @@ const [user, setUser] = useState(initialUser);
   
   const login = async (email, password) => {
       try {
-        const response = await axios.post("http://localhost:5000/user/login", { email, password });
+        const response = await axios.post(`${API_BASE_URL}/user/login`, { email, password });
         console.log("Login response:", response.data);
         Cookies.set("token", response.data.token, { expires: 1 });
         Cookies.set("user", JSON.stringify(response.data.user), { expires: 1 });
@@ -48,7 +48,7 @@ const [user, setUser] = useState(initialUser);
   
     const signup = async (username, email, password) => {
       try {
-        await axios.post("http://localhost:5000/user/signup", { username, email, password });
+        await axios.post(`${API_BASE_URL}/user/signup`, { username, email, password });
         showSuccess('Signup successful! Please login.');
       } catch (error) {
         const errorMessage = error.response?.data?.message || "Signup failed";

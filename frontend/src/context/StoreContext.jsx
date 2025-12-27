@@ -15,11 +15,12 @@ const StoreContextProvider=(props)=>{
     ? JSON.parse(doctorCookie) 
     : null;
 
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
   const [doctor, setDoctor] = useState(initialUser);
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post("http://localhost:5000/doctor/login", { email, password });
+      const response = await axios.post(`${API_BASE_URL}/doctor/login`, { email, password });
       console.log("Login response:", response.data);
       Cookies.set("token", response.data.token, { expires: 1 });
       Cookies.set("doctor", JSON.stringify(response.data.doctor), { expires: 1 });
@@ -35,7 +36,7 @@ const StoreContextProvider=(props)=>{
 
   const signup = async (name, email, password) => {
     try {
-      await axios.post("http://localhost:5000/doctor/signup", {name, email, password });
+      await axios.post(`${API_BASE_URL}/doctor/signup`, {name, email, password });
       showSuccess("Signup successful! Please login.");
     } catch (error) {
       const errorMessage = error.response?.data?.message || "Signup failed";

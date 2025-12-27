@@ -5,13 +5,14 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
 const RelatedDoctor = ({ docId, speciality }) => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
   const navigate = useNavigate()
   const [doctors, setDoctors] = useState([])
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     setIsLoading(true)
-    axios.get('http://localhost:5000/doctor')
+    axios.get(`${API_BASE_URL}/doctor`)
       .then(response => {
         setDoctors(response.data)
         setIsLoading(false)

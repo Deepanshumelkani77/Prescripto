@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { assets } from '../assets/assets'
 
 const TopDoctors = () => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
   const navigate = useNavigate()
   const [doctors, setDoctors] = useState([])
   const [isLoading, setIsLoading] = useState(true)
@@ -13,7 +14,7 @@ const TopDoctors = () => {
     const fetchDoctors = async () => {
       setIsLoading(true)
       try {
-        const response = await axios.get('http://localhost:5000/doctor')
+        const response = await axios.get(`${API_BASE_URL}/doctor`)
         setDoctors(response.data)
       } catch (error) {
         console.error("Error fetching doctor data:", error)
