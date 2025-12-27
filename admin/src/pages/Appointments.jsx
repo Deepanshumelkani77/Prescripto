@@ -4,6 +4,7 @@ import { FaUserMd, FaRegCalendarCheck, FaRegClock } from 'react-icons/fa';
 import axios from 'axios';
 
 const Appointments = () => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -14,7 +15,7 @@ const Appointments = () => {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/appointment');
+        const response = await axios.get(`${API_BASE_URL}/appointment`);
         console.log('API Response:', response.data);
         // Ensure each appointment has user_id populated
         const appointmentsWithUser = response.data.map(appt => ({
@@ -72,7 +73,7 @@ const Appointments = () => {
   // Handle status update
   const updateAppointmentStatus = async (id, newStatus) => {
     try {
-      await axios.patch(`http://localhost:5000/appointment/${id}/status`, { status: newStatus });
+      await axios.patch(`${API_BASE_URL}/appointment/${id}/status`, { status: newStatus });
       setAppointments(appointments.map(apt => 
         apt._id === id ? { ...apt, status: newStatus } : apt
       ));

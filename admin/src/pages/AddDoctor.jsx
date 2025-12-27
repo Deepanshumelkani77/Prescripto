@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const AddDoctor = () => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
@@ -68,7 +69,7 @@ const AddDoctor = () => {
     const updatedData = { ...formData, image: imageUrl };
 
     try {
-      const response = await fetch(`http://localhost:5000/doctor`, {
+      const response = await fetch(`${API_BASE_URL}/doctor`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedData),

@@ -4,6 +4,7 @@ import { showToast } from '../components/Toast';
 import axios from 'axios';
 
 const Feedback = () => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
   const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -14,7 +15,7 @@ const Feedback = () => {
   const fetchFeedbacks = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:5000/api/feedback');
+      const response = await axios.get(`${API_BASE_URL}/api/feedback`);
       setFeedbacks(response.data.data || []);
     } catch (error) {
       console.error('Error fetching feedbacks:', error);

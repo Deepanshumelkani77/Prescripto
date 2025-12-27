@@ -6,7 +6,7 @@ import { showToast } from "../components/Toast";
 export const AppContext=createContext()
 
 const AppContextProvider=(props)=>{
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
 const [showLogin,setShowLogin]=useState(false)
 
   //store current user in cookie than we use currentuser anywhere
@@ -21,7 +21,7 @@ console.log(user)
   
   const login = async (email, password) => {
       try {
-        const response = await axios.post("http://localhost:5000/admin/login", { email, password });
+        const response = await axios.post(`${API_BASE_URL}/admin/login`, { email, password });
         console.log("Login response:", response.data);
         Cookies.set("token", response.data.token, { expires: 1 });
         Cookies.set("admin", JSON.stringify(response.data.admin), { expires: 1 });
@@ -37,7 +37,7 @@ console.log(user)
   
     const signup = async (username, email, password) => {
       try {
-        await axios.post("http://localhost:5000/admin/signup", { username, email, password });
+        await axios.post(`${API_BASE_URL}/admin/signup`, { username, email, password });
         showToast("Signup successful! Please login.", 'success');
         return true;
       } catch (error) {

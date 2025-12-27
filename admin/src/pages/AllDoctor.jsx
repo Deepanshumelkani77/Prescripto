@@ -24,6 +24,7 @@ const DoctorCardSkeleton = () => (
 );
 
 const AllDoctor = () => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
   const { user, setShowLogin } = useContext(AppContext);
   const navigate = useNavigate();
   const [doctor, setDoctor] = useState([]);
@@ -37,7 +38,7 @@ const AllDoctor = () => {
     const fetchDoctors = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get('http://localhost:5000/doctor');
+        const response = await axios.get(`${API_BASE_URL}/doctor`);
         setDoctor(response.data);
       } catch (error) {
         console.error("Error fetching doctor data:", error);
@@ -86,7 +87,7 @@ const AllDoctor = () => {
     
     if (window.confirm('Are you sure you want to delete this doctor?')) {
       try {
-        await axios.delete(`http://localhost:5000/doctor/delete/${id}`, {
+        await axios.delete(`${API_BASE_URL}/doctor/delete/${id}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
         setDoctor(doctor.filter(item => item._id !== id));

@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 
 const EditDoctor = () => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
   const navigate = useNavigate();
   const { id } = useParams();
   const [doctor, setDoctor] = useState({});
@@ -25,7 +26,7 @@ const EditDoctor = () => {
   useEffect(() => {
     const fetchDoctor = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/doctor/info/${id}`);
+        const response = await fetch(`${API_BASE_URL}/doctor/info/${id}`);
         const data = await response.json();
         setDoctor(data);
         setFormData({
@@ -97,7 +98,7 @@ const EditDoctor = () => {
     const updatedData = { ...formData, image: imageUrl };
 
     try {
-      const response = await fetch(`http://localhost:5000/doctor/edit/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/doctor/edit/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedData),
