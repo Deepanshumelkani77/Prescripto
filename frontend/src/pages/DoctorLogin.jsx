@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { showSuccess, showError } from '../utils/toast'
 
 const DoctorLogin = () => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
   const { doctor, setShowLogin2 } = useContext(StoreContext)
   const [state, setState] = useState('signup')
   const { signup } = useContext(StoreContext)

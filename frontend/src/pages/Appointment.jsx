@@ -8,6 +8,9 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Appointment = () => {
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
+
   const { user,setShowLogin } = useContext(AppContext);
   const { docId } = useParams();
   const navigate = useNavigate();
@@ -34,7 +37,7 @@ const Appointment = () => {
   useEffect(() => {
     const fetchDoctor = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/doctor/${docId}`);
+        const response = await axios.get(`${API_BASE_URL}/doctor/${docId}`);
         setDoctor(response.data);
       } catch (error) {
         console.error('Error fetching doctor:', error);
@@ -95,7 +98,7 @@ const Appointment = () => {
       const displayDate = new Date(localDate);
       
       const response = await axios.get(
-        `http://localhost:5000/appointment/available-slots/${docId}/${formattedDate}`
+        `${API_BASE_URL}/appointment/available-slots/${docId}/${formattedDate}`
       );
       
       // Ensure we're working with time strings in consistent format (HH:MM)
@@ -178,7 +181,7 @@ const Appointment = () => {
       };
       
       console.log('Sending appointment data:', payload);
-      const response = await axios.post('http://localhost:5000/appointment', payload);
+      const response = await axios.post(`${API_BASE_URL}/appointment`, payload);
       
       if (response.status === 201) {
         toast.success('Appointment booked successfully!');

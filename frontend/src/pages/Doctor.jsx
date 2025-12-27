@@ -10,6 +10,7 @@ import {
 } from 'react-icons/fi';
 
 const Doctor = () => {
+  
   const navigate = useNavigate();
   const { speciality } = useParams();
   const [filterDoc, setFilterDoc] = useState([]);

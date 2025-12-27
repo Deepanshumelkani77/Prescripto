@@ -5,6 +5,7 @@ import axios from 'axios';
 import { showSuccess, showError } from '../utils/toast';
 
 const DoctorAppointment = () => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
   const { doctor } = useContext(StoreContext);
   const [appointments, setAppointments] = useState([]);
   const [doctors, setDoctors] = useState([]);
@@ -14,10 +15,10 @@ const DoctorAppointment = () => {
 
   const checkAndUpdateStatuses = async () => {
     try {
-      await axios.patch('http://localhost:5000/appointment/update-statuses');
+      await axios.patch(`${API_BASE_URL}/appointment/update-statuses`);
       // Refresh appointments after updating statuses
       if (doctor?.id) {
-        const appointmentsRes = await axios.get(`http://localhost:5000/appointment/doctor/${doctor.id}`);
+        const appointmentsRes = await axios.get(`${API_BASE_URL}/appointment/doctor/${doctor.id}`);
         setAppointments(appointmentsRes.data);
       }
     } catch (error) {
@@ -32,15 +33,15 @@ const DoctorAppointment = () => {
         await checkAndUpdateStatuses();
         
         // Then fetch the doctor's data using their ID from the context
-        const doctorRes = await axios.get(`http://localhost:5000/doctor/${doctor?.id}`);
+        const doctorRes = await axios.get(`${API_BASE_URL}/doctor/${doctor?.id}`);
         setMyDoctor(doctorRes.data || {});
         
         // Then fetch appointments
-        const appointmentsRes = await axios.get(`http://localhost:5000/appointment/doctor/${doctor?.id}`);
+        const appointmentsRes = await axios.get(`${API_BASE_URL}/appointment/doctor/${doctor?.id}`);
         setAppointments(appointmentsRes.data);
         
         // Fetch all doctors if needed for other purposes
-        const doctorsRes = await axios.get('http://localhost:5000/doctor');
+        const doctorsRes = await axios.get(`${API_BASE_URL}/doctor`);
         setDoctors(doctorsRes.data);
         
       } catch (err) {
@@ -78,7 +79,7 @@ const DoctorAppointment = () => {
 
   const updateAppointmentStatus = async (id, status) => {
     try {
-      const response = await fetch(`http://localhost:5000/appointment/${id}/status`, {
+      const response = await fetch(`${API_BASE_URL}/appointment/${id}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -102,7 +103,7 @@ const DoctorAppointment = () => {
       // Update doctor data if appointment was completed
       if (status === 'completed') {
         try {
-          const doctorRes = await axios.get(`http://localhost:5000/doctor/${doctor?.id}`);
+          const doctorRes = await axios.get(`${API_BASE_URL}/doctor/${doctor?.id}`);
           setMyDoctor(prev => ({
             ...prev,
             earning: doctorRes.data.earning,
@@ -166,7 +167,7 @@ const DoctorAppointment = () => {
     const updateEarnings = async () => {
       if (!earning.earnings || !myDoctor?._id) return;
       try {
-        const res = await axios.post(`http://localhost:5000/doctor/edit_earning/${myDoctor._id}`, earning);
+        const res = await axios.post(`${API_BASE_URL}/doctor/edit_earning/${myDoctor._id}`, earning);
         if (res.status === 200) {
           console.log("Earning updated!");
         }

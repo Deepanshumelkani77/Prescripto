@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { FiCalendar, FiClock, FiMapPin, FiDollarSign, FiCheckCircle, FiX, FiCreditCard, FiTrash2, FiUser, FiAlertCircle } from 'react-icons/fi';
 
 const MyAppointment = () => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
   const { doctors, user } = useContext(AppContext);
   const [appointments, setAppointments] = useState([]);
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
@@ -59,7 +60,7 @@ const MyAppointment = () => {
     const fetchAppointments = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`http://localhost:5000/appointment/user/${user?.id}`);
+        const response = await axios.get(`${API_BASE_URL}/appointment/user/${user?.id}`);
         console.log('Raw API response:', response.data);
         const { upcoming, past } = categorizeAppointments(response.data);
         setAppointments(response.data);
@@ -82,7 +83,7 @@ const MyAppointment = () => {
 
   const updateAppointmentStatus = async (id, status) => {
     try {
-      const response = await fetch(`http://localhost:5000/appointment/${id}/status`, {
+      const response = await fetch(`${API_BASE_URL}/appointment/${id}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -129,7 +130,7 @@ const MyAppointment = () => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5000/appointment/delete/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/appointment/delete/${id}`, {
         method: 'DELETE',
       });
 
@@ -154,7 +155,7 @@ const MyAppointment = () => {
 
   const handlePayment = async (amount, appointmentId) => {
     try {
-      const res = await axios.post("http://localhost:5000/payment/create-order", { amount });
+      const res = await axios.post(`${API_BASE_URL}/payment/create-order`, { amount });
 
       const options = {
         key: "rzp_test_PuXf2SZhGaKEGd",
@@ -165,7 +166,7 @@ const MyAppointment = () => {
         order_id: res.data.id,
         handler: async function (response) {
           try {
-            await axios.post(`http://localhost:5000/appointment/update-payment/${appointmentId}`, {
+            await axios.post(`${API_BASE_URL}/appointment/update-payment/${appointmentId}`, {
               paid: true,
               payment_id: response.razorpay_payment_id,
             });

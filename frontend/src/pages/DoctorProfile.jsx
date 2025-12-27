@@ -7,6 +7,7 @@ import { FiEdit2, FiSave, FiUser, FiPhone, FiMail, FiMapPin, FiBriefcase, FiAwar
 import { showSuccess, showError } from '../utils/toast';
 
 const DoctorProfile = () => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
   const { doctor } = useContext(StoreContext);
   const navigate = useNavigate();
 
@@ -40,7 +41,7 @@ const DoctorProfile = () => {
     const fetchDoctorData = async () => {
       if (doctor?.id) {
         try {
-          const { data } = await axios.get(`http://localhost:5000/doctor/info/${doctor.id}`);
+          const { data } = await axios.get(`${API_BASE_URL}/doctor/info/${doctor.id}`);
           setDoctorInfo(data);
           const formatted = {
             name: data.name,
@@ -117,7 +118,7 @@ const DoctorProfile = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:5000/doctor/edit/${doctor.id}`,
+        `${API_BASE_URL}/doctor/edit/${doctor.id}`,
         updatedData
       );
       

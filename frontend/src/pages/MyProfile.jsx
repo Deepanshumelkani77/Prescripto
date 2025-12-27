@@ -7,6 +7,7 @@ import { FiEdit2, FiSave, FiUser, FiPhone, FiMail, FiMapPin, FiCalendar, FiUserC
 import { showSuccess, showError } from '../utils/toast';
 
 const MyProfile = () => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
   const { user, logout } = useContext(AppContext);
   const navigate = useNavigate();
 
@@ -23,7 +24,7 @@ const MyProfile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/user/info/${user.id}`);
+        const res = await axios.get(`${API_BASE_URL}/user/info/${user.id}`);
         const data = res.data;
         setUserInfo(data);
         setUserData({
@@ -80,7 +81,7 @@ const MyProfile = () => {
     const updatedData = { ...userData, image: imageUrl };
 
     try {
-      const res = await axios.put(`http://localhost:5000/user/edit/${user.id}`, updatedData);
+      const res = await axios.put(`${API_BASE_URL}/user/edit/${user.id}`, updatedData);
       if (res.status === 200) {
         setUserInfo(updatedData);
         setImage(imageUrl);
@@ -98,7 +99,7 @@ const MyProfile = () => {
   const handleDeleteAccount = async () => {
     if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
       try {
-        await axios.delete(`http://localhost:5000/user/delete/${user.id}`);
+        await axios.delete(`${API_BASE_URL}/user/delete/${user.id}`);
         showSuccess('Your account has been deleted successfully');
         logout();
         navigate("/");
@@ -112,7 +113,7 @@ const MyProfile = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.put(`http://localhost:5000/user/update/${user.id}`, {
+      const res = await axios.put(`${API_BASE_URL}/user/update/${user.id}`, {
         username: userData.name,
         email: userData.email,
         phone_no: userData.phone_no,
