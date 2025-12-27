@@ -51,6 +51,8 @@ const { ObjectId } = require('mongodb');
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
+  "https://prescripto-admin-two-indol.vercel.app/",
+  "https://prescripto-sand-eight.vercel.app/"
   
 ];
 
