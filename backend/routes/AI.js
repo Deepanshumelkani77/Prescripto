@@ -313,16 +313,13 @@ router.post("/symptom-check", async (req, res) => {
     // ==============================================
     // Gemini Model
     // ==============================================
-    const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
-    });
+  const model = genAI.getGenerativeModel({
+  model: "gemini-2.0-flash",
+});
 
-    // ==============================================
-    // Generate response
-    // ==============================================
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const assistantText = response.text();
+const result = await model.generateContent(prompt);
+const response = await result.response;
+const assistantText = response.text();
 
     console.log("Gemini Response:", assistantText);
 
