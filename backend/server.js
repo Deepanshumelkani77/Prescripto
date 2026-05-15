@@ -87,6 +87,8 @@ const user=require("./routes/User.js");
 app.use("/user",user);
 const appointment=require("./routes/Appointment.js");
 app.use("/appointment",appointment)
+const aiRoute = require("./routes/AI.js");
+app.use("/ai", aiRoute);
 const paymentRoute = require("./routes/Payment.js");
 const feedbackRoute = require("./routes/Feedback.js");
 

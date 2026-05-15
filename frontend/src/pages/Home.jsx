@@ -171,9 +171,15 @@ const Home = () => {
                 Join thousands of patients who trust Prescripto for their healthcare needs. 
                 Book your first appointment today and experience the difference.
               </p>
-              <button onClick={()=>{navigate("/doctor")}} className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:shadow-lg transform hover:scale-105 transition-all duration-300">
-                Book Appointment Now
-              </button>
+                <button
+                  onClick={() => navigate('/ai-assistant')}
+                  className="bg-white border border-blue-200 text-blue-700 px-8 py-4 rounded-full font-semibold text-lg hover:bg-blue-50 transition-all duration-300"
+                >
+                  Talk to AI Health Assistant
+                </button>
+                <button onClick={()=>{navigate("/doctor")}} className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:shadow-lg transform hover:scale-105 transition-all duration-300">
+                  Book Appointment Now
+                </button>
             </div>
           </div>
         </section>

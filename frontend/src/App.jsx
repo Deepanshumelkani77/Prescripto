@@ -9,6 +9,7 @@ import MyProfile from './pages/MyProfile.jsx'
 import MyAppointment from './pages/MyAppointment.jsx'
 import Login from './pages/Login.jsx'
 import Appointment from './pages/Appointment.jsx'
+import AIHealthAssistant from './pages/AIHealthAssistant.jsx'
 import Navbar from './components/Navbar.jsx'
 import Footer from './components/Footer.jsx'
 import Contact from './pages/Contact.jsx'
@@ -62,6 +63,7 @@ const App = () => {
               <Route path='/' element={<Home />} />
               <Route path='/doctor' element={<Doctor />} />
               <Route path='/doctor/:speciality' element={<Doctor />} />
+              <Route path='/ai-assistant' element={<AIHealthAssistant />} />
               <Route path='about' element={<About />} />
               <Route path='/myprofile' element={<MyProfile />} />
               <Route path='/myappointment' element={<MyAppointment />} />
