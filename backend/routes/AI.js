@@ -3,8 +3,9 @@ const router = express.Router();
 const axios = require("axios");
 
 // ======================================================
-// OpenRouter API Key
+// AI API Keys
 // ======================================================
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
 // ======================================================
@@ -281,8 +282,11 @@ router.post("/symptom-check", async (req, res) => {
     // Fallback speciality
     const fallbackSpeciality = detectSpeciality(symptoms);
 
-    // If API key missing
-    if (!OPENROUTER_API_KEY) {
+    // Determine whether any AI key is available
+    const hasOpenAI = !!OPENAI_API_KEY;
+    const hasOpenRouter = !!OPENROUTER_API_KEY;
+
+    if (!hasOpenAI && !hasOpenRouter) {
       return res.json({
         summary: `AI service is unavailable. Based on your symptoms, you should consult a ${fallbackSpeciality}.`,
         recommendedSpeciality: fallbackSpeciality,
@@ -302,39 +306,61 @@ router.post("/symptom-check", async (req, res) => {
       medicalHistory,
     });
 
-    // Call OpenRouter API
-    const aiResponse = await axios.post(
-      "https://openrouter.ai/api/v1/chat/completions",
-      {
-      model: "google/gemma-3-12b-it:free",
-        messages: [
-          {
-            role: "user",
-            content: prompt,
-          },
-        ],
-        temperature: 0.3,
-        max_tokens: 500,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${OPENROUTER_API_KEY}`,
-          "Content-Type": "application/json",
-          "HTTP-Referer":
-            "https://prescripto-backend-zw5v.onrender.com",
-          "X-Title": "Prescripto AI Assistant",
+    let assistantText = "";
+
+    if (OPENAI_API_KEY) {
+      const aiResponse = await axios.post(
+        "https://api.openai.com/v1/chat/completions",
+        {
+          model: "gpt-3.5-turbo",
+          messages: [
+            { role: "system", content: "You are a helpful medical assistant." },
+            { role: "user", content: prompt },
+          ],
+          temperature: 0.2,
+          max_tokens: 400,
         },
-        timeout: 30000,
-      }
-    );
+        {
+          headers: {
+            Authorization: `Bearer ${OPENAI_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          timeout: 30000,
+        }
+      );
+      assistantText = aiResponse.data?.choices?.[0]?.message?.content || "";
+      console.log("OpenAI response:", assistantText);
+    } else if (OPENROUTER_API_KEY) {
+      const aiResponse = await axios.post(
+        "https://openrouter.ai/api/v1/chat/completions",
+        {
+          model: "gpt-3.5-turbo",
+          messages: [
+            { role: "user", content: prompt },
+          ],
+          temperature: 0.2,
+          max_tokens: 400,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          timeout: 30000,
+        }
+      );
+      assistantText = aiResponse.data?.choices?.[0]?.message?.content || "";
+      console.log("OpenRouter response:", assistantText);
+    } else {
+      // no AI key available
+      return res.json({
+        summary: `AI service is unavailable. Based on your symptoms, you should consult a ${fallbackSpeciality}.`,
+        recommendedSpeciality: fallbackSpeciality,
+        nextStep: `Please book an appointment with a ${fallbackSpeciality}.`,
+        source: "fallback",
+      });
+    }
 
-    // Extract AI text
-    const assistantText =
-      aiResponse.data?.choices?.[0]?.message?.content || "";
-
-    console.log("OpenRouter Response:", assistantText);
-
-    // Parse JSON
     const extracted = extractJson(assistantText);
 
     // If parsing fails, use fallback
@@ -351,6 +377,8 @@ router.post("/symptom-check", async (req, res) => {
       });
     }
 
+    const source = OPENAI_API_KEY ? "openai" : "openrouter";
+
     // Success response
     return res.json({
       summary: extracted.summary,
@@ -361,7 +389,7 @@ router.post("/symptom-check", async (req, res) => {
         `Please consult a ${
           extracted.recommendedSpeciality || fallbackSpeciality
         }.`,
-      source: "openrouter",
+      source,
     });
   } catch (error) {
     console.error(
