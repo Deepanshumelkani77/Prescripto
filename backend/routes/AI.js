@@ -306,7 +306,7 @@ router.post("/symptom-check", async (req, res) => {
     const aiResponse = await axios.post(
       "https://openrouter.ai/api/v1/chat/completions",
       {
-        model: "google/gemma-3-12b-it:free",
+        model: "meta-llama/llama-3.3-8b-instruct:free",
         messages: [
           {
             role: "user",
