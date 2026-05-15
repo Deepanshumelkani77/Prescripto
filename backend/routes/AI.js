@@ -185,6 +185,7 @@ const extractJson = (text = "") => {
   try {
     return JSON.parse(jsonString);
   } catch (error) {
+    console.error("JSON Parse Error:", error.message);
     return null;
   }
 };
@@ -202,13 +203,18 @@ Patient Details:
 - Fever: ${payload.fever}
 - Medical History: ${payload.medicalHistory || "None"}
 
-Your job:
+Your task:
 1. Analyze the symptoms.
-2. Suggest the most relevant medical speciality.
-3. Provide a short explanation.
-4. Recommend the next step.
+2. Recommend the most suitable medical speciality.
+3. Give a short explanation.
+4. Suggest the next step.
 
-Respond ONLY in valid JSON.
+IMPORTANT:
+- Respond ONLY with valid JSON.
+- Do NOT use markdown.
+- Do NOT wrap JSON in \`\`\`.
+
+Required JSON format:
 
 {
   "summary": "Brief explanation of the likely issue.",
@@ -233,7 +239,7 @@ General Physician.
 };
 
 // ======================================================
-// Test route
+// Test Route
 // ======================================================
 router.get("/test-key", (req, res) => {
   res.json({
@@ -243,7 +249,7 @@ router.get("/test-key", (req, res) => {
 });
 
 // ======================================================
-// Main AI Symptom Checker Route
+// Main Symptom Checker Route
 // ======================================================
 router.post("/symptom-check", async (req, res) => {
   try {
@@ -300,7 +306,7 @@ router.post("/symptom-check", async (req, res) => {
     const aiResponse = await axios.post(
       "https://openrouter.ai/api/v1/chat/completions",
       {
-        model: "mistralai/mistral-7b-instruct:free",
+        model: "google/gemma-3-12b-it:free",
         messages: [
           {
             role: "user",
@@ -308,26 +314,30 @@ router.post("/symptom-check", async (req, res) => {
           },
         ],
         temperature: 0.3,
+        max_tokens: 500,
       },
       {
         headers: {
           Authorization: `Bearer ${OPENROUTER_API_KEY}`,
           "Content-Type": "application/json",
-          "HTTP-Referer": "https://your-website.com",
+          "HTTP-Referer":
+            "https://prescripto-backend-zw5v.onrender.com",
           "X-Title": "Prescripto AI Assistant",
         },
+        timeout: 30000,
       }
     );
 
+    // Extract AI text
     const assistantText =
       aiResponse.data?.choices?.[0]?.message?.content || "";
 
     console.log("OpenRouter Response:", assistantText);
 
-    // Extract JSON
+    // Parse JSON
     const extracted = extractJson(assistantText);
 
-    // Validate response
+    // If parsing fails, use fallback
     if (
       !extracted ||
       !extracted.summary ||
@@ -360,7 +370,7 @@ router.post("/symptom-check", async (req, res) => {
     );
 
     const fallbackSpeciality = detectSpeciality(
-      req.body.symptoms || ""
+      req.body?.symptoms || ""
     );
 
     // Return fallback response instead of 500
