@@ -191,6 +191,33 @@ const extractJson = (text = "") => {
   }
 };
 
+// Map common symptom keywords to immediate safe measures
+const getInstantSolution = (symptoms = "") => {
+  const s = normalize(symptoms);
+  if (!s) return "Rest, stay hydrated, and monitor symptoms. Seek medical care if symptoms worsen.";
+
+  if (s.includes('back pain') || s.includes('backache') || s.includes('lower back') ) {
+    return 'Try gentle movement and stretching; avoid heavy lifting; apply heat or cold as needed; take an OTC pain reliever like paracetamol if necessary.';
+  }
+  if (s.includes('swelling') || s.includes('swollen')) {
+    return 'Elevate the affected area, apply a cold compress, rest and avoid pressure; seek care if swelling is severe or painful.';
+  }
+  if (s.includes('fever') || s.includes('temperature') || s.includes('high temperature')) {
+    return 'Rest, stay well hydrated, and take paracetamol (acetaminophen) or ibuprofen as appropriate for fever; seek medical attention if very high or persistent.';
+  }
+  if (s.includes('cough') || s.includes('sore throat') || s.includes('cold') ) {
+    return 'Stay hydrated, use throat lozenges or warm saline gargles, and use steam inhalation for relief; see a doctor if cough persists or worsens.';
+  }
+  if (s.includes('headache') || s.includes('migraine')) {
+    return 'Rest in a quiet, dark room, stay hydrated, and consider an OTC pain reliever like paracetamol if appropriate; seek care if severe or sudden.';
+  }
+  if (s.includes('rash') || s.includes('itch') || s.includes('skin')) {
+    return 'Avoid scratching, keep the area clean, apply cool compresses and a mild topical emollient; seek dermatology advice if spreading or severe.';
+  }
+
+  return 'Rest, stay hydrated, and monitor symptoms; use simple home measures (cold/heat, elevation, OTC analgesics) and consult a doctor if symptoms worsen.';
+};
+
 const buildPrompt = (payload) => {
   return `
 You are an AI medical assistant for a doctor appointment website.
@@ -220,7 +247,8 @@ Required JSON format:
 {
   "summary": "Brief explanation of the likely issue.",
   "recommendedSpeciality": "One speciality from the allowed list.",
-  "nextStep": "What the patient should do next."
+  "nextStep": "What the patient should do next.",
+  "instantSolution": "A one-line immediate, safe measure or home remedy (non-prescription)"
 }
 
 Allowed specialities:
@@ -291,6 +319,7 @@ router.post("/symptom-check", async (req, res) => {
         summary: `AI service is unavailable. Based on your symptoms, you should consult a ${fallbackSpeciality}.`,
         recommendedSpeciality: fallbackSpeciality,
         nextStep: `Please book an appointment with a ${fallbackSpeciality}.`,
+        instantSolution: getInstantSolution(symptoms),
         source: "fallback",
       });
     }
@@ -363,16 +392,13 @@ router.post("/symptom-check", async (req, res) => {
 
     const extracted = extractJson(assistantText);
 
-    // If parsing fails, use fallback
-    if (
-      !extracted ||
-      !extracted.summary ||
-      !extracted.recommendedSpeciality
-    ) {
+    // If parsing fails or missing keys, use fallback values but include instantSolution
+    if (!extracted || !extracted.summary || !extracted.recommendedSpeciality) {
       return res.json({
         summary: `Based on your symptoms, you should consult a ${fallbackSpeciality}.`,
         recommendedSpeciality: fallbackSpeciality,
         nextStep: `Please book an appointment with a ${fallbackSpeciality}.`,
+        instantSolution: getInstantSolution(symptoms),
         source: "fallback",
       });
     }
@@ -380,17 +406,18 @@ router.post("/symptom-check", async (req, res) => {
     const source = OPENAI_API_KEY ? "openai" : "openrouter";
 
     // Success response
-    return res.json({
-      summary: extracted.summary,
-      recommendedSpeciality:
-        extracted.recommendedSpeciality || fallbackSpeciality,
-      nextStep:
-        extracted.nextStep ||
-        `Please consult a ${
-          extracted.recommendedSpeciality || fallbackSpeciality
-        }.`,
-      source,
-    });
+      return res.json({
+        summary: extracted.summary,
+        recommendedSpeciality:
+          extracted.recommendedSpeciality || fallbackSpeciality,
+        nextStep:
+          extracted.nextStep ||
+          `Please consult a ${
+            extracted.recommendedSpeciality || fallbackSpeciality
+          }.`,
+        instantSolution: extracted.instantSolution || getInstantSolution(symptoms),
+        source,
+      });
   } catch (error) {
     console.error(
       "OpenRouter Error:",
@@ -406,6 +433,7 @@ router.post("/symptom-check", async (req, res) => {
       summary: `AI service is temporarily unavailable. Based on your symptoms, you should consult a ${fallbackSpeciality}.`,
       recommendedSpeciality: fallbackSpeciality,
       nextStep: `Please book an appointment with a ${fallbackSpeciality}.`,
+      instantSolution: getInstantSolution(req.body?.symptoms || ""),
       source: "fallback",
     });
   }

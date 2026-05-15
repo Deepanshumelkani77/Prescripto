@@ -203,6 +203,12 @@ const AIHealthAssistant = () => {
                   <p className="mt-3 text-gray-700">{result.nextStep}</p>
                 </div>
               </div>
+              <div className="mt-6 grid gap-4 md:grid-cols-1">
+                <div className="rounded-2xl bg-white p-5 border border-gray-200">
+                  <h3 className="text-sm uppercase tracking-[0.3em] text-blue-600 font-semibold">Immediate Measures</h3>
+                  <p className="mt-3 text-gray-700">{result.instantSolution || 'Follow basic home care: rest, hydrate, and monitor symptoms.'}</p>
+                </div>
+              </div>
               <div className="mt-6 flex flex-wrap gap-3">
                 <button
                   onClick={goToSpeciality}
