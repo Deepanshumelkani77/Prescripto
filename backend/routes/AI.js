@@ -1,15 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const axios = require("axios");
 
 // ======================================================
-// Initialize Gemini safely
+// OpenRouter API Key
 // ======================================================
-let genAI = null;
-
-if (process.env.GEMINI_API_KEY) {
-  genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-}
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
 // ======================================================
 // Speciality mappings for fallback logic
@@ -216,7 +212,7 @@ Respond ONLY in valid JSON.
 
 {
   "summary": "Brief explanation of the likely issue.",
-  "recommendedSpeciality": "One speciality from the list below.",
+  "recommendedSpeciality": "One speciality from the allowed list.",
   "nextStep": "What the patient should do next."
 }
 
@@ -237,19 +233,17 @@ General Physician.
 };
 
 // ======================================================
-// Test route to verify API key
+// Test route
 // ======================================================
 router.get("/test-key", (req, res) => {
   res.json({
-    keyExists: !!process.env.GEMINI_API_KEY,
-    keyLength: process.env.GEMINI_API_KEY
-      ? process.env.GEMINI_API_KEY.length
-      : 0,
+    keyExists: !!OPENROUTER_API_KEY,
+    keyLength: OPENROUTER_API_KEY ? OPENROUTER_API_KEY.length : 0,
   });
 });
 
 // ======================================================
-// Main AI symptom checker route
+// Main AI Symptom Checker Route
 // ======================================================
 router.post("/symptom-check", async (req, res) => {
   try {
@@ -263,9 +257,7 @@ router.post("/symptom-check", async (req, res) => {
       medicalHistory,
     } = req.body;
 
-    // ==============================================
     // Validation
-    // ==============================================
     if (
       !age ||
       !gender ||
@@ -280,15 +272,11 @@ router.post("/symptom-check", async (req, res) => {
       });
     }
 
-    // ==============================================
     // Fallback speciality
-    // ==============================================
     const fallbackSpeciality = detectSpeciality(symptoms);
 
-    // ==============================================
-    // If Gemini API key is missing
-    // ==============================================
-    if (!genAI) {
+    // If API key missing
+    if (!OPENROUTER_API_KEY) {
       return res.json({
         summary: `AI service is unavailable. Based on your symptoms, you should consult a ${fallbackSpeciality}.`,
         recommendedSpeciality: fallbackSpeciality,
@@ -297,9 +285,7 @@ router.post("/symptom-check", async (req, res) => {
       });
     }
 
-    // ==============================================
     // Build prompt
-    // ==============================================
     const prompt = buildPrompt({
       age,
       gender,
@@ -310,41 +296,52 @@ router.post("/symptom-check", async (req, res) => {
       medicalHistory,
     });
 
-    // ==============================================
-    // Gemini Model
-    // ==============================================
-  const model = genAI.getGenerativeModel({
-  model: "gemini-2.0-flash",
-});
+    // Call OpenRouter API
+    const aiResponse = await axios.post(
+      "https://openrouter.ai/api/v1/chat/completions",
+      {
+        model: "mistralai/mistral-7b-instruct:free",
+        messages: [
+          {
+            role: "user",
+            content: prompt,
+          },
+        ],
+        temperature: 0.3,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+          "Content-Type": "application/json",
+          "HTTP-Referer": "https://your-website.com",
+          "X-Title": "Prescripto AI Assistant",
+        },
+      }
+    );
 
-const result = await model.generateContent(prompt);
-const response = await result.response;
-const assistantText = response.text();
+    const assistantText =
+      aiResponse.data?.choices?.[0]?.message?.content || "";
 
-    console.log("Gemini Response:", assistantText);
+    console.log("OpenRouter Response:", assistantText);
 
-    // ==============================================
     // Extract JSON
-    // ==============================================
     const extracted = extractJson(assistantText);
 
-    // ==============================================
-    // Validate AI response
-    // ==============================================
+    // Validate response
     if (
       !extracted ||
       !extracted.summary ||
       !extracted.recommendedSpeciality
     ) {
-      return res.status(502).json({
-        message: "AI returned unexpected response format.",
-        raw: assistantText,
+      return res.json({
+        summary: `Based on your symptoms, you should consult a ${fallbackSpeciality}.`,
+        recommendedSpeciality: fallbackSpeciality,
+        nextStep: `Please book an appointment with a ${fallbackSpeciality}.`,
+        source: "fallback",
       });
     }
 
-    // ==============================================
     // Success response
-    // ==============================================
     return res.json({
       summary: extracted.summary,
       recommendedSpeciality:
@@ -354,14 +351,24 @@ const assistantText = response.text();
         `Please consult a ${
           extracted.recommendedSpeciality || fallbackSpeciality
         }.`,
-      source: "gemini",
+      source: "openrouter",
     });
   } catch (error) {
-    console.error("AI route error:", error);
+    console.error(
+      "OpenRouter Error:",
+      error.response?.data || error.message
+    );
 
-    return res.status(500).json({
-      message: "Internal server error",
-      error: error.message,
+    const fallbackSpeciality = detectSpeciality(
+      req.body.symptoms || ""
+    );
+
+    // Return fallback response instead of 500
+    return res.json({
+      summary: `AI service is temporarily unavailable. Based on your symptoms, you should consult a ${fallbackSpeciality}.`,
+      recommendedSpeciality: fallbackSpeciality,
+      nextStep: `Please book an appointment with a ${fallbackSpeciality}.`,
+      source: "fallback",
     });
   }
 });
