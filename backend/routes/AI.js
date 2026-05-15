@@ -242,7 +242,7 @@ router.post("/symptom-check", async (req, res) => {
     // If API key missing
     if (!process.env.GEMINI_API_KEY) {
       return res.json({
-        summary: `AI service is unavailable. Based on your symptoms, you should consult a ${fallbackSpeciality}.`,
+        summary: `AI service  unavailable. Based on your symptoms, you should consult a ${fallbackSpeciality}.`,
         recommendedSpeciality: fallbackSpeciality,
         nextStep: `Please book an appointment with a ${fallbackSpeciality}.`,
         source: "fallback",
