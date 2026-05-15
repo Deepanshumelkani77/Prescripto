@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { API_BASE_URL } from '../config';
 import { toast } from 'react-toastify';
+import { FiUser, FiActivity, FiClock, FiThermometer, FiAlertCircle, FiCheckCircle, FiArrowRight, FiRefreshCw } from 'react-icons/fi';
 
 const initialForm = {
   age: '',
@@ -63,22 +64,31 @@ const AIHealthAssistant = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-10 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="bg-white shadow-xl rounded-3xl p-8 sm:p-10 border border-gray-200">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
-            <div>
-              <p className="text-sm uppercase tracking-[0.3em] text-blue-600 font-semibold">AI Medical Assistant</p>
-              <h1 className="mt-4 text-3xl md:text-4xl font-bold text-gray-900">Symptom Checker</h1>
-              <p className="mt-3 text-gray-600 max-w-2xl">
-                Answer a few health questions and receive a smart recommendation with suggested doctor speciality.
-              </p>
-            </div>
-            <div className="rounded-3xl bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 p-4 text-white shadow-lg">
-              <p className="text-sm uppercase tracking-[0.25em] font-semibold">Quick guidance</p>
-              <p className="mt-3 text-lg font-semibold">Identify the right specialist fast</p>
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 py-12 px-4 sm:px-6 lg:px-8">
+      {/* Animated Background Elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-20 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-20 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-700"></div>
+      </div>
+
+      <div className="max-w-5xl mx-auto relative z-10">
+        {/* Hero Section */}
+        <div className="text-center mb-12">
+          <div className="inline-block mb-4 px-4 py-2 bg-blue-500/20 rounded-full border border-blue-400/30">
+            <p className="text-sm font-semibold text-blue-300">🤖 AI Medical Assistant</p>
           </div>
+          <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
+            Symptom Checker
+          </h1>
+          <p className="text-lg text-gray-300 max-w-2xl mx-auto">Get instant AI-powered health insights and find the right specialist for your needs</p>
+        </div>
+
+        {!result ? (
+          <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 sm:p-12 border border-white/20 shadow-2xl">
+            <div className="mb-10">
+              <h2 className="text-2xl font-bold text-white mb-2">Tell us about your symptoms</h2>
+              <p className="text-gray-300">Our AI will analyze your information and recommend the right specialist.</p>
+            </div>
 
           <form onSubmit={handleSubmit} className="grid gap-6 md:grid-cols-2">
             <div className="space-y-2">
