@@ -2,9 +2,18 @@ const express = require("express");
 const router = express.Router();
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-// Initialize Gemini
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// ======================================================
+// Initialize Gemini safely
+// ======================================================
+let genAI = null;
 
+if (process.env.GEMINI_API_KEY) {
+  genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+}
+
+// ======================================================
+// Speciality mappings for fallback logic
+// ======================================================
 const specialityMappings = [
   {
     label: "Cardiologist",
@@ -138,6 +147,9 @@ const specialityMappings = [
   },
 ];
 
+// ======================================================
+// Helper functions
+// ======================================================
 const normalize = (text = "") => text.toLowerCase();
 
 const detectSpeciality = (symptoms = "") => {
@@ -164,7 +176,7 @@ const detectSpeciality = (symptoms = "") => {
   return bestMatch.label;
 };
 
-const extractJson = (text) => {
+const extractJson = (text = "") => {
   const jsonStart = text.indexOf("{");
   const jsonEnd = text.lastIndexOf("}");
 
@@ -183,7 +195,7 @@ const extractJson = (text) => {
 
 const buildPrompt = (payload) => {
   return `
-You are a medical assistant.
+You are an AI medical assistant for a doctor appointment website.
 
 Patient Details:
 - Age: ${payload.age}
@@ -194,21 +206,51 @@ Patient Details:
 - Fever: ${payload.fever}
 - Medical History: ${payload.medicalHistory || "None"}
 
-Respond ONLY in valid JSON format:
+Your job:
+1. Analyze the symptoms.
+2. Suggest the most relevant medical speciality.
+3. Provide a short explanation.
+4. Recommend the next step.
+
+Respond ONLY in valid JSON.
 
 {
-  "summary": "Brief explanation of the likely issue",
-  "recommendedSpeciality": "One speciality from the list",
-  "nextStep": "What the patient should do next"
+  "summary": "Brief explanation of the likely issue.",
+  "recommendedSpeciality": "One speciality from the list below.",
+  "nextStep": "What the patient should do next."
 }
 
 Allowed specialities:
-Cardiologist, Dermatologist, Pediatrician, Neurologist,
-Orthopedic, Gynecologist, Dentist, ENT Specialist,
-Ophthalmologist, Psychiatrist, Urologist, General Physician.
+Cardiologist,
+Dermatologist,
+Pediatrician,
+Neurologist,
+Orthopedic,
+Gynecologist,
+Dentist,
+ENT Specialist,
+Ophthalmologist,
+Psychiatrist,
+Urologist,
+General Physician.
 `;
 };
 
+// ======================================================
+// Test route to verify API key
+// ======================================================
+router.get("/test-key", (req, res) => {
+  res.json({
+    keyExists: !!process.env.GEMINI_API_KEY,
+    keyLength: process.env.GEMINI_API_KEY
+      ? process.env.GEMINI_API_KEY.length
+      : 0,
+  });
+});
+
+// ======================================================
+// Main AI symptom checker route
+// ======================================================
 router.post("/symptom-check", async (req, res) => {
   try {
     const {
@@ -221,7 +263,9 @@ router.post("/symptom-check", async (req, res) => {
       medicalHistory,
     } = req.body;
 
+    // ==============================================
     // Validation
+    // ==============================================
     if (
       !age ||
       !gender ||
@@ -232,24 +276,30 @@ router.post("/symptom-check", async (req, res) => {
     ) {
       return res.status(400).json({
         message:
-          "age, gender, symptoms, duration, painLevel and fever are required",
+          "age, gender, symptoms, duration, painLevel and fever are required.",
       });
     }
 
+    // ==============================================
     // Fallback speciality
+    // ==============================================
     const fallbackSpeciality = detectSpeciality(symptoms);
 
-    // If API key missing
-    if (!process.env.GEMINI_API_KEY) {
+    // ==============================================
+    // If Gemini API key is missing
+    // ==============================================
+    if (!genAI) {
       return res.json({
-        summary: `AI service  unavailable. Based on your symptoms, you should consult a ${fallbackSpeciality}.`,
+        summary: `AI service is unavailable. Based on your symptoms, you should consult a ${fallbackSpeciality}.`,
         recommendedSpeciality: fallbackSpeciality,
         nextStep: `Please book an appointment with a ${fallbackSpeciality}.`,
         source: "fallback",
       });
     }
 
+    // ==============================================
     // Build prompt
+    // ==============================================
     const prompt = buildPrompt({
       age,
       gender,
@@ -260,44 +310,59 @@ router.post("/symptom-check", async (req, res) => {
       medicalHistory,
     });
 
-    // Gemini model
+    // ==============================================
+    // Gemini Model
+    // ==============================================
     const model = genAI.getGenerativeModel({
       model: "gemini-1.5-flash",
     });
 
-    // Generate content
+    // ==============================================
+    // Generate response
+    // ==============================================
     const result = await model.generateContent(prompt);
-    const assistantText = result.response.text();
+    const response = await result.response;
+    const assistantText = response.text();
 
+    console.log("Gemini Response:", assistantText);
+
+    // ==============================================
     // Extract JSON
+    // ==============================================
     const extracted = extractJson(assistantText);
 
-    // If invalid response
+    // ==============================================
+    // Validate AI response
+    // ==============================================
     if (
       !extracted ||
       !extracted.summary ||
       !extracted.recommendedSpeciality
     ) {
       return res.status(502).json({
-        message: "AI returned unexpected response format",
+        message: "AI returned unexpected response format.",
         raw: assistantText,
       });
     }
 
+    // ==============================================
     // Success response
-    res.json({
+    // ==============================================
+    return res.json({
       summary: extracted.summary,
       recommendedSpeciality:
         extracted.recommendedSpeciality || fallbackSpeciality,
       nextStep:
         extracted.nextStep ||
-        `Please consult a ${extracted.recommendedSpeciality}.`,
+        `Please consult a ${
+          extracted.recommendedSpeciality || fallbackSpeciality
+        }.`,
       source: "gemini",
     });
   } catch (error) {
     console.error("AI route error:", error);
 
-    res.status(500).json({
+    return res.status(500).json({
       message: "Internal server error",
       error: error.message,
     });
