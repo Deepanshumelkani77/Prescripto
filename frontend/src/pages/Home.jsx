@@ -192,7 +192,7 @@ import { useNavigate } from 'react-router-dom'
 
 const Home=()=>{
 return(
-  <h1 className="m-auto text-center text-3xl font-bold text-gray-800 mt-20 h-[100vh]">
+  <h1 className="m-auto text-center text-6xl font-bold text-gray-800 mt-20 h-[100vh]">
     Sir please merko job dado meri bass ki kuch bhi nhi h ma bhut bada chutiya hu , muja kuch nhi ata h , ya project bhi kisi or ka h jisko ma lakar aya hu apko chutiya banana ka liya . 
   </h1>
 )
